@@ -921,7 +921,7 @@ function renderPersonal(){
   $('my-name').textContent = name || '—'; $('my-avatar').textContent = (name || '–').charAt(0);
   $('my-quota').textContent = t('myQuota', { n: q.eloop + q.moov, e: q.eloop, m: q.moov });
   const weeks = targetWeeks(st.start, st.end), elT = q.eloop * weeks, mvT = q.moov * weeks;
-  const mine = CLIPS.filter(c => c.creator.toLowerCase() === name.toLowerCase() || (c.editor && c.editor.toLowerCase() === name.toLowerCase()));
+  const mine = CLIPS.filter(c => c.creator.toLowerCase() === name.toLowerCase());   // กรองรายคนจากคอลัมน์ Creator เท่านั้น (ไม่ใช้ Editor)
   const period = mine.filter(c => inRange(c, st.start, st.end));
   const elD = period.filter(c => c.status === 'Done' && c.shop === 'EloopTH').length, mvD = period.filter(c => c.status === 'Done' && c.shop === 'Moov').length;
   const T = st.brand === 'EloopTH' ? elT : st.brand === 'Moov' ? mvT : elT + mvT, D = st.brand === 'EloopTH' ? elD : st.brand === 'Moov' ? mvD : elD + mvD, gap = T - D, P = pctOf(D, T);
