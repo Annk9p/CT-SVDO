@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Schedule ลงคลิป</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Noto+Sans+Thai:wght@400;500;600&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* OMNIX Design System — standalone CSS (derived from DESIGN-SYSTEM.md)
+   ใช้กับ artifact / HTML เดี่ยว / โปรเจกต์ที่ไม่ใช่ Tailwind
+   ในโปรเจกต์ OMNIX จริง token อยู่ที่ src/index.css และคอมโพเนนต์อยู่ที่ src/components/ui.tsx */
+
+:root {
+  --omnix-bg: #f5f6f8;
+  --omnix-surface: #ffffff;
+  --omnix-surface-2: #eef1f5;
+  --omnix-border: #dfe3e9;
+  --omnix-fg: #131820;
+  --omnix-fg-muted: #5b6472;
+  --omnix-accent: #5b5bd6;
+  --omnix-accent-soft: #e8e8fb;
+
+  /* semantic — คู่ละสองค่า (พื้น / ตัวอักษร) ตามข้อเสนอในเอกสาร */
+  --omnix-success-fg: #059669;
+  --omnix-success-bg: #d1fae5;
+  --omnix-warning-fg: #d97706;
+  --omnix-warning-bg: #fef3c7;
+  --omnix-danger-fg: #dc2626;
+  --omnix-danger-bg: #fee2e2;
+  --omnix-info-fg: #2563eb;
+  --omnix-info-bg: #dbeafe;
+
+  --omnix-font: "Inter", "IBM Plex Sans Thai", "Noto Sans Thai", "Noto Sans SC", system-ui, sans-serif;
+  --omnix-text-xs: 12px;
+  --omnix-text-sm: 14px;
+  --omnix-text-base: 16px;
+  --omnix-text-lg: 18px;
+  --omnix-text-2xl: 24px;
+
+  --omnix-space-1: 4px;
+  --omnix-space-2: 8px;
+  --omnix-space-3: 12px;
+  --omnix-space-4: 16px;
+  --omnix-space-5: 20px;
+  --omnix-space-6: 24px;
+  --omnix-space-8: 32px;
+
+  --omnix-radius-lg: 8px;
+  --omnix-radius-xl: 12px;
+  --omnix-radius-2xl: 16px;
+  --omnix-radius-full: 9999px;
+
+  --omnix-sidebar-w: 240px;
+  --omnix-control-h: 36px;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not(.light) {
+    --omnix-bg: #0d1117;
+    --omnix-surface: #161b22;
+    --omnix-surface-2: #1d242e;
+    --omnix-border: #2b323d;
+    --omnix-fg: #e7ebf1;
+    --omnix-fg-muted: #98a2b1;
+    --omnix-accent: #8b8bf0;
+    --omnix-accent-soft: #23244a;
+    --omnix-success-fg: #34d399;
+    --omnix-success-bg: #064e3b;
+    --omnix-warning-fg: #fbbf24;
+    --omnix-warning-bg: #451a03;
+    --omnix-danger-fg: #f87171;
+    --omnix-danger-bg: #450a0a;
+    --omnix-info-fg: #60a5fa;
+    --omnix-info-bg: #172554;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"],
+:root.dark {
+  --omnix-bg: #0d1117;
+  --omnix-surface: #161b22;
+  --omnix-surface-2: #1d242e;
+  --omnix-border: #2b323d;
+  --omnix-fg: #e7ebf1;
+  --omnix-fg-muted: #98a2b1;
+  --omnix-accent: #8b8bf0;
+  --omnix-accent-soft: #23244a;
+  --omnix-success-fg: #34d399;
+  --omnix-success-bg: #064e3b;
+  --omnix-warning-fg: #fbbf24;
+  --omnix-warning-bg: #451a03;
+  --omnix-danger-fg: #f87171;
+  --omnix-danger-bg: #450a0a;
+  --omnix-info-fg: #60a5fa;
+  --omnix-info-bg: #172554;
+  color-scheme: dark;
+}
+
+/* ---------- base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--omnix-bg);
+  color: var(--omnix-fg);
+  font-family: var(--omnix-font);
+  font-size: var(--omnix-text-sm);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+.ox-app { min-height: 100vh; background: var(--omnix-bg); color: var(--omnix-fg); font-family: var(--omnix-font); font-size: var(--omnix-text-sm); }
+.ox-scope { color: var(--omnix-fg); font-family: var(--omnix-font); font-size: var(--omnix-text-sm); }
+a { color: var(--omnix-accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1, h2, h3, h4 { margin: 0; font-weight: 600; line-height: 1.25; text-wrap: balance; }
+p { margin: 0; }
+code, pre, kbd { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.92em; }
+pre { background: var(--omnix-surface-2); border: 1px solid var(--omnix-border); border-radius: var(--omnix-radius-lg); padding: var(--omnix-space-3) var(--omnix-space-4); overflow-x: auto; }
+code:not(pre code) { background: var(--omnix-surface-2); border-radius: var(--omnix-space-1); padding: 1px 5px; }
+svg { display: inline-block; vertical-align: middle; }
+
+/* โฟกัส — กฎ global ห้ามลบโดยไม่มีตัวแทน (WCAG 2.2: ≥2px, 3:1) */
+:focus-visible { outline: 2px solid var(--omnix-accent); outline-offset: 2px; }
+.focus-delegated:focus-visible { outline: none; }
+.focus-delegated:focus-visible + *, :has(> .focus-delegated:focus-visible) { outline: 2px solid var(--omnix-accent); outline-offset: 2px; }
+
+/* ---------- typography ---------- */
+.ox-page-title { font-size: var(--omnix-text-2xl); font-weight: 600; }
+.ox-h2 { font-size: var(--omnix-text-lg); font-weight: 600; }
+.ox-muted { color: var(--omnix-fg-muted); }
+.ox-xs { font-size: var(--omnix-text-xs); }
+.ox-label-caps { font-size: var(--omnix-text-xs); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--omnix-fg-muted); }
+.ox-num { font-variant-numeric: tabular-nums; }
+.line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* ---------- layout ---------- */
+.ox-topbar { display: flex; align-items: center; gap: var(--omnix-space-3); height: 52px; padding: 0 var(--omnix-space-4); background: var(--omnix-surface); border-bottom: 1px solid var(--omnix-border); }
+.ox-topbar__spacer { flex: 1; }
+.ox-brand { display: flex; align-items: center; gap: var(--omnix-space-2); font-weight: 600; font-size: var(--omnix-text-base); }
+.ox-brand__mark { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: var(--omnix-radius-lg); background: var(--omnix-accent); color: #fff; font-size: var(--omnix-text-xs); font-weight: 600; }
+.ox-shell { display: flex; min-height: calc(100vh - 52px); }
+.ox-sidebar { width: var(--omnix-sidebar-w); flex: 0 0 auto; background: var(--omnix-surface); border-right: 1px solid var(--omnix-border); padding: var(--omnix-space-3); display: flex; flex-direction: column; gap: var(--omnix-space-1); }
+.ox-nav-group__label { padding: var(--omnix-space-3) var(--omnix-space-3) var(--omnix-space-1); }
+.ox-nav-item { display: flex; align-items: center; gap: var(--omnix-space-2); padding: var(--omnix-space-2) var(--omnix-space-3); border-radius: var(--omnix-radius-lg); color: var(--omnix-fg); cursor: pointer; text-decoration: none; }
+.ox-nav-item:hover { background: var(--omnix-surface-2); text-decoration: none; }
+.ox-nav-item.is-active { background: var(--omnix-accent-soft); color: var(--omnix-accent); font-weight: 500; }
+.ox-main { flex: 1; min-width: 0; }
+.ox-main__inner { padding: var(--omnix-space-5); max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: var(--omnix-space-5); }
+.ox-page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--omnix-space-4); flex-wrap: wrap; }
+.ox-page-head__actions { display: flex; gap: var(--omnix-space-2); flex-wrap: wrap; }
+.ox-grid-cards { display: grid; gap: var(--omnix-space-4); grid-template-columns: 1fr; }
+@media (min-width: 640px) { .ox-grid-cards { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1280px) { .ox-grid-cards { grid-template-columns: repeat(3, 1fr); } }
+.ox-stack { display: flex; flex-direction: column; gap: var(--omnix-space-3); }
+.ox-row { display: flex; align-items: center; gap: var(--omnix-space-2); flex-wrap: wrap; }
+.ox-prose { max-width: 68ch; }
+.ox-prose > * + * { margin-top: var(--omnix-space-3); }
+
+/* ---------- Card / SectionTitle ---------- */
+.ox-card { display: flex; flex-direction: column; background: var(--omnix-surface); border: 1px solid var(--omnix-border); border-radius: var(--omnix-radius-lg); }
+.ox-card__body { padding: var(--omnix-space-4); display: flex; flex-direction: column; gap: var(--omnix-space-3); flex: 1; }
+.ox-card__foot { margin-top: auto; padding: var(--omnix-space-3) var(--omnix-space-4); border-top: 1px solid var(--omnix-border); display: flex; gap: var(--omnix-space-2); align-items: center; }
+.ox-section-title { display: flex; align-items: center; justify-content: space-between; gap: var(--omnix-space-3); }
+.ox-section-title h2 { font-size: var(--omnix-text-base); font-weight: 600; }
+.ox-tile-icon { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: var(--omnix-radius-xl); background: var(--omnix-surface-2); color: var(--omnix-accent); }
+
+/* ---------- Badge / chip / dot ---------- */
+.ox-badge { display: inline-flex; align-items: center; gap: var(--omnix-space-1); padding: 2px var(--omnix-space-2); border-radius: var(--omnix-radius-full); font-size: var(--omnix-text-xs); font-weight: 500; line-height: 1.4; background: var(--omnix-surface-2); color: var(--omnix-fg-muted); border: 1px solid var(--omnix-border); }
+.ox-badge--accent { background: var(--omnix-accent-soft); color: var(--omnix-accent); border-color: transparent; }
+.ox-badge--success { background: var(--omnix-success-bg); color: var(--omnix-success-fg); border-color: transparent; }
+.ox-badge--warning { background: var(--omnix-warning-bg); color: var(--omnix-warning-fg); border-color: transparent; }
+.ox-badge--danger { background: var(--omnix-danger-bg); color: var(--omnix-danger-fg); border-color: transparent; }
+.ox-badge--info { background: var(--omnix-info-bg); color: var(--omnix-info-fg); border-color: transparent; }
+.ox-badge[style*="--c"] { background: color-mix(in srgb, var(--c) 15%, transparent); color: var(--c); border-color: transparent; }
+.ox-dot { display: inline-block; width: 8px; height: 8px; border-radius: var(--omnix-radius-full); background: var(--omnix-fg-muted); }
+.ox-dot--success { background: var(--omnix-success-fg); }
+.ox-dot--warning { background: var(--omnix-warning-fg); }
+.ox-dot--danger { background: var(--omnix-danger-fg); }
+.ox-chip { display: inline-flex; align-items: center; gap: var(--omnix-space-1); height: 28px; padding: 0 var(--omnix-space-3); border-radius: var(--omnix-radius-full); border: 1px solid var(--omnix-border); background: var(--omnix-surface); color: var(--omnix-fg); font: inherit; cursor: pointer; }
+.ox-chip.is-active { background: var(--omnix-accent-soft); color: var(--omnix-accent); border-color: transparent; }
+
+/* ---------- Button ---------- */
+.ox-btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--omnix-space-2); height: var(--omnix-control-h); padding: 0 var(--omnix-space-4); border-radius: var(--omnix-radius-lg); border: 1px solid transparent; font: inherit; font-weight: 500; cursor: pointer; white-space: nowrap; transition: background .12s, border-color .12s; }
+.ox-btn:disabled { opacity: .5; cursor: not-allowed; }
+.ox-btn--primary { background: var(--omnix-accent); color: #fff; }
+.ox-btn--primary:hover:not(:disabled) { filter: brightness(1.08); }
+.ox-btn--secondary { background: var(--omnix-surface); color: var(--omnix-fg); border-color: var(--omnix-border); }
+.ox-btn--secondary:hover:not(:disabled) { background: var(--omnix-surface-2); }
+.ox-btn--ghost { background: transparent; color: var(--omnix-fg-muted); }
+.ox-btn--ghost:hover:not(:disabled) { background: var(--omnix-surface-2); color: var(--omnix-fg); }
+.ox-btn--danger { background: transparent; color: var(--omnix-danger-fg); border-color: var(--omnix-danger-fg); }
+.ox-btn--danger:hover:not(:disabled) { background: var(--omnix-danger-bg); }
+.ox-btn--sm { height: 30px; padding: 0 var(--omnix-space-3); font-size: var(--omnix-text-xs); }
+.ox-btn--icon { width: var(--omnix-control-h); padding: 0; }
+.ox-btn--icon.ox-btn--sm { width: 30px; }
+.ox-btn--round { border-radius: var(--omnix-radius-full); }
+.ox-btn--block { width: 100%; }
+
+/* ---------- Form (CONTROL_CLASS) ---------- */
+.ox-field { display: flex; flex-direction: column; gap: var(--omnix-space-1); }
+.ox-label { font-size: var(--omnix-text-xs); font-weight: 500; color: var(--omnix-fg-muted); }
+.ox-label--required::after { content: " *"; color: var(--omnix-danger-fg); }
+.ox-control { width: 100%; height: var(--omnix-control-h); padding: 0 var(--omnix-space-3); border-radius: var(--omnix-radius-lg); border: 1px solid var(--omnix-border); background: var(--omnix-surface); color: var(--omnix-fg); font: inherit; }
+.ox-control::placeholder { color: var(--omnix-fg-muted); }
+.ox-control:focus-visible { outline: 2px solid var(--omnix-accent); outline-offset: 0; border-color: var(--omnix-accent); }
+.ox-control[aria-invalid="true"] { border-color: var(--omnix-danger-fg); }
+textarea.ox-control { height: auto; min-height: 88px; padding: var(--omnix-space-2) var(--omnix-space-3); resize: vertical; }
+select.ox-control { appearance: none; padding-right: var(--omnix-space-8); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235b6472'%3E%3Cpath d='M16.293 9.293 12 13.586 7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px; }
+.ox-help { font-size: var(--omnix-text-xs); color: var(--omnix-fg-muted); }
+.ox-error { font-size: var(--omnix-text-xs); color: var(--omnix-danger-fg); }
+.ox-toggle { position: relative; display: inline-flex; align-items: center; gap: var(--omnix-space-2); cursor: pointer; }
+.ox-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+.ox-toggle__track { width: 36px; height: 20px; border-radius: var(--omnix-radius-full); background: var(--omnix-border); position: relative; transition: background .15s; }
+.ox-toggle__track::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: var(--omnix-radius-full); background: var(--omnix-surface); transition: transform .15s; }
+.ox-toggle input:checked + .ox-toggle__track { background: var(--omnix-accent); }
+.ox-toggle input:checked + .ox-toggle__track::after { transform: translateX(16px); }
+.ox-toggle input:focus-visible + .ox-toggle__track { outline: 2px solid var(--omnix-accent); outline-offset: 2px; }
+.ox-check { display: inline-flex; align-items: center; gap: var(--omnix-space-2); cursor: pointer; }
+.ox-check input { width: 16px; height: 16px; accent-color: var(--omnix-accent); margin: 0; }
+
+/* ---------- Table ---------- */
+.ox-table-wrap { overflow-x: auto; border: 1px solid var(--omnix-border); border-radius: var(--omnix-radius-lg); background: var(--omnix-surface); }
+.ox-table { width: 100%; border-collapse: collapse; }
+.ox-table th { text-align: left; font-size: var(--omnix-text-xs); font-weight: 500; color: var(--omnix-fg-muted); padding: var(--omnix-space-2) var(--omnix-space-3); background: var(--omnix-surface-2); border-bottom: 1px solid var(--omnix-border); }
+.ox-table td { padding: var(--omnix-space-3); border-bottom: 1px solid var(--omnix-border); vertical-align: top; }
+.ox-table tr:last-child td { border-bottom: 0; }
+.ox-table th.is-num, .ox-table td.is-num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ---------- Alert / Modal / Empty ---------- */
+.ox-alert { display: flex; gap: var(--omnix-space-2); padding: var(--omnix-space-3) var(--omnix-space-4); border-radius: var(--omnix-radius-lg); border: 1px solid var(--omnix-border); background: var(--omnix-surface-2); }
+.ox-alert--success { background: var(--omnix-success-bg); color: var(--omnix-success-fg); border-color: transparent; }
+.ox-alert--warning { background: var(--omnix-warning-bg); color: var(--omnix-warning-fg); border-color: transparent; }
+.ox-alert--danger { background: var(--omnix-danger-bg); color: var(--omnix-danger-fg); border-color: transparent; }
+.ox-alert--info { background: var(--omnix-info-bg); color: var(--omnix-info-fg); border-color: transparent; }
+.ox-modal-mask { position: fixed; inset: 0; background: rgb(0 0 0 / .45); display: grid; place-items: center; padding: var(--omnix-space-4); z-index: 50; }
+.ox-modal { width: min(520px, 100%); background: var(--omnix-surface); border: 1px solid var(--omnix-border); border-radius: var(--omnix-radius-xl); display: flex; flex-direction: column; }
+.ox-modal__head { padding: var(--omnix-space-4); border-bottom: 1px solid var(--omnix-border); font-weight: 600; }
+.ox-modal__body { padding: var(--omnix-space-4); display: flex; flex-direction: column; gap: var(--omnix-space-3); }
+.ox-modal__foot { padding: var(--omnix-space-3) var(--omnix-space-4); border-top: 1px solid var(--omnix-border); display: flex; justify-content: flex-end; gap: var(--omnix-space-2); }
+.ox-empty { display: flex; flex-direction: column; align-items: center; gap: var(--omnix-space-3); padding: var(--omnix-space-8) var(--omnix-space-4); text-align: center; color: var(--omnix-fg-muted); border: 1px dashed var(--omnix-border); border-radius: var(--omnix-radius-lg); }
+.ox-empty__title { color: var(--omnix-fg); font-weight: 600; }
+
+/* ---------- Steps (สำหรับคู่มือ/ลำดับขั้น) ---------- */
+.ox-steps { display: flex; flex-direction: column; gap: var(--omnix-space-4); counter-reset: step; }
+.ox-step { display: grid; grid-template-columns: 32px 1fr; gap: var(--omnix-space-3); }
+.ox-step::before { counter-increment: step; content: counter(step); display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--omnix-radius-full); background: var(--omnix-accent-soft); color: var(--omnix-accent); font-weight: 600; font-size: var(--omnix-text-xs); }
+.ox-step__title { font-weight: 600; margin-bottom: var(--omnix-space-1); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 767px) {
+  .ox-shell { flex-direction: column; }
+  .ox-sidebar { width: auto; border-right: 0; border-bottom: 1px solid var(--omnix-border); flex-direction: row; flex-wrap: wrap; }
+  .ox-main__inner { padding: var(--omnix-space-4); }
+  .ox-table-wrap { border-radius: var(--omnix-radius-lg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+/* =====================================================================
+   Dashboard / BI  — มาตรฐานเดียวกันทุก dashboard
+   ลำดับหน้า: filter-bar → kpi-grid → chart (หลัก) → chart-grid → table
+   ===================================================================== */
+:root {
+  /* series ในกราฟ — ลำดับตายตัว ห้ามสลับ ห้ามเลือกสีเอง (ผ่านการตรวจตาบอดสีแล้ว) */
+  --omnix-chart-1: #5b5bd6;
+  --omnix-chart-2: #0e9f8f;
+  --omnix-chart-3: #d97706;
+  --omnix-chart-4: #db2777;
+  --omnix-chart-5: #2563eb;
+  --omnix-chart-other: #94a3b8;
+  --omnix-chart-grid: #e6e9ee;
+  --omnix-chart-axis: #5b6472;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not(.light) {
+    --omnix-chart-1: #7c7ce8; --omnix-chart-2: #0d9488; --omnix-chart-3: #d97706;
+    --omnix-chart-4: #ec4899; --omnix-chart-5: #3b82f6; --omnix-chart-other: #64748b;
+    --omnix-chart-grid: #232a35; --omnix-chart-axis: #98a2b1;
+  }
+}
+:root[data-theme="dark"], :root.dark {
+  --omnix-chart-1: #7c7ce8; --omnix-chart-2: #0d9488; --omnix-chart-3: #d97706;
+  --omnix-chart-4: #ec4899; --omnix-chart-5: #3b82f6; --omnix-chart-other: #64748b;
+  --omnix-chart-grid: #232a35; --omnix-chart-axis: #98a2b1;
+}
+
+/* แถวตัวกรอง — แถวเดียว อยู่บนสุดเสมอ */
+.ox-filter-bar { display: flex; align-items: center; gap: var(--omnix-space-2); flex-wrap: wrap; padding: var(--omnix-space-3); background: var(--omnix-surface); border: 1px solid var(--omnix-border); border-radius: var(--omnix-radius-lg); }
+.ox-filter-bar .ox-control { width: auto; min-width: 160px; }
+.ox-filter-bar__spacer { flex: 1; }
+.ox-filter-bar__meta { font-size: var(--omnix-text-xs); color: var(--omnix-fg-muted); }
+.ox-segment { display: inline-flex; padding: 2px; background: var(--omnix-surface-2); border-radius: var(--omnix-radius-lg); }
+.ox-segment button { height: 28px; padding: 0 var(--omnix-space-3); border: 0; border-radius: 6px; background: transparent; color: var(--omnix-fg-muted); font: inherit; font-weight: 500; cursor: pointer; }
+.ox-segment button.is-active { background: var(--omnix-surface); color: var(--omnix-fg); box-shadow: inset 0 0 0 1px var(--omnix-border); }
+
+/* KPI — 2/4 คอลัมน์ ค่าเดียว + เดลต้าเทียบช่วงก่อน */
+.ox-kpi-grid { display: grid; gap: var(--omnix-space-4); grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 1024px) { .ox-kpi-grid { grid-template-columns: repeat(4, 1fr); } }
+.ox-kpi { display: flex; flex-direction: column; gap: var(--omnix-space-1); padding: var(--omnix-space-4); background: var(--omnix-surface); border: 1px solid var(--omnix-border); border-radius: var(--omnix-radius-lg); min-width: 0; }
+.ox-kpi__label { font-size: var(--omnix-text-xs); font-weight: 500; color: var(--omnix-fg-muted); letter-spacing: .02em; }
+.ox-kpi__value { font-size: var(--omnix-text-2xl); font-weight: 600; line-height: 1.15; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ox-kpi__delta { display: inline-flex; align-items: center; gap: var(--omnix-space-1); font-size: var(--omnix-text-xs); font-variant-numeric: tabular-nums; color: var(--omnix-fg-muted); }
+.ox-kpi__delta.is-up { color: var(--omnix-success-fg); }
+.ox-kpi__delta.is-down { color: var(--omnix-danger-fg); }
+.ox-kpi__delta .ox-ico { width: 12px; height: 12px; }
+.ox-kpi__spark { height: 32px; margin-top: var(--omnix-space-1); color: var(--omnix-chart-1); }
+.ox-kpi__spark svg { width: 100%; height: 100%; display: block; overflow: visible; }
+
+/* กราฟ — การ์ดสูงคงที่ หัว + คำอธิบาย + พื้นที่วาด */
+.ox-chart-grid { display: grid; gap: var(--omnix-space-4); grid-template-columns: 1fr; }
+@media (min-width: 1024px) { .ox-chart-grid { grid-template-columns: repeat(2, 1fr); } .ox-chart-grid > .is-wide { grid-column: 1 / -1; } }
+.ox-chart { display: flex; flex-direction: column; background: var(--omnix-surface); border: 1px solid var(--omnix-border); border-radius: var(--omnix-radius-lg); min-width: 0; }
+.ox-chart__head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--omnix-space-3); padding: var(--omnix-space-4) var(--omnix-space-4) 0; }
+.ox-chart__title { font-weight: 600; }
+.ox-chart__sub { font-size: var(--omnix-text-xs); color: var(--omnix-fg-muted); }
+.ox-chart__body { position: relative; flex: 1; padding: var(--omnix-space-3) var(--omnix-space-4) var(--omnix-space-4); min-height: 0; }
+.ox-chart__canvas { position: relative; height: 260px; }
+.ox-chart--tall .ox-chart__canvas { height: 340px; }
+.ox-chart__foot { padding: 0 var(--omnix-space-4) var(--omnix-space-3); font-size: var(--omnix-text-xs); color: var(--omnix-fg-muted); }
+.ox-legend { display: flex; flex-wrap: wrap; gap: var(--omnix-space-3); font-size: var(--omnix-text-xs); color: var(--omnix-fg-muted); }
+.ox-legend__item { display: inline-flex; align-items: center; gap: var(--omnix-space-1); }
+.ox-legend__swatch { width: 10px; height: 10px; border-radius: 2px; background: var(--c, var(--omnix-chart-1)); }
+
+/* สถานะโหลด/ว่างในการ์ดกราฟ */
+.ox-skeleton { background: linear-gradient(90deg, var(--omnix-surface-2) 25%, var(--omnix-border) 50%, var(--omnix-surface-2) 75%); background-size: 200% 100%; animation: ox-shimmer 1.2s linear infinite; border-radius: var(--omnix-radius-lg); }
+@keyframes ox-shimmer { to { background-position: -200% 0; } }
+.ox-chart__empty { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; color: var(--omnix-fg-muted); font-size: var(--omnix-text-xs); padding: var(--omnix-space-4); }
+
+/* ตารางรายละเอียดใต้กราฟ — แถวบางกว่าตารางจัดการ */
+.ox-table--data td { padding: var(--omnix-space-2) var(--omnix-space-3); }
+.ox-table--data .ox-bar { display: inline-block; height: 6px; border-radius: 3px; background: var(--omnix-chart-1); vertical-align: middle; }
+.ox-ico { width: 14px; height: 14px; fill: currentColor; }
+
+
+/* ---- CSS เฉพาะหน้า (อ้าง token เท่านั้น) ---- */
+.ox-main__inner > * + * { margin-top: var(--omnix-space-5); }
+.sch-date-inputs { display: inline-flex; align-items: center; gap: var(--omnix-space-1); }
+.ox-filter-bar .sch-date-inputs .ox-control { min-width: 0; width: 140px; }
+.sch-search { flex: 1; min-width: 220px; }
+.ox-filter-bar .sch-search .ox-control { width: 100%; }
+.sch-card { border: 1px solid var(--omnix-border); border-radius: var(--omnix-radius-lg); background: var(--omnix-surface); }
+.sch-card .ox-table-wrap { border: 0; border-top: 1px solid var(--omnix-border); border-radius: 0; }
+.sch-table-head { display: flex; align-items: center; justify-content: space-between; gap: var(--omnix-space-3); flex-wrap: wrap; padding: var(--omnix-space-4) var(--omnix-space-4) var(--omnix-space-3); }
+.sch-table-head h2 { font-size: var(--omnix-text-sm); font-weight: 600; }
+.sch-table-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--omnix-space-3); flex-wrap: wrap; padding: var(--omnix-space-3) var(--omnix-space-4); border-top: 1px solid var(--omnix-border); font-size: var(--omnix-text-xs); color: var(--omnix-fg-muted); }
+.ox-table td { vertical-align: middle; }
+.ox-table .is-caption { min-width: 280px; max-width: 480px; }
+.ox-table .is-nowrap { white-space: nowrap; }
+.sch-channels { display: inline-flex; gap: var(--omnix-space-1); flex-wrap: nowrap; }
+.sch-channels .ox-badge { padding: 1px 6px; }
+.sch-channels .is-off { opacity: .45; text-decoration: line-through; }
+.sch-empty-row td { padding: 0 !important; }
+.sch-empty-row .ox-empty { border: 0; border-radius: 0; }
+.sch-toast { position: fixed; right: var(--omnix-space-5); bottom: var(--omnix-space-5); z-index: 60; }
+.sch-toast[hidden] { display: none; }
+.ox-btn .ox-ico { width: 14px; height: 14px; }
+.sch-inline-btn { display: inline-flex; align-items: center; gap: var(--omnix-space-1); }
+.sch-kpi-skel { height: 28px; width: 60%; }
+.sch-chart-skel { position: absolute; inset: 0; }
+.ox-legend__swatch.is-status { border-radius: var(--omnix-radius-full); }
+@media (max-width: 767px) { .sch-toast { left: var(--omnix-space-4); right: var(--omnix-space-4); } .ox-table .is-caption { min-width: 220px; } }
+</style>
+</head>
+<body>
+<div class="ox-app">
+<main class="ox-main"><div class="ox-main__inner">
+
+  <div class="ox-page-head">
+    <div>
+      <h1 class="ox-page-title">Schedule ลงคลิปข้ามช่องทาง — EloopTH &amp; Moov</h1>
+      <p class="ox-muted">ติดตามคลิปที่กำหนดลงในแต่ละวัน และความคืบหน้าการลง TikTok · Facebook · Instagram · YouTube จาก Google Sheet แบบสด</p>
+    </div>
+    <div class="ox-page-head__actions">
+      <button class="ox-btn ox-btn--ghost" id="btn-refresh" type="button">รีเฟรชข้อมูล</button>
+      <button class="ox-btn ox-btn--secondary" id="btn-csv" type="button">ดาวน์โหลด CSV</button>
+    </div>
+  </div>
+
+  <div class="ox-filter-bar" role="group" aria-label="ตัวกรอง">
+    <div class="ox-segment" id="seg-range" role="group" aria-label="ช่วงเวลา">
+      <button type="button" data-preset="7">7 วัน</button>
+      <button type="button" data-preset="30" class="is-active">30 วัน</button>
+      <button type="button" data-preset="90">90 วัน</button>
+      <button type="button" data-preset="month">เดือนนี้</button>
+      <button type="button" data-preset="all">ทั้งหมด</button>
+    </div>
+    <div class="sch-date-inputs">
+      <input type="date" class="ox-control" id="d-start" aria-label="วันเริ่ม">
+      <span class="ox-muted ox-xs">ถึง</span>
+      <input type="date" class="ox-control" id="d-end" aria-label="วันสิ้นสุด">
+    </div>
+    <select id="sel-brand" class="ox-control" aria-label="แบรนด์">
+      <option value="all">ทุกแบรนด์</option><option value="EloopTH">EloopTH</option><option value="Moov">Moov</option>
+    </select>
+    <select id="sel-channel" class="ox-control" aria-label="ช่องทาง">
+      <option value="all">ทุกช่องทาง</option><option value="tiktok">TikTok</option><option value="facebook">Facebook</option><option value="instagram">Instagram</option><option value="youtube">YouTube</option>
+    </select>
+    <select id="sel-status" class="ox-control" aria-label="สถานะ">
+      <option value="all">ทุกสถานะ</option><option value="done">ลงครบทุกช่อง</option><option value="partial">ลงบางช่อง</option><option value="late">เลยกำหนด ยังไม่ลง</option><option value="upcoming">รอถึงกำหนด</option>
+    </select>
+    <span class="ox-filter-bar__spacer"></span>
+    <span class="ox-filter-bar__meta" id="meta">กำลังโหลดข้อมูลจาก Google Sheet…</span>
+  </div>
+
+  <div class="ox-alert ox-alert--danger" id="err" hidden>
+    <span id="err-msg">โหลดข้อมูลไม่สำเร็จ</span>
+    <span class="ox-topbar__spacer"></span>
+    <button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" onclick="loadSheet()">โหลดใหม่</button>
+  </div>
+
+  <div class="ox-kpi-grid">
+    <div class="ox-kpi"><div class="ox-kpi__label">คลิปที่กำหนดลง</div><div class="ox-kpi__value" id="k-total">—</div><div class="ox-kpi__delta" id="d-total">—</div></div>
+    <div class="ox-kpi"><div class="ox-kpi__label">ลงครบทุกช่อง</div><div class="ox-kpi__value" id="k-done">—</div><div class="ox-kpi__delta" id="d-done">—</div></div>
+    <div class="ox-kpi"><div class="ox-kpi__label">เลยกำหนด ยังลงไม่ครบ</div><div class="ox-kpi__value" id="k-late">—</div><div class="ox-kpi__delta" id="d-late">—</div></div>
+    <div class="ox-kpi"><div class="ox-kpi__label">อัตราลงครบ (ถึงกำหนดแล้ว)</div><div class="ox-kpi__value" id="k-rate">—</div><div class="ox-kpi__delta" id="d-rate">—</div></div>
+  </div>
+
+  <div class="ox-chart is-wide">
+    <div class="ox-chart__head">
+      <div><div class="ox-chart__title">คลิปที่กำหนดลงตามช่วงเวลา</div><div class="ox-chart__sub" id="sub-trend">—</div></div>
+      <div class="ox-legend" id="lg-trend"></div>
+    </div>
+    <div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-trend" role="img" aria-label="กราฟเส้นจำนวนคลิปที่กำหนดลง แยกแบรนด์"></canvas></div></div>
+  </div>
+
+  <div class="ox-chart-grid">
+    <div class="ox-chart">
+      <div class="ox-chart__head"><div><div class="ox-chart__title">ลงแล้วต่อช่องทาง</div><div class="ox-chart__sub">จำนวนคลิปที่ติ๊กว่าลงแล้วในช่วงที่เลือก</div></div><div class="ox-legend" id="lg-channel"></div></div>
+      <div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-channel" role="img" aria-label="กราฟแท่งจำนวนคลิปที่ลงแล้วต่อช่องทาง แยกแบรนด์"></canvas></div></div>
+    </div>
+    <div class="ox-chart">
+      <div class="ox-chart__head"><div><div class="ox-chart__title">สัดส่วนสถานะการลง</div><div class="ox-chart__sub">รวมทั้งช่วงที่เลือก</div></div><div class="ox-legend" id="lg-status"></div></div>
+      <div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-status" role="img" aria-label="กราฟโดนัทสัดส่วนสถานะการลงคลิป"></canvas></div></div>
+    </div>
+  </div>
+
+  <div class="sch-card">
+    <div class="sch-table-head">
+      <h2>รายการคลิป <span class="ox-badge ox-badge--accent ox-num" id="count">0</span></h2>
+      <label class="ox-xs ox-muted">แสดงต่อหน้า
+        <select id="pagesize" class="ox-control" style="height:28px;display:inline-block;width:auto;min-width:0"><option value="20">20</option><option value="50" selected>50</option><option value="100">100</option></select>
+      </label>
+      <div class="sch-search"><input type="search" id="search" class="ox-control" placeholder="ค้นหาใน Caption หรือชื่อไฟล์ เช่น EW31, ฟิล์ม, iPhone"></div>
+    </div>
+    <div class="ox-table-wrap">
+      <table class="ox-table ox-table--data">
+        <thead><tr><th class="is-num">#</th><th>วันที่ลง</th><th>แบรนด์</th><th class="is-caption">Caption</th><th>ช่องทาง</th><th>สถานะ</th><th>CS Shopee</th><th>Affiliate</th><th>ไฟล์</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div class="sch-table-foot">
+      <span id="pageinfo">—</span>
+      <span class="ox-row"><button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" id="prev">ก่อนหน้า</button><button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" id="next">ถัดไป</button></span>
+    </div>
+  </div>
+
+</div></main>
+</div>
+
+<div class="sch-toast ox-alert ox-alert--success" id="toast" role="status" hidden><span id="toast-msg"></span></div>
+
+<script>
+/* ===== 0. แหล่งข้อมูล — Google Sheet อ่านสดผ่าน gviz (JSONP) =====
+   ชีตต้องแชร์แบบ "ทุกคนที่มีลิงก์ดูได้" · Google cache ~5 นาที
+   คอลัมน์ (ตามตัวอักษรในชีต) แก้ตรงนี้ที่เดียวถ้าชีตย้ายคอลัมน์ */
+const SHEET = {
+  id: '1dZzx7S61sfqQrGQ9c1EkNgYVtSA4f-TZAHQQHSnL3rs',
+  gid: '1803741545',
+  col: { shop: 'A', date: 'B', time: 'C', caption: 'D', path: 'E', tiktok: 'F', facebook: 'G', instagram: 'H', youtube: 'I', status: 'J', csShopee: 'K', affiliate: 'L' }
+};
+const CHANNELS = [['tiktok', 'TikTok'], ['facebook', 'Facebook'], ['instagram', 'Instagram'], ['youtube', 'YouTube']];
+const BRANDS = ['EloopTH', 'Moov'];
+const BRAND_LABEL = { EloopTH: 'Eloop', Moov: 'Moov' };
+
+/* ===== 1. วันที่ / ตัวเลข ===== */
+const fmtN = new Intl.NumberFormat('th-TH', { maximumFractionDigits: 0 });
+const fmtD = new Intl.DateTimeFormat('th-TH-u-ca-gregory', { day: 'numeric', month: 'short' });
+const fmtDY = new Intl.DateTimeFormat('th-TH-u-ca-gregory', { day: 'numeric', month: 'short', year: 'numeric' });
+const fmtT = new Intl.DateTimeFormat('th-TH-u-ca-gregory', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+const toD = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const thDate = s => s ? fmtDY.format(toD(s)) : '—';
+const addDays = (s, n) => { const d = toD(s); d.setDate(d.getDate() + n); return iso(d); };
+const daysBetween = (a, b) => Math.round((toD(b) - toD(a)) / 864e5) + 1;
+const TODAY = iso(new Date());
+const pct1 = v => v.toFixed(1) + '%';
+
+/* ===== 2. ชิ้นส่วน UI ===== */
+const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const ICO = {
+  up: 'm12 5-7 7 1.4 1.4L11 8.8V19h2V8.8l4.6 4.6L19 12z',
+  down: 'm12 19 7-7-1.4-1.4L13 15.2V5h-2v10.2l-4.6-4.6L5 12z',
+  copy: 'M14 8H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM4 20V10h10l.002 10H4zM20 2H10c-1.1 0-2 .9-2 2v2h2V4h10v10h-2v2h2c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z'
+};
+const ico = n => `<svg class="ox-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="${ICO[n]}"/></svg>`;
+const STATUS = {
+  done:     { label: 'ลงครบทุกช่อง', badge: 'success' },
+  partial:  { label: 'ลงบางช่อง',    badge: 'warning' },
+  late:     { label: 'เลยกำหนด ยังไม่ลง', badge: 'danger' },
+  upcoming: { label: 'รอถึงกำหนด',  badge: 'info' }
+};
+const badgeStatus = s => `<span class="ox-badge ox-badge--${STATUS[s].badge}">${STATUS[s].label}</span>`;
+const badgeBrand = b => `<span class="ox-badge" style="--c:var(--omnix-chart-${b === 'Moov' ? 2 : 1})">${BRAND_LABEL[b] || esc(b)}</span>`;
+const badgeBool = (v, yes) => v ? `<span class="ox-badge ox-badge--success">${yes}</span>` : '<span class="ox-muted">—</span>';
+const channelBadges = r => `<span class="sch-channels">${CHANNELS.map(([k, l]) => `<span class="ox-badge ${r.ch[k] ? 'ox-badge--accent' : 'is-off'}" title="${l}${r.ch[k] ? ' ลงแล้ว' : ' ยังไม่ลง'}">${l.slice(0, 2)}</span>`).join('')}</span>`;
+const highlight = (text, q) => q ? esc(text).replace(new RegExp(`(${escRe(esc(q))})`, 'gi'), '<mark style="background:var(--omnix-accent-soft);color:var(--omnix-accent);border-radius:3px;padding:0 2px">$1</mark>') : esc(text);
+const btnCopy = (val, label, msg) => val ? `<button class="ox-btn ox-btn--secondary ox-btn--sm sch-inline-btn" type="button" data-copy="${esc(val)}" data-msg="${esc(msg)}">${ico('copy')}${label}</button>` : '<span class="ox-muted">—</span>';
+const emptyRow = (title, hint) => `<tr class="sch-empty-row"><td colspan="9"><div class="ox-empty"><div class="ox-empty__title">${title}</div><div class="ox-xs">${hint}</div><button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" onclick="setPreset('all')">ดูทั้งหมด</button></div></td></tr>`;
+function setDelta(el, kind, text){
+  el.className = 'ox-kpi__delta' + (kind === 'up' ? ' is-up' : kind === 'down' ? ' is-down' : '');
+  el.innerHTML = (kind === 'up' ? ico('up') : kind === 'down' ? ico('down') : '') + text;
+}
+let toastTimer;
+function toast(msg){ const t = document.getElementById('toast'); document.getElementById('toast-msg').textContent = msg; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => t.hidden = true, 2500); }
+function copyText(text, msg){
+  const ok = () => toast(msg || 'คัดลอกแล้ว');
+  const fallback = () => { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); ok(); } catch { toast('คัดลอกไม่สำเร็จ'); } ta.remove(); };
+  if (navigator.clipboard) navigator.clipboard.writeText(text).then(ok, fallback); else fallback();
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-copy]'); if (b) copyText(b.dataset.copy, b.dataset.msg); });
+
+/* ===== 3. กราฟ ===== */
+const tok = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const chartColor = i => tok(`--omnix-chart-${i}`) || tok('--omnix-chart-other');
+const brandColor = b => chartColor(b === 'Moov' ? 2 : 1);           // สีตามตัวตน: Eloop = 1, Moov = 2 ทุกกราฟ
+const STATUS_COLOR = { done: '--omnix-success-fg', partial: '--omnix-warning-fg', late: '--omnix-danger-fg', upcoming: '--omnix-chart-other' };
+function oxChartDefaults(){
+  if (!window.Chart) return;
+  Chart.defaults.font.family = tok('--omnix-font'); Chart.defaults.font.size = 12; Chart.defaults.color = tok('--omnix-chart-axis');
+  Chart.defaults.plugins.legend.display = false;
+  Object.assign(Chart.defaults.plugins.tooltip, { backgroundColor: tok('--omnix-surface'), titleColor: tok('--omnix-fg'), bodyColor: tok('--omnix-fg'), borderColor: tok('--omnix-border'), borderWidth: 1, padding: 10, cornerRadius: 8, mode: 'index', intersect: false });
+  Chart.defaults.animation = false; Chart.defaults.maintainAspectRatio = false;
+  Chart.defaults.elements.line.borderWidth = 2; Chart.defaults.elements.line.tension = 0.25;
+  Chart.defaults.elements.point.radius = 0; Chart.defaults.elements.point.hoverRadius = 5; Chart.defaults.elements.point.hoverBorderWidth = 2;
+  Chart.defaults.elements.bar.borderRadius = 4; Chart.defaults.elements.bar.borderSkipped = 'start';
+}
+const gridOpts = () => ({ color: tok('--omnix-chart-grid'), drawTicks: false });
+const noGrid = { display: false };
+const charts = {};
+function legend(el, items){ el.innerHTML = items.map(([n, c, round]) => `<span class="ox-legend__item"><span class="ox-legend__swatch ${round ? 'is-status' : ''}" style="--c:${c}"></span>${esc(n)}</span>`).join(''); }
+function chartState(id, kind, label){
+  const cv = document.getElementById(id), wrap = cv.parentElement;
+  wrap.querySelectorAll('.ox-chart__empty, .sch-chart-skel').forEach(e => e.remove());
+  if (kind === 'loading') { const s = document.createElement('div'); s.className = 'ox-skeleton sch-chart-skel'; wrap.appendChild(s); }
+  if (kind === 'empty') { const el = document.createElement('div'); el.className = 'ox-chart__empty'; el.innerHTML = `<div>ไม่มีข้อมูลในช่วง ${label}<br><button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" style="margin-top:8px" onclick="setPreset('all')">ดูทั้งหมด</button></div>`; wrap.appendChild(el); }
+  cv.style.visibility = kind ? 'hidden' : 'visible';
+}
+
+/* ===== 4. โหลดชีต ===== */
+let ROWS = [], LOADED_AT = null, loading = false;
+const S = { preset: '30', start: '', end: '', brand: 'all', channel: 'all', status: 'all', q: '', page: 1, size: 50 };
+function presetRange(p){
+  const t = new Date(); t.setHours(0,0,0,0);
+  if (p === 'month') return [iso(new Date(t.getFullYear(), t.getMonth(), 1)), iso(new Date(t.getFullYear(), t.getMonth() + 1, 0))];
+  if (p === 'all') { const ds = ROWS.map(r => r.date).filter(Boolean).sort(); return ds.length ? [ds[0], ds[ds.length - 1]] : [TODAY, TODAY]; }
+  const n = +p; return [addDays(TODAY, -(n - 1)), TODAY];   // N วันล่าสุด ถึงวันนี้
+}
+function gvDate(v){ const m = /^Date\((\d+),(\d+),(\d+)/.exec(v || ''); return m ? `${m[1]}-${String(+m[2] + 1).padStart(2,'0')}-${m[3].padStart(2,'0')}` : ''; }
+function parseTable(table){
+  const idx = {}; table.cols.forEach((c, i) => idx[c.id] = i);
+  const cell = (r, key) => { const c = r.c[idx[SHEET.col[key]]]; return c == null ? null : c.v; };
+  const fmt = (r, key) => { const c = r.c[idx[SHEET.col[key]]]; return c == null ? '' : (c.f ?? String(c.v ?? '')); };
+  return table.rows.filter(r => cell(r, 'shop')).map((r, i) => {
+    const ch = {}; CHANNELS.forEach(([k]) => ch[k] = cell(r, k) === true);
+    const posted = CHANNELS.filter(([k]) => ch[k]).length;
+    const date = gvDate(cell(r, 'date'));
+    const status = posted === 4 || cell(r, 'status') === 'Done' ? 'done' : posted > 0 ? 'partial' : (date && date < TODAY) ? 'late' : 'upcoming';
+    return { id: i + 1, shop: String(cell(r, 'shop')).trim(), date, time: fmt(r, 'time'), caption: String(cell(r, 'caption') || '').trim(), path: String(cell(r, 'path') || '').trim().replace(/'$/, ''), ch, posted, status, csShopee: cell(r, 'csShopee') === true, affiliate: cell(r, 'affiliate') === true };
+  });
+}
+function loadSheet(){
+  if (loading) return; loading = true;
+  document.getElementById('err').hidden = true;
+  document.getElementById('meta').textContent = 'กำลังโหลดข้อมูลจาก Google Sheet…';
+  ['c-trend', 'c-channel', 'c-status'].forEach(id => chartState(id, 'loading'));
+  ['total', 'done', 'late', 'rate'].forEach(k => { document.getElementById(`k-${k}`).innerHTML = '<span class="ox-skeleton sch-kpi-skel" style="display:inline-block"></span>'; setDelta(document.getElementById(`d-${k}`), '', 'กำลังโหลด…'); });
+  const cb = 'oxSheet_' + Date.now();
+  const script = document.createElement('script');
+  const fail = msg => { loading = false; script.remove(); delete window[cb]; document.getElementById('err').hidden = false; document.getElementById('err-msg').textContent = msg; document.getElementById('meta').textContent = 'โหลดไม่สำเร็จ'; ['c-trend', 'c-channel', 'c-status'].forEach(id => chartState(id, 'empty', 'ที่เลือก')); ['total', 'done', 'late', 'rate'].forEach(k => { document.getElementById(`k-${k}`).textContent = '—'; setDelta(document.getElementById(`d-${k}`), '', 'ไม่มีข้อมูล'); }); };
+  const timer = setTimeout(() => fail('โหลดข้อมูลไม่สำเร็จ — Google Sheet ไม่ตอบกลับภายใน 20 วินาที'), 20000);
+  window[cb] = resp => {
+    clearTimeout(timer); loading = false; script.remove(); delete window[cb];
+    if (!resp || resp.status !== 'ok' || !resp.table) return fail('โหลดข้อมูลไม่สำเร็จ — ชีตตอบกลับผิดรูปแบบ (ตรวจสิทธิ์แชร์ "ทุกคนที่มีลิงก์")');
+    ROWS = parseTable(resp.table); LOADED_AT = new Date();
+    if (S.preset === 'all') [S.start, S.end] = presetRange('all');
+    render();
+  };
+  script.onerror = () => { clearTimeout(timer); fail('โหลดข้อมูลไม่สำเร็จ — เข้าถึง Google Sheet ไม่ได้ (ตรวจอินเทอร์เน็ตหรือสิทธิ์แชร์)'); };
+  script.src = `https://docs.google.com/spreadsheets/d/${SHEET.id}/gviz/tq?tqx=out:json;responseHandler:${cb}&gid=${SHEET.gid}&_=${Date.now()}`;
+  document.head.appendChild(script);
+}
+
+/* ===== 5. เรนเดอร์ ===== */
+const matchDim = r => (S.brand === 'all' || r.shop === S.brand) && (S.channel === 'all' || r.ch[S.channel]);
+function render(){
+  document.getElementById('d-start').value = S.start; document.getElementById('d-end').value = S.end;
+  document.querySelectorAll('#seg-range button').forEach(b => b.classList.toggle('is-active', b.dataset.preset === S.preset));
+  document.getElementById('sel-brand').value = S.brand; document.getElementById('sel-channel').value = S.channel; document.getElementById('sel-status').value = S.status;
+  document.getElementById('meta').textContent = `อัปเดตล่าสุด ${LOADED_AT ? fmtT.format(LOADED_AT) : '—'} · แหล่งข้อมูล: Google Sheet (Schedule) · ${fmtN.format(ROWS.length)} แถว`;
+
+  const len = daysBetween(S.start, S.end), rangeLabel = `${fmtD.format(toD(S.start))} – ${fmtDY.format(toD(S.end))}`;
+  const inRange = (r, s, e) => r.date && r.date >= s && r.date <= e;
+  const cur = ROWS.filter(r => inRange(r, S.start, S.end) && matchDim(r));
+  const pEnd = addDays(S.start, -1), pStart = addDays(pEnd, -(len - 1));
+  const prev = ROWS.filter(r => inRange(r, pStart, pEnd) && matchDim(r));
+
+  /* KPI */
+  const due = cur.filter(r => r.date <= TODAY), pDue = prev.filter(r => r.date <= TODAY);
+  const done = cur.filter(r => r.status === 'done').length, pDone = prev.filter(r => r.status === 'done').length;
+  const late = cur.filter(r => r.status === 'late' || (r.status === 'partial' && r.date < TODAY)).length, pLate = prev.filter(r => r.status === 'late' || (r.status === 'partial' && r.date < TODAY)).length;
+  const rate = due.length ? done / due.length * 100 : null, pRate = pDue.length ? pDone / pDue.length * 100 : null;
+  const K = (k, v) => document.getElementById(`k-${k}`).textContent = v, D = k => document.getElementById(`d-${k}`);
+  const cmp = `เทียบ ${len} วันก่อน`;
+  if (cur.length === 0) { ['total', 'done', 'late', 'rate'].forEach(k => { K(k, '—'); setDelta(D(k), '', `ไม่มีข้อมูลในช่วง ${rangeLabel}`); }); }
+  else {
+    K('total', fmtN.format(cur.length)); { const d = cur.length - prev.length; setDelta(D('total'), d > 0 ? 'up' : d < 0 ? 'down' : '', `${d > 0 ? '+' : ''}${d} ${cmp} (${prev.length})`); }
+    K('done', fmtN.format(done)); { const d = done - pDone; setDelta(D('done'), d > 0 ? 'up' : d < 0 ? 'down' : '', `${d > 0 ? '+' : ''}${d} ${cmp} (${pDone})`); }
+    K('late', fmtN.format(late)); { const d = late - pLate; setDelta(D('late'), d < 0 ? 'up' : d > 0 ? 'down' : '', `${d > 0 ? '+' : ''}${d} ${cmp} (${pLate}) — ลดลงคือดี`); }
+    K('rate', rate == null ? '—' : pct1(rate)); { if (rate == null) setDelta(D('rate'), '', 'ยังไม่มีคลิปถึงกำหนดในช่วงนี้'); else if (pRate == null) setDelta(D('rate'), '', `ลงครบ ${done} จาก ${due.length} คลิปที่ถึงกำหนด`); else { const d = rate - pRate; setDelta(D('rate'), d > 0 ? 'up' : d < 0 ? 'down' : '', `${d > 0 ? '+' : ''}${d.toFixed(1)} จุด ${cmp} (${pct1(pRate)})`); } }
+  }
+
+  /* กราฟหลัก: เส้น จำนวนคลิปที่กำหนดลง แยกแบรนด์ (รายวัน ≤ 31 วัน · ไม่งั้นรายสัปดาห์) */
+  oxChartDefaults(); Object.values(charts).forEach(c => c.destroy());
+  const daily = len <= 31;
+  const keyOf = s => { if (daily) return s; const d = toD(s); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return iso(d); };
+  const buckets = []; for (let s = keyOf(S.start); s <= S.end; s = addDays(s, daily ? 1 : 7)) buckets.push(s);
+  const actBrands = BRANDS.filter(b => S.brand === 'all' || b === S.brand);
+  const counts = {}; cur.forEach(r => { const k = `${r.shop}|${keyOf(r.date)}`; counts[k] = (counts[k] || 0) + 1; });
+  const series = actBrands.map(b => ({ label: BRAND_LABEL[b], data: buckets.map(k => counts[`${b}|${k}`] || 0), borderColor: brandColor(b), backgroundColor: brandColor(b), pointHoverBackgroundColor: brandColor(b), pointHoverBorderColor: tok('--omnix-surface') }));
+  legend(document.getElementById('lg-trend'), series.length > 1 ? series.map(s => [s.label, s.borderColor]) : []);
+  document.getElementById('sub-trend').textContent = `${daily ? 'รายวัน' : 'รายสัปดาห์ (เริ่มวันจันทร์)'} · ${rangeLabel}`;
+  chartState('c-trend', cur.length ? '' : 'empty', rangeLabel);
+  if (window.Chart) charts.trend = new Chart(document.getElementById('c-trend'), { type: 'line', data: { labels: buckets.map(k => fmtD.format(toD(k))), datasets: series },
+    options: { interaction: { mode: 'index', intersect: false }, scales: { x: { grid: noGrid, ticks: { maxTicksLimit: 10, maxRotation: 0 } }, y: { beginAtZero: true, grid: gridOpts(), border: { display: false }, ticks: { precision: 0, maxTicksLimit: 5 } } }, plugins: { tooltip: { callbacks: { label: i => ` ${i.dataset.label}: ${i.parsed.y} คลิป` } } } } });
+
+  /* กราฟรอง 1: แท่งแนวนอน ลงแล้วต่อช่องทาง แยกแบรนด์ */
+  const chData = actBrands.map(b => ({ label: BRAND_LABEL[b], data: CHANNELS.map(([k]) => cur.filter(r => r.shop === b && r.ch[k]).length), backgroundColor: brandColor(b), barThickness: 12 }));
+  legend(document.getElementById('lg-channel'), chData.length > 1 ? chData.map(s => [s.label, s.backgroundColor]) : []);
+  chartState('c-channel', cur.some(r => r.posted > 0) ? '' : 'empty', rangeLabel);
+  if (window.Chart) charts.channel = new Chart(document.getElementById('c-channel'), { type: 'bar', data: { labels: CHANNELS.map(c => c[1]), datasets: chData },
+    options: { indexAxis: 'y', scales: { x: { beginAtZero: true, grid: gridOpts(), border: { display: false }, ticks: { precision: 0, maxTicksLimit: 5 } }, y: { grid: noGrid } }, plugins: { tooltip: { callbacks: { label: i => ` ${i.dataset.label}: ${i.parsed.x} คลิป` } } } } });
+
+  /* กราฟรอง 2: โดนัท สถานะ (สี semantic เพราะเป็นสถานะ) */
+  const stKeys = Object.keys(STATUS).filter(k => cur.some(r => r.status === k));
+  legend(document.getElementById('lg-status'), stKeys.map(k => [STATUS[k].label, tok(STATUS_COLOR[k]), true]));
+  chartState('c-status', stKeys.length ? '' : 'empty', rangeLabel);
+  if (window.Chart) charts.status = new Chart(document.getElementById('c-status'), { type: 'doughnut', data: { labels: stKeys.map(k => STATUS[k].label), datasets: [{ data: stKeys.map(k => cur.filter(r => r.status === k).length), backgroundColor: stKeys.map(k => tok(STATUS_COLOR[k])), borderColor: tok('--omnix-surface'), borderWidth: 2, hoverOffset: 4 }] },
+    options: { cutout: '65%', plugins: { tooltip: { mode: 'nearest', intersect: true, callbacks: { label: i => ` ${i.parsed} คลิป (${pct1(i.parsed / cur.length * 100)})` } } } } });
+
+  /* ตาราง */
+  const q = S.q.toLowerCase();
+  const rows = cur.filter(r => (S.status === 'all' || r.status === S.status) && (!q || `${r.caption} ${r.path}`.toLowerCase().includes(q))).sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id);
+  document.getElementById('count').textContent = fmtN.format(rows.length);
+  const pages = Math.max(1, Math.ceil(rows.length / S.size)); S.page = Math.min(Math.max(1, S.page), pages);
+  const off = (S.page - 1) * S.size, pageRows = rows.slice(off, off + S.size);
+  document.getElementById('rows').innerHTML = pageRows.length === 0 ? emptyRow(`ไม่พบคลิปในช่วง ${rangeLabel}`, 'ลองขยายช่วงเวลา เปลี่ยนแบรนด์/ช่องทาง/สถานะ หรือพิมพ์คำอื่น') : pageRows.map((r, i) => `<tr>
+    <td class="is-num ox-muted">${off + i + 1}</td><td class="ox-num is-nowrap">${thDate(r.date)}${r.time ? `<div class="ox-xs ox-muted">${esc(r.time.slice(0, 5))}</div>` : ''}</td><td>${badgeBrand(r.shop)}</td>
+    <td class="is-caption"><div class="line-clamp-2" title="${esc(r.caption)}">${highlight(r.caption || '—', S.q)}</div></td>
+    <td class="is-nowrap">${channelBadges(r)} <span class="ox-num ox-xs ox-muted">${r.posted}/4</span></td><td class="is-nowrap">${badgeStatus(r.status)}</td>
+    <td>${badgeBool(r.csShopee, 'ทำแล้ว')}</td><td>${badgeBool(r.affiliate, 'มีลิงก์')}</td><td class="is-nowrap">${btnCopy(r.path, 'คัดลอก Path', 'คัดลอกที่อยู่ไฟล์แล้ว')}</td></tr>`).join('');
+  document.getElementById('pageinfo').textContent = rows.length ? `แสดง ${off + 1}–${Math.min(off + S.size, rows.length)} จาก ${fmtN.format(rows.length)} รายการ` : 'ไม่มีรายการ';
+  document.getElementById('prev').disabled = S.page <= 1; document.getElementById('next').disabled = S.page >= pages;
+  S.exportRows = rows;
+}
+function setPreset(p){ S.preset = p; [S.start, S.end] = presetRange(p); S.page = 1; render(); }
+
+/* ===== 6. เหตุการณ์ ===== */
+const $ = id => document.getElementById(id), on = (id, ev, fn) => $(id).addEventListener(ev, fn);
+$('seg-range').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setPreset(b.dataset.preset); });
+const custom = () => { const s = $('d-start').value, e = $('d-end').value; if (!s || !e || s > e) return; S.preset = 'custom'; S.start = s; S.end = e; S.page = 1; render(); };
+on('d-start', 'change', custom); on('d-end', 'change', custom);
+['brand', 'channel', 'status'].forEach(k => on(`sel-${k}`, 'change', e => { S[k] = e.target.value; S.page = 1; render(); }));
+on('search', 'input', e => { S.q = e.target.value.trim(); S.page = 1; render(); });
+on('pagesize', 'change', e => { S.size = +e.target.value; S.page = 1; render(); });
+on('prev', 'click', () => { S.page--; render(); }); on('next', 'click', () => { S.page++; render(); });
+on('btn-refresh', 'click', loadSheet);
+on('btn-csv', 'click', () => {
+  const rows = S.exportRows || [];
+  const head = ['วันที่', 'เวลา', 'แบรนด์', 'Caption', 'TikTok', 'Facebook', 'Instagram', 'YouTube', 'สถานะ', 'CS Shopee', 'Affiliate', 'Path'];
+  const line = r => [r.date, r.time, r.shop, r.caption, ...CHANNELS.map(([k]) => r.ch[k] ? 'ลงแล้ว' : ''), STATUS[r.status].label, r.csShopee ? 'ทำแล้ว' : '', r.affiliate ? 'มี' : '', r.path];
+  const csv = [head, ...rows.map(line)].map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+  const a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8,﻿' + encodeURIComponent(csv); a.download = `schedule-${S.start}_${S.end}.csv`; a.click();
+});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => ROWS.length && render());
+
+/* ===== 7. เริ่มต้น ===== */
+[S.start, S.end] = presetRange('30');
+loadSheet();
+</script>
+</body>
+</html>

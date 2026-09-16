@@ -1,0 +1,1014 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Content SVDO 2026</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Noto+Sans+Thai:wght@400;500;600&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="data_sheet.js"></script><!-- snapshot ครบทุกแถว สร้างด้วย update_data.sh (ไม่มีไฟล์ก็ได้) -->
+<style>
+/* OMNIX Design System — standalone CSS (derived from DESIGN-SYSTEM.md)
+   ใช้กับ artifact / HTML เดี่ยว / โปรเจกต์ที่ไม่ใช่ Tailwind
+   ในโปรเจกต์ OMNIX จริง token อยู่ที่ src/index.css และคอมโพเนนต์อยู่ที่ src/components/ui.tsx */
+
+:root {
+  --omnix-bg: #f5f6f8;
+  --omnix-surface: #ffffff;
+  --omnix-surface-2: #eef1f5;
+  --omnix-border: #dfe3e9;
+  --omnix-fg: #131820;
+  --omnix-fg-muted: #5b6472;
+  --omnix-accent: #5b5bd6;
+  --omnix-accent-soft: #e8e8fb;
+
+  /* semantic — คู่ละสองค่า (พื้น / ตัวอักษร) ตามข้อเสนอในเอกสาร */
+  --omnix-success-fg: #059669;
+  --omnix-success-bg: #d1fae5;
+  --omnix-warning-fg: #d97706;
+  --omnix-warning-bg: #fef3c7;
+  --omnix-danger-fg: #dc2626;
+  --omnix-danger-bg: #fee2e2;
+  --omnix-info-fg: #2563eb;
+  --omnix-info-bg: #dbeafe;
+
+  --omnix-font: "Inter", "IBM Plex Sans Thai", "Noto Sans Thai", "Noto Sans SC", system-ui, sans-serif;
+  --omnix-text-xs: 12px;
+  --omnix-text-sm: 14px;
+  --omnix-text-base: 16px;
+  --omnix-text-lg: 18px;
+  --omnix-text-2xl: 24px;
+
+  --omnix-space-1: 4px;
+  --omnix-space-2: 8px;
+  --omnix-space-3: 12px;
+  --omnix-space-4: 16px;
+  --omnix-space-5: 20px;
+  --omnix-space-6: 24px;
+  --omnix-space-8: 32px;
+
+  --omnix-radius-lg: 8px;
+  --omnix-radius-xl: 12px;
+  --omnix-radius-2xl: 16px;
+  --omnix-radius-full: 9999px;
+
+  --omnix-sidebar-w: 240px;
+  --omnix-control-h: 36px;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not(.light) {
+    --omnix-bg: #0d1117;
+    --omnix-surface: #161b22;
+    --omnix-surface-2: #1d242e;
+    --omnix-border: #2b323d;
+    --omnix-fg: #e7ebf1;
+    --omnix-fg-muted: #98a2b1;
+    --omnix-accent: #8b8bf0;
+    --omnix-accent-soft: #23244a;
+    --omnix-success-fg: #34d399;
+    --omnix-success-bg: #064e3b;
+    --omnix-warning-fg: #fbbf24;
+    --omnix-warning-bg: #451a03;
+    --omnix-danger-fg: #f87171;
+    --omnix-danger-bg: #450a0a;
+    --omnix-info-fg: #60a5fa;
+    --omnix-info-bg: #172554;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"],
+:root.dark {
+  --omnix-bg: #0d1117;
+  --omnix-surface: #161b22;
+  --omnix-surface-2: #1d242e;
+  --omnix-border: #2b323d;
+  --omnix-fg: #e7ebf1;
+  --omnix-fg-muted: #98a2b1;
+  --omnix-accent: #8b8bf0;
+  --omnix-accent-soft: #23244a;
+  --omnix-success-fg: #34d399;
+  --omnix-success-bg: #064e3b;
+  --omnix-warning-fg: #fbbf24;
+  --omnix-warning-bg: #451a03;
+  --omnix-danger-fg: #f87171;
+  --omnix-danger-bg: #450a0a;
+  --omnix-info-fg: #60a5fa;
+  --omnix-info-bg: #172554;
+  color-scheme: dark;
+}
+
+/* ---------- base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--omnix-bg);
+  color: var(--omnix-fg);
+  font-family: var(--omnix-font);
+  font-size: var(--omnix-text-sm);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+.ox-app { min-height: 100vh; background: var(--omnix-bg); color: var(--omnix-fg); font-family: var(--omnix-font); font-size: var(--omnix-text-sm); }
+.ox-scope { color: var(--omnix-fg); font-family: var(--omnix-font); font-size: var(--omnix-text-sm); }
+a { color: var(--omnix-accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1, h2, h3, h4 { margin: 0; font-weight: 600; line-height: 1.25; text-wrap: balance; }
+p { margin: 0; }
+code, pre, kbd { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.92em; }
+pre { background: var(--omnix-surface-2); border: 1px solid var(--omnix-border); border-radius: var(--omnix-radius-lg); padding: var(--omnix-space-3) var(--omnix-space-4); overflow-x: auto; }
+code:not(pre code) { background: var(--omnix-surface-2); border-radius: var(--omnix-space-1); padding: 1px 5px; }
+svg { display: inline-block; vertical-align: middle; }
+
+/* โฟกัส — กฎ global ห้ามลบโดยไม่มีตัวแทน (WCAG 2.2: ≥2px, 3:1) */
+:focus-visible { outline: 2px solid var(--omnix-accent); outline-offset: 2px; }
+.focus-delegated:focus-visible { outline: none; }
+.focus-delegated:focus-visible + *, :has(> .focus-delegated:focus-visible) { outline: 2px solid var(--omnix-accent); outline-offset: 2px; }
+
+/* ---------- typography ---------- */
+.ox-page-title { font-size: var(--omnix-text-2xl); font-weight: 600; }
+.ox-h2 { font-size: var(--omnix-text-lg); font-weight: 600; }
+.ox-muted { color: var(--omnix-fg-muted); }
+.ox-xs { font-size: var(--omnix-text-xs); }
+.ox-label-caps { font-size: var(--omnix-text-xs); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--omnix-fg-muted); }
+.ox-num { font-variant-numeric: tabular-nums; }
+.line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* ---------- layout ---------- */
+.ox-topbar { display: flex; align-items: center; gap: var(--omnix-space-3); height: 52px; padding: 0 var(--omnix-space-4); background: var(--omnix-surface); border-bottom: 1px solid var(--omnix-border); }
+.ox-topbar__spacer { flex: 1; }
+.ox-brand { display: flex; align-items: center; gap: var(--omnix-space-2); font-weight: 600; font-size: var(--omnix-text-base); }
+.ox-brand__mark { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: var(--omnix-radius-lg); background: var(--omnix-accent); color: #fff; font-size: var(--omnix-text-xs); font-weight: 600; }
+.ox-shell { display: flex; min-height: calc(100vh - 52px); }
+.ox-sidebar { width: var(--omnix-sidebar-w); flex: 0 0 auto; background: var(--omnix-surface); border-right: 1px solid var(--omnix-border); padding: var(--omnix-space-3); display: flex; flex-direction: column; gap: var(--omnix-space-1); }
+.ox-nav-group__label { padding: var(--omnix-space-3) var(--omnix-space-3) var(--omnix-space-1); }
+.ox-nav-item { display: flex; align-items: center; gap: var(--omnix-space-2); padding: var(--omnix-space-2) var(--omnix-space-3); border-radius: var(--omnix-radius-lg); color: var(--omnix-fg); cursor: pointer; text-decoration: none; }
+.ox-nav-item:hover { background: var(--omnix-surface-2); text-decoration: none; }
+.ox-nav-item.is-active { background: var(--omnix-accent-soft); color: var(--omnix-accent); font-weight: 500; }
+.ox-main { flex: 1; min-width: 0; }
+.ox-main__inner { padding: var(--omnix-space-5); max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: var(--omnix-space-5); }
+.ox-page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--omnix-space-4); flex-wrap: wrap; }
+.ox-page-head__actions { display: flex; gap: var(--omnix-space-2); flex-wrap: wrap; }
+.ox-grid-cards { display: grid; gap: var(--omnix-space-4); grid-template-columns: 1fr; }
+@media (min-width: 640px) { .ox-grid-cards { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1280px) { .ox-grid-cards { grid-template-columns: repeat(3, 1fr); } }
+.ox-stack { display: flex; flex-direction: column; gap: var(--omnix-space-3); }
+.ox-row { display: flex; align-items: center; gap: var(--omnix-space-2); flex-wrap: wrap; }
+.ox-prose { max-width: 68ch; }
+.ox-prose > * + * { margin-top: var(--omnix-space-3); }
+
+/* ---------- Card / SectionTitle ---------- */
+.ox-card { display: flex; flex-direction: column; background: var(--omnix-surface); border: 1px solid var(--omnix-border); border-radius: var(--omnix-radius-lg); }
+.ox-card__body { padding: var(--omnix-space-4); display: flex; flex-direction: column; gap: var(--omnix-space-3); flex: 1; }
+.ox-card__foot { margin-top: auto; padding: var(--omnix-space-3) var(--omnix-space-4); border-top: 1px solid var(--omnix-border); display: flex; gap: var(--omnix-space-2); align-items: center; }
+.ox-section-title { display: flex; align-items: center; justify-content: space-between; gap: var(--omnix-space-3); }
+.ox-section-title h2 { font-size: var(--omnix-text-base); font-weight: 600; }
+.ox-tile-icon { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: var(--omnix-radius-xl); background: var(--omnix-surface-2); color: var(--omnix-accent); }
+
+/* ---------- Badge / chip / dot ---------- */
+.ox-badge { display: inline-flex; align-items: center; gap: var(--omnix-space-1); padding: 2px var(--omnix-space-2); border-radius: var(--omnix-radius-full); font-size: var(--omnix-text-xs); font-weight: 500; line-height: 1.4; background: var(--omnix-surface-2); color: var(--omnix-fg-muted); border: 1px solid var(--omnix-border); }
+.ox-badge--accent { background: var(--omnix-accent-soft); color: var(--omnix-accent); border-color: transparent; }
+.ox-badge--success { background: var(--omnix-success-bg); color: var(--omnix-success-fg); border-color: transparent; }
+.ox-badge--warning { background: var(--omnix-warning-bg); color: var(--omnix-warning-fg); border-color: transparent; }
+.ox-badge--danger { background: var(--omnix-danger-bg); color: var(--omnix-danger-fg); border-color: transparent; }
+.ox-badge--info { background: var(--omnix-info-bg); color: var(--omnix-info-fg); border-color: transparent; }
+.ox-badge[style*="--c"] { background: color-mix(in srgb, var(--c) 15%, transparent); color: var(--c); border-color: transparent; }
+.ox-dot { display: inline-block; width: 8px; height: 8px; border-radius: var(--omnix-radius-full); background: var(--omnix-fg-muted); }
+.ox-dot--success { background: var(--omnix-success-fg); }
+.ox-dot--warning { background: var(--omnix-warning-fg); }
+.ox-dot--danger { background: var(--omnix-danger-fg); }
+.ox-chip { display: inline-flex; align-items: center; gap: var(--omnix-space-1); height: 28px; padding: 0 var(--omnix-space-3); border-radius: var(--omnix-radius-full); border: 1px solid var(--omnix-border); background: var(--omnix-surface); color: var(--omnix-fg); font: inherit; cursor: pointer; }
+.ox-chip.is-active { background: var(--omnix-accent-soft); color: var(--omnix-accent); border-color: transparent; }
+
+/* ---------- Button ---------- */
+.ox-btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--omnix-space-2); height: var(--omnix-control-h); padding: 0 var(--omnix-space-4); border-radius: var(--omnix-radius-lg); border: 1px solid transparent; font: inherit; font-weight: 500; cursor: pointer; white-space: nowrap; transition: background .12s, border-color .12s; }
+.ox-btn:disabled { opacity: .5; cursor: not-allowed; }
+.ox-btn--primary { background: var(--omnix-accent); color: #fff; }
+.ox-btn--primary:hover:not(:disabled) { filter: brightness(1.08); }
+.ox-btn--secondary { background: var(--omnix-surface); color: var(--omnix-fg); border-color: var(--omnix-border); }
+.ox-btn--secondary:hover:not(:disabled) { background: var(--omnix-surface-2); }
+.ox-btn--ghost { background: transparent; color: var(--omnix-fg-muted); }
+.ox-btn--ghost:hover:not(:disabled) { background: var(--omnix-surface-2); color: var(--omnix-fg); }
+.ox-btn--danger { background: transparent; color: var(--omnix-danger-fg); border-color: var(--omnix-danger-fg); }
+.ox-btn--danger:hover:not(:disabled) { background: var(--omnix-danger-bg); }
+.ox-btn--sm { height: 30px; padding: 0 var(--omnix-space-3); font-size: var(--omnix-text-xs); }
+.ox-btn--icon { width: var(--omnix-control-h); padding: 0; }
+.ox-btn--icon.ox-btn--sm { width: 30px; }
+.ox-btn--round { border-radius: var(--omnix-radius-full); }
+.ox-btn--block { width: 100%; }
+
+/* ---------- Form (CONTROL_CLASS) ---------- */
+.ox-field { display: flex; flex-direction: column; gap: var(--omnix-space-1); }
+.ox-label { font-size: var(--omnix-text-xs); font-weight: 500; color: var(--omnix-fg-muted); }
+.ox-label--required::after { content: " *"; color: var(--omnix-danger-fg); }
+.ox-control { width: 100%; height: var(--omnix-control-h); padding: 0 var(--omnix-space-3); border-radius: var(--omnix-radius-lg); border: 1px solid var(--omnix-border); background: var(--omnix-surface); color: var(--omnix-fg); font: inherit; }
+.ox-control::placeholder { color: var(--omnix-fg-muted); }
+.ox-control:focus-visible { outline: 2px solid var(--omnix-accent); outline-offset: 0; border-color: var(--omnix-accent); }
+.ox-control[aria-invalid="true"] { border-color: var(--omnix-danger-fg); }
+textarea.ox-control { height: auto; min-height: 88px; padding: var(--omnix-space-2) var(--omnix-space-3); resize: vertical; }
+select.ox-control { appearance: none; padding-right: var(--omnix-space-8); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235b6472'%3E%3Cpath d='M16.293 9.293 12 13.586 7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px; }
+.ox-help { font-size: var(--omnix-text-xs); color: var(--omnix-fg-muted); }
+.ox-error { font-size: var(--omnix-text-xs); color: var(--omnix-danger-fg); }
+.ox-toggle { position: relative; display: inline-flex; align-items: center; gap: var(--omnix-space-2); cursor: pointer; }
+.ox-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+.ox-toggle__track { width: 36px; height: 20px; border-radius: var(--omnix-radius-full); background: var(--omnix-border); position: relative; transition: background .15s; }
+.ox-toggle__track::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: var(--omnix-radius-full); background: var(--omnix-surface); transition: transform .15s; }
+.ox-toggle input:checked + .ox-toggle__track { background: var(--omnix-accent); }
+.ox-toggle input:checked + .ox-toggle__track::after { transform: translateX(16px); }
+.ox-toggle input:focus-visible + .ox-toggle__track { outline: 2px solid var(--omnix-accent); outline-offset: 2px; }
+.ox-check { display: inline-flex; align-items: center; gap: var(--omnix-space-2); cursor: pointer; }
+.ox-check input { width: 16px; height: 16px; accent-color: var(--omnix-accent); margin: 0; }
+
+/* ---------- Table ---------- */
+.ox-table-wrap { overflow-x: auto; border: 1px solid var(--omnix-border); border-radius: var(--omnix-radius-lg); background: var(--omnix-surface); }
+.ox-table { width: 100%; border-collapse: collapse; }
+.ox-table th { text-align: left; font-size: var(--omnix-text-xs); font-weight: 500; color: var(--omnix-fg-muted); padding: var(--omnix-space-2) var(--omnix-space-3); background: var(--omnix-surface-2); border-bottom: 1px solid var(--omnix-border); }
+.ox-table td { padding: var(--omnix-space-3); border-bottom: 1px solid var(--omnix-border); vertical-align: top; }
+.ox-table tr:last-child td { border-bottom: 0; }
+.ox-table th.is-num, .ox-table td.is-num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ---------- Alert / Modal / Empty ---------- */
+.ox-alert { display: flex; gap: var(--omnix-space-2); padding: var(--omnix-space-3) var(--omnix-space-4); border-radius: var(--omnix-radius-lg); border: 1px solid var(--omnix-border); background: var(--omnix-surface-2); }
+.ox-alert--success { background: var(--omnix-success-bg); color: var(--omnix-success-fg); border-color: transparent; }
+.ox-alert--warning { background: var(--omnix-warning-bg); color: var(--omnix-warning-fg); border-color: transparent; }
+.ox-alert--danger { background: var(--omnix-danger-bg); color: var(--omnix-danger-fg); border-color: transparent; }
+.ox-alert--info { background: var(--omnix-info-bg); color: var(--omnix-info-fg); border-color: transparent; }
+.ox-modal-mask { position: fixed; inset: 0; background: rgb(0 0 0 / .45); display: grid; place-items: center; padding: var(--omnix-space-4); z-index: 50; }
+.ox-modal { width: min(520px, 100%); background: var(--omnix-surface); border: 1px solid var(--omnix-border); border-radius: var(--omnix-radius-xl); display: flex; flex-direction: column; }
+.ox-modal__head { padding: var(--omnix-space-4); border-bottom: 1px solid var(--omnix-border); font-weight: 600; }
+.ox-modal__body { padding: var(--omnix-space-4); display: flex; flex-direction: column; gap: var(--omnix-space-3); }
+.ox-modal__foot { padding: var(--omnix-space-3) var(--omnix-space-4); border-top: 1px solid var(--omnix-border); display: flex; justify-content: flex-end; gap: var(--omnix-space-2); }
+.ox-empty { display: flex; flex-direction: column; align-items: center; gap: var(--omnix-space-3); padding: var(--omnix-space-8) var(--omnix-space-4); text-align: center; color: var(--omnix-fg-muted); border: 1px dashed var(--omnix-border); border-radius: var(--omnix-radius-lg); }
+.ox-empty__title { color: var(--omnix-fg); font-weight: 600; }
+
+/* ---------- Steps (สำหรับคู่มือ/ลำดับขั้น) ---------- */
+.ox-steps { display: flex; flex-direction: column; gap: var(--omnix-space-4); counter-reset: step; }
+.ox-step { display: grid; grid-template-columns: 32px 1fr; gap: var(--omnix-space-3); }
+.ox-step::before { counter-increment: step; content: counter(step); display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--omnix-radius-full); background: var(--omnix-accent-soft); color: var(--omnix-accent); font-weight: 600; font-size: var(--omnix-text-xs); }
+.ox-step__title { font-weight: 600; margin-bottom: var(--omnix-space-1); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 767px) {
+  .ox-shell { flex-direction: column; }
+  .ox-sidebar { width: auto; border-right: 0; border-bottom: 1px solid var(--omnix-border); flex-direction: row; flex-wrap: wrap; }
+  .ox-main__inner { padding: var(--omnix-space-4); }
+  .ox-table-wrap { border-radius: var(--omnix-radius-lg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+/* =====================================================================
+   Dashboard / BI  — มาตรฐานเดียวกันทุก dashboard
+   ลำดับหน้า: filter-bar → kpi-grid → chart (หลัก) → chart-grid → table
+   ===================================================================== */
+:root {
+  /* series ในกราฟ — ลำดับตายตัว ห้ามสลับ ห้ามเลือกสีเอง (ผ่านการตรวจตาบอดสีแล้ว) */
+  --omnix-chart-1: #5b5bd6;
+  --omnix-chart-2: #0e9f8f;
+  --omnix-chart-3: #d97706;
+  --omnix-chart-4: #db2777;
+  --omnix-chart-5: #2563eb;
+  --omnix-chart-other: #94a3b8;
+  --omnix-chart-grid: #e6e9ee;
+  --omnix-chart-axis: #5b6472;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not(.light) {
+    --omnix-chart-1: #7c7ce8; --omnix-chart-2: #0d9488; --omnix-chart-3: #d97706;
+    --omnix-chart-4: #ec4899; --omnix-chart-5: #3b82f6; --omnix-chart-other: #64748b;
+    --omnix-chart-grid: #232a35; --omnix-chart-axis: #98a2b1;
+  }
+}
+:root[data-theme="dark"], :root.dark {
+  --omnix-chart-1: #7c7ce8; --omnix-chart-2: #0d9488; --omnix-chart-3: #d97706;
+  --omnix-chart-4: #ec4899; --omnix-chart-5: #3b82f6; --omnix-chart-other: #64748b;
+  --omnix-chart-grid: #232a35; --omnix-chart-axis: #98a2b1;
+}
+
+/* แถวตัวกรอง — แถวเดียว อยู่บนสุดเสมอ */
+.ox-filter-bar { display: flex; align-items: center; gap: var(--omnix-space-2); flex-wrap: wrap; padding: var(--omnix-space-3); background: var(--omnix-surface); border: 1px solid var(--omnix-border); border-radius: var(--omnix-radius-lg); }
+.ox-filter-bar .ox-control { width: auto; min-width: 160px; }
+.ox-filter-bar__spacer { flex: 1; }
+.ox-filter-bar__meta { font-size: var(--omnix-text-xs); color: var(--omnix-fg-muted); }
+.ox-segment { display: inline-flex; padding: 2px; background: var(--omnix-surface-2); border-radius: var(--omnix-radius-lg); }
+.ox-segment button { height: 28px; padding: 0 var(--omnix-space-3); border: 0; border-radius: 6px; background: transparent; color: var(--omnix-fg-muted); font: inherit; font-weight: 500; cursor: pointer; }
+.ox-segment button.is-active { background: var(--omnix-surface); color: var(--omnix-fg); box-shadow: inset 0 0 0 1px var(--omnix-border); }
+
+/* KPI — 2/4 คอลัมน์ ค่าเดียว + เดลต้าเทียบช่วงก่อน */
+.ox-kpi-grid { display: grid; gap: var(--omnix-space-4); grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 1024px) { .ox-kpi-grid { grid-template-columns: repeat(4, 1fr); } }
+.ox-kpi { display: flex; flex-direction: column; gap: var(--omnix-space-1); padding: var(--omnix-space-4); background: var(--omnix-surface); border: 1px solid var(--omnix-border); border-radius: var(--omnix-radius-lg); min-width: 0; }
+.ox-kpi__label { font-size: var(--omnix-text-xs); font-weight: 500; color: var(--omnix-fg-muted); letter-spacing: .02em; }
+.ox-kpi__value { font-size: var(--omnix-text-2xl); font-weight: 600; line-height: 1.15; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ox-kpi__delta { display: inline-flex; align-items: center; gap: var(--omnix-space-1); font-size: var(--omnix-text-xs); font-variant-numeric: tabular-nums; color: var(--omnix-fg-muted); }
+.ox-kpi__delta.is-up { color: var(--omnix-success-fg); }
+.ox-kpi__delta.is-down { color: var(--omnix-danger-fg); }
+.ox-kpi__delta .ox-ico { width: 12px; height: 12px; }
+.ox-kpi__spark { height: 32px; margin-top: var(--omnix-space-1); color: var(--omnix-chart-1); }
+.ox-kpi__spark svg { width: 100%; height: 100%; display: block; overflow: visible; }
+
+/* กราฟ — การ์ดสูงคงที่ หัว + คำอธิบาย + พื้นที่วาด */
+.ox-chart-grid { display: grid; gap: var(--omnix-space-4); grid-template-columns: 1fr; }
+@media (min-width: 1024px) { .ox-chart-grid { grid-template-columns: repeat(2, 1fr); } .ox-chart-grid > .is-wide { grid-column: 1 / -1; } }
+.ox-chart { display: flex; flex-direction: column; background: var(--omnix-surface); border: 1px solid var(--omnix-border); border-radius: var(--omnix-radius-lg); min-width: 0; }
+.ox-chart__head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--omnix-space-3); padding: var(--omnix-space-4) var(--omnix-space-4) 0; }
+.ox-chart__title { font-weight: 600; }
+.ox-chart__sub { font-size: var(--omnix-text-xs); color: var(--omnix-fg-muted); }
+.ox-chart__body { position: relative; flex: 1; padding: var(--omnix-space-3) var(--omnix-space-4) var(--omnix-space-4); min-height: 0; }
+.ox-chart__canvas { position: relative; height: 260px; }
+.ox-chart--tall .ox-chart__canvas { height: 340px; }
+.ox-chart__foot { padding: 0 var(--omnix-space-4) var(--omnix-space-3); font-size: var(--omnix-text-xs); color: var(--omnix-fg-muted); }
+.ox-legend { display: flex; flex-wrap: wrap; gap: var(--omnix-space-3); font-size: var(--omnix-text-xs); color: var(--omnix-fg-muted); }
+.ox-legend__item { display: inline-flex; align-items: center; gap: var(--omnix-space-1); }
+.ox-legend__swatch { width: 10px; height: 10px; border-radius: 2px; background: var(--c, var(--omnix-chart-1)); }
+
+/* สถานะโหลด/ว่างในการ์ดกราฟ */
+.ox-skeleton { background: linear-gradient(90deg, var(--omnix-surface-2) 25%, var(--omnix-border) 50%, var(--omnix-surface-2) 75%); background-size: 200% 100%; animation: ox-shimmer 1.2s linear infinite; border-radius: var(--omnix-radius-lg); }
+@keyframes ox-shimmer { to { background-position: -200% 0; } }
+.ox-chart__empty { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; color: var(--omnix-fg-muted); font-size: var(--omnix-text-xs); padding: var(--omnix-space-4); }
+
+/* ตารางรายละเอียดใต้กราฟ — แถวบางกว่าตารางจัดการ */
+.ox-table--data td { padding: var(--omnix-space-2) var(--omnix-space-3); }
+.ox-table--data .ox-bar { display: inline-block; height: 6px; border-radius: 3px; background: var(--omnix-chart-1); vertical-align: middle; }
+.ox-ico { width: 14px; height: 14px; fill: currentColor; }
+
+
+/* ---- CSS เฉพาะหน้า (อ้าง token เท่านั้น) ---- */
+.kpi-page { display: none; flex-direction: column; gap: var(--omnix-space-5); }
+.kpi-page.is-active { display: flex; }
+.kpi-tabs { display: flex; align-items: center; gap: var(--omnix-space-3); flex-wrap: wrap; }
+.kpi-legend-bar { display: flex; flex-wrap: wrap; gap: var(--omnix-space-2); align-items: center; }
+.kpi-chips { display: flex; flex-wrap: wrap; gap: var(--omnix-space-1); align-items: center; }
+.kpi-chips .ox-chip { height: 26px; font-size: var(--omnix-text-xs); }
+.kpi-date-inputs { display: inline-flex; align-items: center; gap: var(--omnix-space-1); }
+.ox-filter-bar .kpi-date-inputs .ox-control { min-width: 0; width: 140px; }
+.kpi-search { flex: 1; min-width: 200px; }
+.ox-filter-bar .kpi-search .ox-control, .kpi-table-head .kpi-search .ox-control { width: 100%; }
+.kpi-card { border: 1px solid var(--omnix-border); border-radius: var(--omnix-radius-lg); background: var(--omnix-surface); }
+.kpi-card .ox-table-wrap { border: 0; border-top: 1px solid var(--omnix-border); border-radius: 0; }
+.kpi-table-head { display: flex; align-items: center; justify-content: space-between; gap: var(--omnix-space-3); flex-wrap: wrap; padding: var(--omnix-space-4) var(--omnix-space-4) var(--omnix-space-3); }
+.kpi-table-head h2 { font-size: var(--omnix-text-sm); font-weight: 600; }
+.kpi-table-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--omnix-space-3); flex-wrap: wrap; padding: var(--omnix-space-3) var(--omnix-space-4); border-top: 1px solid var(--omnix-border); font-size: var(--omnix-text-xs); color: var(--omnix-fg-muted); }
+.ox-table td { vertical-align: middle; }
+.ox-table .is-topic { min-width: 260px; max-width: 460px; }
+.ox-table .is-nowrap { white-space: nowrap; }
+.kpi-avatar { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: var(--omnix-radius-full); background: var(--omnix-accent-soft); color: var(--omnix-accent); font-size: var(--omnix-text-xs); font-weight: 600; }
+.kpi-progress { display: flex; align-items: center; gap: var(--omnix-space-2); min-width: 140px; }
+.kpi-progress__track { flex: 1; height: 6px; border-radius: 3px; background: var(--omnix-surface-2); overflow: hidden; }
+.kpi-progress__fill { height: 100%; border-radius: 3px; background: var(--omnix-chart-1); }
+.kpi-progress__fill.is-ok { background: var(--omnix-success-fg); }
+.kpi-progress__fill.is-low { background: var(--omnix-danger-fg); }
+.kpi-person { display: flex; align-items: center; gap: var(--omnix-space-3); }
+.kpi-person__name { font-size: var(--omnix-text-lg); font-weight: 600; }
+.kpi-person .kpi-avatar { width: 40px; height: 40px; font-size: var(--omnix-text-base); }
+mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); border-radius: 3px; padding: 0 2px; }
+.kpi-toast { position: fixed; right: var(--omnix-space-5); bottom: var(--omnix-space-5); z-index: 60; }
+.kpi-toast[hidden] { display: none; }
+.kpi-quota-row { display: grid; grid-template-columns: 1fr auto auto; gap: var(--omnix-space-3); align-items: center; padding: var(--omnix-space-2) 0; border-bottom: 1px solid var(--omnix-border); }
+.kpi-quota-row:last-child { border-bottom: 0; }
+.kpi-quota-row .ox-control { width: 72px; text-align: center; }
+.kpi-quota-row label { display: inline-flex; align-items: center; gap: var(--omnix-space-1); font-size: var(--omnix-text-xs); color: var(--omnix-fg-muted); }
+.kpi-empty-row td { padding: 0 !important; }
+.kpi-empty-row .ox-empty { border: 0; border-radius: 0; }
+.kpi-inline-btn { display: inline-flex; align-items: center; gap: var(--omnix-space-1); }
+.ox-btn .ox-ico { width: 14px; height: 14px; }
+.kpi-kpi-skel { display: inline-block; height: 28px; width: 60%; }
+.kpi-chart-skel { position: absolute; inset: 0; }
+.ox-modal-mask[hidden] { display: none; }
+@media (max-width: 767px) { .kpi-toast { left: var(--omnix-space-4); right: var(--omnix-space-4); } .ox-table .is-topic { min-width: 220px; } }
+</style>
+</head>
+<body>
+<div class="ox-app">
+<div class="ox-topbar">
+  <div class="ox-brand"><span class="ox-brand__mark">SV</span><span data-i18n="brand">Content SVDO 2026</span></div>
+  <span class="ox-topbar__spacer"></span>
+  <div class="ox-segment" id="lang-seg" role="group" aria-label="Language">
+    <button type="button" data-lang="th">ไทย</button>
+    <button type="button" data-lang="en">EN</button>
+  </div>
+  <button class="ox-btn ox-btn--ghost ox-btn--sm" id="btn-theme" type="button" data-i18n="theme">สลับธีม</button>
+</div>
+<main class="ox-main"><div class="ox-main__inner">
+
+  <div class="ox-page-head">
+    <div>
+      <h1 class="ox-page-title" data-i18n="title">Content SVDO 2026 — EloopTH &amp; Moov</h1>
+      <p class="ox-muted" data-i18n="subtitle">ติดตามเป้าหมายการส่งคลิปรายสัปดาห์ ภาระงานรายคน และคลังคลิปสำหรับนำไปใช้ต่อ — อ่านสดจาก Google Sheet</p>
+    </div>
+    <div class="ox-page-head__actions">
+      <button class="ox-btn ox-btn--ghost" id="btn-refresh" type="button" data-i18n="refresh">รีเฟรชข้อมูล</button>
+      <button class="ox-btn ox-btn--secondary" id="btn-csv" type="button" data-i18n="csv">ดาวน์โหลด CSV</button>
+    </div>
+  </div>
+
+  <div class="ox-alert ox-alert--danger" id="err" hidden>
+    <span id="err-msg"></span>
+    <span class="ox-topbar__spacer"></span>
+    <button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" onclick="loadSheet()" data-i18n="reload">โหลดใหม่</button>
+  </div>
+
+  <div class="ox-alert ox-alert--warning" id="warn" hidden><span id="warn-msg"></span></div>
+
+  <div class="kpi-tabs">
+    <div class="ox-segment" role="tablist" id="mode-tabs">
+      <button type="button" role="tab" data-mode="manager" class="is-active" data-i18n="tab.manager">ภาพรวม</button>
+      <button type="button" role="tab" data-mode="personal" data-i18n="tab.personal">ภาระงาน</button>
+      <button type="button" role="tab" data-mode="reuse" data-i18n="tab.reuse">คลังวิดีโอ</button>
+    </div>
+    <div class="kpi-legend-bar ox-xs ox-muted" id="status-legend"></div>
+  </div>
+
+  <!-- ===================== ภาพรวมทีม ===================== -->
+  <section class="kpi-page is-active" id="page-manager" role="tabpanel">
+    <div class="ox-filter-bar" role="group">
+      <select id="sel-year" class="ox-control" aria-label="Year"></select>
+      <div class="ox-segment" id="mgr-preset" role="group">
+        <button type="button" data-preset="this_week" class="is-active" data-i18n="p.this_week">สัปดาห์นี้</button>
+        <button type="button" data-preset="last_week" data-i18n="p.last_week">สัปดาห์ก่อน</button>
+        <button type="button" data-preset="this_month" data-i18n="p.this_month">เดือนนี้</button>
+        <button type="button" data-preset="all_year" data-i18n="p.all_year">ทั้งปี</button>
+      </div>
+      <div class="kpi-date-inputs">
+        <input type="date" class="ox-control" id="mgr-start"><span class="ox-muted ox-xs" data-i18n="to">ถึง</span><input type="date" class="ox-control" id="mgr-end">
+      </div>
+      <select id="mgr-brand" class="ox-control"><option value="all" data-i18n="allBrands">ทุกแบรนด์</option><option value="EloopTH">EloopTH</option><option value="Moov">Moov</option></select>
+      <button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" id="btn-quota" data-i18n="quota.btn">ตั้งค่าโควต้า</button>
+      <span class="ox-filter-bar__spacer"></span>
+      <span class="ox-filter-bar__meta" id="meta">—</span>
+    </div>
+    <div class="ox-filter-bar" role="group">
+      <span class="ox-label" style="margin:0" data-i18n="creators">ครีเอเตอร์</span>
+      <div class="kpi-chips" id="mgr-creators"></div>
+      <span class="ox-filter-bar__spacer"></span>
+      <span class="ox-label" style="margin:0" data-i18n="status">สถานะ</span>
+      <div class="kpi-chips" id="mgr-statuses"></div>
+    </div>
+
+    <div class="ox-kpi-grid">
+      <div class="ox-kpi"><div class="ox-kpi__label" data-i18n="k.target">เป้าหมายรวม (คลิป)</div><div class="ox-kpi__value" id="k-target">—</div><div class="ox-kpi__delta" id="d-target">—</div></div>
+      <div class="ox-kpi"><div class="ox-kpi__label" data-i18n="k.done">โพสต์แล้ว (Done)</div><div class="ox-kpi__value" id="k-done">—</div><div class="ox-kpi__delta" id="d-done">—</div></div>
+      <div class="ox-kpi"><div class="ox-kpi__label" data-i18n="k.bal">ขาด / เกินเป้า</div><div class="ox-kpi__value" id="k-bal">—</div><div class="ox-kpi__delta" id="d-bal">—</div></div>
+      <div class="ox-kpi"><div class="ox-kpi__label" data-i18n="k.pct">ความสำเร็จ</div><div class="ox-kpi__value" id="k-pct">—</div><div class="ox-kpi__delta" id="d-pct">—</div></div>
+    </div>
+
+    <div class="ox-chart is-wide">
+      <div class="ox-chart__head"><div><div class="ox-chart__title" data-i18n="c.trend">คลิปที่โพสต์แล้วตามช่วงเวลา</div><div class="ox-chart__sub" id="sub-trend">—</div></div><div class="ox-legend" id="lg-trend"></div></div>
+      <div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-trend" role="img"></canvas></div></div>
+    </div>
+    <div class="ox-chart-grid">
+      <div class="ox-chart">
+        <div class="ox-chart__head"><div><div class="ox-chart__title" data-i18n="c.people">โพสต์แล้วต่อคน</div><div class="ox-chart__sub" data-i18n="c.people.sub">เรียงจากมากไปน้อย</div></div></div>
+        <div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-people" role="img"></canvas></div></div>
+      </div>
+      <div class="ox-chart">
+        <div class="ox-chart__head"><div><div class="ox-chart__title" data-i18n="c.type">สัดส่วนตามประเภทคลิป</div><div class="ox-chart__sub" data-i18n="c.type.sub">เฉพาะที่โพสต์แล้ว</div></div><div class="ox-legend" id="lg-type"></div></div>
+        <div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-type" role="img"></canvas></div></div>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-table-head"><h2 data-i18n="t.matrix">ผลงานรายบุคคล เทียบเป้าหมาย</h2><span class="ox-xs ox-muted" id="mgr-period-label"></span></div>
+      <div class="ox-table-wrap"><table class="ox-table ox-table--data">
+        <thead><tr><th data-i18n="h.creator">ครีเอเตอร์</th><th class="is-num" data-i18n="h.elT">Eloop เป้า</th><th class="is-num" data-i18n="h.elD">Eloop โพสต์</th><th class="is-num" data-i18n="h.mvT">Moov เป้า</th><th class="is-num" data-i18n="h.mvD">Moov โพสต์</th><th class="is-num" data-i18n="h.target">รวมเป้า</th><th class="is-num" data-i18n="h.done">โพสต์แล้ว</th><th class="is-num" data-i18n="h.gap">ขาด/เกิน</th><th data-i18n="h.pct">ความสำเร็จ</th><th data-i18n="h.status">สถานะ</th><th></th></tr></thead>
+        <tbody id="mgr-matrix"></tbody></table></div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-table-head">
+        <h2><span data-i18n="t.clips">รายการคลิปตามเงื่อนไข</span> <span class="ox-badge ox-badge--accent ox-num" id="mgr-count">0</span></h2>
+        <label class="ox-xs ox-muted"><span data-i18n="perPage">แสดงต่อหน้า</span> <select id="mgr-pagesize" class="ox-control" style="height:28px;display:inline-block;width:auto;min-width:0"><option value="15">15</option><option value="30" selected>30</option><option value="50">50</option></select></label>
+        <div class="kpi-search"><input type="search" id="mgr-search" class="ox-control" data-i18n-ph="ph.search"></div>
+      </div>
+      <div class="ox-table-wrap"><table class="ox-table ox-table--data">
+        <thead><tr><th class="is-num">#</th><th data-i18n="h.date">วันที่</th><th data-i18n="h.brand">แบรนด์</th><th data-i18n="h.product">สินค้า</th><th data-i18n="h.type">ประเภท</th><th class="is-topic" data-i18n="h.topic">หัวข้อคลิป</th><th data-i18n="h.status">สถานะ</th><th data-i18n="h.creator">ครีเอเตอร์</th><th>TikTok</th></tr></thead>
+        <tbody id="mgr-rows"></tbody></table></div>
+      <div class="kpi-table-foot"><span id="mgr-pageinfo">—</span><span class="ox-row"><button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" id="mgr-prev" data-i18n="prev">ก่อนหน้า</button><button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" id="mgr-next" data-i18n="next">ถัดไป</button></span></div>
+    </div>
+  </section>
+
+  <!-- ===================== ภาระงานรายคน ===================== -->
+  <section class="kpi-page" id="page-personal" role="tabpanel">
+    <div class="ox-filter-bar" role="group">
+      <div class="kpi-person"><span class="kpi-avatar" id="my-avatar">–</span><div><div class="kpi-person__name" id="my-name">—</div><div class="ox-xs ox-muted" id="my-quota">—</div></div></div>
+      <select id="my-creator" class="ox-control"></select>
+      <span class="ox-filter-bar__spacer"></span>
+      <select id="my-preset" class="ox-control">
+        <option value="this_week" data-i18n="p.this_week">สัปดาห์นี้</option><option value="last_week" data-i18n="p.last_week">สัปดาห์ก่อน</option><option value="this_month" data-i18n="p.this_month">เดือนนี้</option><option value="all_year" data-i18n="p.all_year">ทั้งปี</option><option value="custom" data-i18n="p.custom">กำหนดเอง</option>
+      </select>
+      <div class="kpi-date-inputs"><input type="date" class="ox-control" id="my-start"><span class="ox-muted ox-xs" data-i18n="to">ถึง</span><input type="date" class="ox-control" id="my-end"></div>
+      <select id="my-brand" class="ox-control"><option value="all" data-i18n="allBrands">ทุกแบรนด์</option><option value="EloopTH">EloopTH</option><option value="Moov">Moov</option></select>
+      <select id="my-status" class="ox-control"><option value="all" data-i18n="allStatus">ทุกสถานะ</option><option value="Done">Done</option><option value="In Progress">In Progress</option><option value="Draft">Draft</option><option value="Reject">Reject</option><option value="Stuck">Stuck</option></select>
+    </div>
+    <div class="ox-kpi-grid">
+      <div class="ox-kpi"><div class="ox-kpi__label" data-i18n="k.myTarget">เป้าหมายช่วงนี้</div><div class="ox-kpi__value" id="my-k-target">—</div><div class="ox-kpi__delta" id="my-d-target">—</div></div>
+      <div class="ox-kpi"><div class="ox-kpi__label" data-i18n="k.done">โพสต์แล้ว (Done)</div><div class="ox-kpi__value" id="my-k-done">—</div><div class="ox-kpi__delta" id="my-d-done">—</div></div>
+      <div class="ox-kpi"><div class="ox-kpi__label" data-i18n="k.todo">คงเหลือต้องทำ</div><div class="ox-kpi__value" id="my-k-bal">—</div><div class="ox-kpi__delta" id="my-d-bal">—</div></div>
+      <div class="ox-kpi"><div class="ox-kpi__label" data-i18n="k.pct">ความสำเร็จ</div><div class="ox-kpi__value" id="my-k-pct">—</div><div class="ox-kpi__delta" id="my-d-pct">—</div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-table-head">
+        <h2><span data-i18n="t.myClips">รายการคลิป</span> <span class="ox-badge ox-badge--accent ox-num" id="my-count">0</span></h2>
+        <div class="kpi-search"><input type="search" id="my-search" class="ox-control" data-i18n-ph="ph.search2"></div>
+      </div>
+      <div class="ox-table-wrap"><table class="ox-table ox-table--data">
+        <thead><tr><th class="is-num">#</th><th data-i18n="h.date">วันที่</th><th data-i18n="h.brand">แบรนด์</th><th data-i18n="h.product">สินค้า</th><th data-i18n="h.type">ประเภท</th><th class="is-topic" data-i18n="h.topic">หัวข้อคลิป</th><th data-i18n="h.status">สถานะ</th><th data-i18n="h.file">ไฟล์</th><th>TikTok</th></tr></thead>
+        <tbody id="my-rows"></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- ===================== คลังคลิป ===================== -->
+  <section class="kpi-page" id="page-reuse" role="tabpanel">
+    <div class="ox-filter-bar" role="group">
+      <div class="kpi-search"><input type="search" id="re-search" class="ox-control" data-i18n-ph="ph.search3"></div>
+      <span class="ox-badge ox-badge--accent ox-num" id="re-count">0</span>
+    </div>
+    <div class="ox-filter-bar" role="group">
+      <select id="re-status" class="ox-control"><option value="Done" data-i18n="re.done">Done — แนะนำสำหรับยิงแอด</option><option value="Draft">Draft</option><option value="In Progress">In Progress</option><option value="Reject">Reject</option><option value="Stuck">Stuck</option><option value="all" data-i18n="allStatus">ทุกสถานะ</option></select>
+      <select id="re-type" class="ox-control"><option value="all" data-i18n="allTypes">ทุกประเภท</option></select>
+      <select id="re-brand" class="ox-control"><option value="all" data-i18n="allBrands">ทุกแบรนด์</option><option value="EloopTH">EloopTH</option><option value="Moov">Moov</option></select>
+      <select id="re-preset" class="ox-control"><option value="all_year" data-i18n="p.all_year">ทั้งปี</option><option value="this_month" data-i18n="p.this_month">เดือนนี้</option><option value="last_month" data-i18n="p.last_month">เดือนก่อน</option><option value="this_week" data-i18n="p.this_week">สัปดาห์นี้</option><option value="last_week" data-i18n="p.last_week">สัปดาห์ก่อน</option><option value="custom" data-i18n="p.custom">กำหนดเอง</option></select>
+      <div class="kpi-date-inputs"><input type="date" class="ox-control" id="re-start"><span class="ox-muted ox-xs" data-i18n="to">ถึง</span><input type="date" class="ox-control" id="re-end"></div>
+      <span class="ox-filter-bar__spacer"></span>
+      <select id="re-sort" class="ox-control"><option value="newest" data-i18n="sort.newest">ล่าสุดก่อน</option><option value="oldest" data-i18n="sort.oldest">เก่าสุดก่อน</option></select>
+      <label class="ox-xs ox-muted"><span data-i18n="perPage">แสดงต่อหน้า</span> <select id="re-pagesize" class="ox-control" style="height:28px;display:inline-block;width:auto;min-width:0"><option value="20">20</option><option value="50" selected>50</option><option value="100">100</option></select></label>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-table-head"><h2 data-i18n="t.reuse">คลิปพร้อมนำไปใช้</h2><span class="ox-xs ox-muted" data-i18n="t.reuse.sub">คัดลอกลิงก์ TikTok หรือที่อยู่ไฟล์ต้นฉบับได้ทันที</span></div>
+      <div class="ox-table-wrap"><table class="ox-table ox-table--data">
+        <thead><tr><th class="is-num">#</th><th data-i18n="h.date">วันที่</th><th data-i18n="h.brand">แบรนด์</th><th data-i18n="h.product">สินค้า</th><th data-i18n="h.type">ประเภท</th><th class="is-topic" data-i18n="h.topic">หัวข้อคลิป</th><th data-i18n="h.status">สถานะ</th><th data-i18n="h.creator">ครีเอเตอร์</th><th class="is-nowrap" data-i18n="h.actions">นำไปใช้</th></tr></thead>
+        <tbody id="re-rows"></tbody></table></div>
+      <div class="kpi-table-foot"><span id="re-pageinfo">—</span><span class="ox-row"><button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" id="re-prev" data-i18n="prev">ก่อนหน้า</button><button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" id="re-next" data-i18n="next">ถัดไป</button></span></div>
+    </div>
+  </section>
+
+</div></main>
+</div>
+
+<div class="kpi-toast ox-alert ox-alert--success" id="toast" role="status" hidden><span id="toast-msg"></span></div>
+
+<div class="ox-modal-mask" id="quota-modal" hidden>
+  <div class="ox-modal" role="dialog" aria-modal="true" aria-labelledby="quota-title">
+    <div class="ox-modal__head" id="quota-title" data-i18n="quota.title">ตั้งค่าโควต้าเป้าหมายรายสัปดาห์</div>
+    <div class="ox-modal__body"><p class="ox-xs ox-muted" data-i18n="quota.help">จำนวนคลิปต่อสัปดาห์ของแต่ละคน แยกแบรนด์ — บันทึกไว้ในเบราว์เซอร์นี้</p><div id="quota-list"></div></div>
+    <div class="ox-modal__foot">
+      <button class="ox-btn ox-btn--ghost" type="button" id="quota-reset" data-i18n="quota.reset">คืนค่าเริ่มต้น</button>
+      <span class="ox-topbar__spacer"></span>
+      <button class="ox-btn ox-btn--secondary" type="button" id="quota-cancel" data-i18n="cancel">ยกเลิก</button>
+      <button class="ox-btn ox-btn--primary" type="button" id="quota-save" data-i18n="quota.save">บันทึกโควต้า</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== 0. แหล่งข้อมูล — Google Sheet "Tiktok Post Plan" อ่านสดผ่าน export CSV (มี CORS) =====
+   ชีตต้องแชร์ "ทุกคนที่มีลิงก์ดูได้" · คอลัมน์หาจากชื่อหัวตาราง แก้ที่ COLS ถ้าชีตเปลี่ยนชื่อ */
+const SHEET = { id: '139OFW8jnXZ6PgelZ6zEVo9Fp0bRUbnbaVvvaM56jBuA', gid: '456905298' };
+/* วิธีอ่านสด (เลือกอัตโนมัติ):
+   1) PUB_CSV_URL — ลิงก์ "เผยแพร่ไปยังเว็บ" ของแท็บนี้แบบ CSV (ไฟล์ → แชร์ → เผยแพร่ไปยังเว็บ → เลือกแท็บ → CSV)
+      ครบทุกแถวรวมแถวที่ยุบกลุ่มไว้ และเบราว์เซอร์ดึงตรงได้ (มี CORS) — แนะนำ
+   2) data_sheet.js — snapshot ครบทุกแถว สร้างด้วย `sh update_data.sh` (ใช้เมื่อยังไม่มี PUB_CSV_URL)
+   3) gviz (JSONP) — สดแต่เห็นเฉพาะแถวที่ "ไม่ได้ยุบ/ซ่อน" ในชีต ใช้เมื่อไม่มีสองอย่างแรก */
+const PUB_CSV_URL = '';
+const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET.id}/gviz/tq?gid=${SHEET.gid}&tqx=out:json`;
+const COLS = { shop: 'Shop Name', product: 'Product', type: 'Content type', topic: 'Topic', title: 'title', url: 'URL', creator: 'Creator', status: 'Status', date: 'DATE', path: 'Path', editor: 'Editor' };
+const STATUSES = ['Done', 'In Progress', 'Draft', 'Reject', 'Stuck'];
+const BRANDS = ['EloopTH', 'Moov'];
+const BRAND_LABEL = { EloopTH: 'Eloop', Moov: 'Moov' };
+const DEFAULT_QUOTAS = { Moth:{eloop:1,moov:1}, Guild:{eloop:2,moov:1}, Yung:{eloop:1,moov:1}, View:{eloop:1,moov:0}, Wasu:{eloop:0,moov:2}, Nu:{eloop:1,moov:2}, Ann:{eloop:1,moov:1} };
+
+/* ===== 1. i18n — ทุกข้อความผ่าน t() สองภาษา ===== */
+const DICT = {
+  th: {
+    brand: 'Content SVDO 2026', theme: 'สลับธีม', title: 'Content SVDO 2026 — EloopTH & Moov', subtitle: 'ติดตามเป้าหมายการส่งคลิปรายสัปดาห์ ภาระงานรายคน และคลังคลิปสำหรับนำไปใช้ต่อ — อ่านสดจาก Google Sheet',
+    refresh: 'รีเฟรชข้อมูล', csv: 'ดาวน์โหลด CSV', reload: 'โหลดใหม่', 'tab.manager': 'ภาพรวม', 'tab.personal': 'ภาระงาน', 'tab.reuse': 'คลังวิดีโอ',
+    'p.this_week': 'สัปดาห์นี้', 'p.last_week': 'สัปดาห์ก่อน', 'p.this_month': 'เดือนนี้', 'p.last_month': 'เดือนก่อน', 'p.all_year': 'ทั้งปี', 'p.custom': 'กำหนดเอง', to: 'ถึง',
+    allBrands: 'ทุกแบรนด์', allStatus: 'ทุกสถานะ', allTypes: 'ทุกประเภท', creators: 'ครีเอเตอร์', status: 'สถานะ', all: 'ทั้งหมด', perPage: 'แสดงต่อหน้า', prev: 'ก่อนหน้า', next: 'ถัดไป', cancel: 'ยกเลิก',
+    'k.target': 'เป้าหมายรวม (คลิป)', 'k.done': 'โพสต์แล้ว (Done)', 'k.bal': 'ขาด / เกินเป้า', 'k.pct': 'ความสำเร็จ', 'k.myTarget': 'เป้าหมายช่วงนี้', 'k.todo': 'คงเหลือต้องทำ',
+    'c.trend': 'คลิปที่โพสต์แล้วตามช่วงเวลา', 'c.people': 'โพสต์แล้วต่อคน', 'c.people.sub': 'เรียงจากมากไปน้อย', 'c.type': 'สัดส่วนตามประเภทคลิป', 'c.type.sub': 'เฉพาะที่โพสต์แล้ว',
+    't.matrix': 'ผลงานรายบุคคล เทียบเป้าหมาย', 't.clips': 'รายการคลิปตามเงื่อนไข', 't.myClips': 'รายการคลิป', 't.reuse': 'คลิปพร้อมนำไปใช้', 't.reuse.sub': 'คัดลอกลิงก์ TikTok หรือที่อยู่ไฟล์ต้นฉบับได้ทันที',
+    'h.creator': 'ครีเอเตอร์', 'h.elT': 'Eloop เป้า', 'h.elD': 'Eloop โพสต์', 'h.mvT': 'Moov เป้า', 'h.mvD': 'Moov โพสต์', 'h.target': 'รวมเป้า', 'h.done': 'โพสต์แล้ว', 'h.gap': 'ขาด/เกิน', 'h.pct': 'ความสำเร็จ', 'h.status': 'สถานะ',
+    'h.date': 'วันที่', 'h.brand': 'แบรนด์', 'h.product': 'สินค้า', 'h.type': 'ประเภท', 'h.topic': 'หัวข้อคลิป', 'h.file': 'ไฟล์', 'h.actions': 'นำไปใช้',
+    'ph.search': 'ค้นหาหัวข้อ สินค้า ประเภท หรือชื่อคน', 'ph.search2': 'ค้นหาหัวข้อหรือสินค้า', 'ph.search3': 'ค้นหาตามหัวข้อหรือสินค้า เช่น E29, iPhone 18, ชาร์จเร็ว, ฟิล์ม',
+    're.done': 'Done — แนะนำสำหรับยิงแอด', 'sort.newest': 'ล่าสุดก่อน', 'sort.oldest': 'เก่าสุดก่อน',
+    'quota.btn': 'ตั้งค่าโควต้า', 'quota.title': 'ตั้งค่าโควต้าเป้าหมายรายสัปดาห์', 'quota.help': 'จำนวนคลิปต่อสัปดาห์ของแต่ละคน แยกแบรนด์ — บันทึกไว้ในเบราว์เซอร์นี้', 'quota.reset': 'คืนค่าเริ่มต้น', 'quota.save': 'บันทึกโควต้า', 'quota.saved': 'บันทึกโควต้าแล้ว', 'quota.resetDone': 'คืนค่าเริ่มต้นแล้ว', 'quota.confirm': 'คืนค่าโควต้าเริ่มต้นทั้งหมด?',
+    'st.Done': 'โพสต์แล้ว', 'st.In Progress': 'รอตั้งโพสต์', 'st.Draft': 'ตั้งเวลาแล้ว', 'st.Reject': 'มีการแก้ไข', 'st.Stuck': 'ติดปัญหา',
+    loading: 'กำลังโหลดข้อมูลจาก Google Sheet…', loadFail: 'โหลดไม่สำเร็จ', updated: 'อัปเดตล่าสุด {t} · แหล่งข้อมูล: {src} · {n} คลิป',
+    'err.net': 'โหลดข้อมูลไม่สำเร็จ — เข้าถึง Google Sheet ไม่ได้ (ตรวจอินเทอร์เน็ตหรือสิทธิ์แชร์ "ทุกคนที่มีลิงก์")', 'warn.partial': 'กำลังอ่านผ่าน gviz ซึ่งเห็นเฉพาะแถวที่ไม่ได้ยุบกลุ่ม/ซ่อนในชีต ({n} คลิป) — ให้ครบทุกแถว: เผยแพร่แท็บนี้เป็น CSV แล้วใส่ลิงก์ใน PUB_CSV_URL', 'src.pub': 'Google Sheet (เผยแพร่ CSV)', 'src.gviz': 'Google Sheet (gviz — เฉพาะแถวที่ไม่ยุบ)', 'src.snap': 'Google Sheet snapshot — รัน update_data.sh เพื่ออัปเดต', 'err.fmt': 'โหลดข้อมูลไม่สำเร็จ — ไม่พบคอลัมน์ {c} ในชีต',
+    weeks: '{n} สัปดาห์', period: '{a} – {b} · คิดเป้า {w} สัปดาห์', quotaLine: 'โควต้า {n} คน × {w} สัปดาห์', vsPrev: '{d} เทียบช่วงก่อน ({p})', short: 'ยังขาดอีก {n} คลิป', onTarget: 'ตรงตามเป้า', over: 'เกินเป้า {n} คลิป', wip: 'รอโพสต์/ติดปัญหา {n} คลิป',
+    daily: 'รายวัน', weekly: 'รายสัปดาห์ (เริ่มวันจันทร์)', noDataIn: 'ไม่มีข้อมูลในช่วง {r}', viewYear: 'ดูทั้งปี', clips: 'คลิป', unknownType: 'ไม่ระบุ', other: 'อื่น ๆ',
+    extra: 'ช่วยทำพิเศษ', overN: 'เกินเป้า +{n}', met: 'ครบเป้า', shortN: 'ขาดอีก {n}', viewPerson: 'ดูงานรายคน', noCreators: 'ไม่มีครีเอเตอร์ที่เลือก', noCreatorsHint: 'กดปุ่ม "ทั้งหมด" ในแถวครีเอเตอร์',
+    noClipsHint: 'ลองขยายช่วงเวลา หรือเลือกสถานะ "ทั้งหมด"', showing: 'แสดง {a}–{b} จาก {n} รายการ', none: 'ไม่มีรายการ', open: 'เปิด', noLink: 'ไม่มีลิงก์', copyPath: 'คัดลอก Path', copiedPath: 'คัดลอกที่อยู่ไฟล์แล้ว', copyLink: 'คัดลอกลิงก์', copiedLink: 'คัดลอกลิงก์ TikTok แล้ว', copyFail: 'คัดลอกไม่สำเร็จ',
+    myQuota: 'โควต้า {n} คลิป/สัปดาห์ (Eloop {e} · Moov {m})', myTargetSub: 'Eloop {e} · Moov {m} · {w} สัปดาห์', myTargetSubBrand: '{b} · {w} สัปดาห์', myDoneSub: 'Eloop {e} · Moov {m}', fromTarget: 'จากเป้า {n} คลิป', todo: 'ต้องทำอีก {n} คลิป', metAll: 'ครบตามเป้าแล้ว',
+    noMatch: 'ไม่พบคลิปตามเงื่อนไข', noMatchHint: 'ลองเปลี่ยนช่วงเวลา แบรนด์ หรือสถานะ', noSearch: 'ไม่พบคลิปที่ตรงกับคำค้น', noSearchHint: 'ลองเลือก "ทุกสถานะ" หรือพิมพ์คำอื่น'
+  },
+  en: {
+    brand: 'Content SVDO 2026', theme: 'Toggle theme', title: 'Content SVDO 2026 — EloopTH & Moov', subtitle: 'Weekly clip delivery targets, per-creator workload and a reusable video library — live from Google Sheets',
+    refresh: 'Refresh data', csv: 'Download CSV', reload: 'Reload', 'tab.manager': 'Overview', 'tab.personal': 'Workload', 'tab.reuse': 'Video library',
+    'p.this_week': 'This week', 'p.last_week': 'Last week', 'p.this_month': 'This month', 'p.last_month': 'Last month', 'p.all_year': 'Whole year', 'p.custom': 'Custom', to: 'to',
+    allBrands: 'All brands', allStatus: 'All statuses', allTypes: 'All types', creators: 'Creators', status: 'Status', all: 'All', perPage: 'Per page', prev: 'Previous', next: 'Next', cancel: 'Cancel',
+    'k.target': 'Total target (clips)', 'k.done': 'Posted (Done)', 'k.bal': 'Short / over target', 'k.pct': 'Achievement', 'k.myTarget': 'Target this period', 'k.todo': 'Remaining to do',
+    'c.trend': 'Posted clips over time', 'c.people': 'Posted per creator', 'c.people.sub': 'Sorted high to low', 'c.type': 'Share by content type', 'c.type.sub': 'Posted clips only',
+    't.matrix': 'Per-creator delivery vs target', 't.clips': 'Clips matching filters', 't.myClips': 'Clips', 't.reuse': 'Ready-to-use clips', 't.reuse.sub': 'Copy the TikTok link or the source file path instantly',
+    'h.creator': 'Creator', 'h.elT': 'Eloop target', 'h.elD': 'Eloop posted', 'h.mvT': 'Moov target', 'h.mvD': 'Moov posted', 'h.target': 'Target', 'h.done': 'Posted', 'h.gap': 'Gap', 'h.pct': 'Achievement', 'h.status': 'Status',
+    'h.date': 'Date', 'h.brand': 'Brand', 'h.product': 'Product', 'h.type': 'Type', 'h.topic': 'Topic', 'h.file': 'File', 'h.actions': 'Use',
+    'ph.search': 'Search topic, product, type or creator', 'ph.search2': 'Search topic or product', 'ph.search3': 'Search by topic or product, e.g. E29, iPhone 18, fast charge, film',
+    're.done': 'Done — recommended for ads', 'sort.newest': 'Newest first', 'sort.oldest': 'Oldest first',
+    'quota.btn': 'Set quotas', 'quota.title': 'Weekly target quotas', 'quota.help': 'Clips per week for each creator, per brand — saved in this browser', 'quota.reset': 'Reset to defaults', 'quota.save': 'Save quotas', 'quota.saved': 'Quotas saved', 'quota.resetDone': 'Defaults restored', 'quota.confirm': 'Reset all quotas to defaults?',
+    'st.Done': 'Posted', 'st.In Progress': 'Awaiting post', 'st.Draft': 'Scheduled', 'st.Reject': 'Needs edits', 'st.Stuck': 'Blocked',
+    loading: 'Loading data from Google Sheets…', loadFail: 'Load failed', updated: 'Updated {t} · Source: {src} · {n} clips',
+    'err.net': 'Could not load data — Google Sheet unreachable (check connection or "anyone with the link" sharing)', 'warn.partial': 'Reading via gviz, which only sees rows that are not collapsed/hidden in the sheet ({n} clips) — for all rows, publish this tab as CSV and set PUB_CSV_URL', 'src.pub': 'Google Sheet (published CSV)', 'src.gviz': 'Google Sheet (gviz — visible rows only)', 'src.snap': 'Google Sheet snapshot — run update_data.sh to refresh', 'err.fmt': 'Could not load data — column {c} not found in the sheet',
+    weeks: '{n} weeks', period: '{a} – {b} · target counts {w} weeks', quotaLine: 'quota for {n} people × {w} weeks', vsPrev: '{d} vs previous period ({p})', short: '{n} clips short', onTarget: 'On target', over: '{n} clips over target', wip: '{n} clips pending/blocked',
+    daily: 'Daily', weekly: 'Weekly (from Monday)', noDataIn: 'No data for {r}', viewYear: 'View whole year', clips: 'clips', unknownType: 'Unspecified', other: 'Other',
+    extra: 'Extra help', overN: 'Over +{n}', met: 'On target', shortN: '{n} short', viewPerson: 'View workload', noCreators: 'No creators selected', noCreatorsHint: 'Press "All" in the creators row',
+    noClipsHint: 'Try a wider date range or "All" statuses', showing: 'Showing {a}–{b} of {n}', none: 'No items', open: 'Open', noLink: 'No link', copyPath: 'Copy path', copiedPath: 'File path copied', copyLink: 'Copy link', copiedLink: 'TikTok link copied', copyFail: 'Copy failed',
+    myQuota: 'Quota {n} clips/week (Eloop {e} · Moov {m})', myTargetSub: 'Eloop {e} · Moov {m} · {w} weeks', myTargetSubBrand: '{b} · {w} weeks', myDoneSub: 'Eloop {e} · Moov {m}', fromTarget: 'of {n} target', todo: '{n} more clips to do', metAll: 'Target met',
+    noMatch: 'No clips match the filters', noMatchHint: 'Try another period, brand or status', noSearch: 'No clips match your search', noSearchHint: 'Try "All statuses" or another keyword'
+  }
+};
+const storage = {
+  get(k){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch { return null; } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+let LANG = storage.get('CK_LANG') || 'th';   // ค่าเริ่มต้นไทย สลับได้ที่แถบบน
+const t = (k, vars) => { let s = DICT[LANG][k] ?? DICT.th[k] ?? k; if (vars) for (const [a, b] of Object.entries(vars)) s = s.replace(new RegExp(`\\{${a}\\}`, 'g'), b); return s; };
+function applyLang(){
+  document.documentElement.lang = LANG;
+  document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = t(el.dataset.i18n));
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => el.placeholder = t(el.dataset.i18nPh));
+  document.querySelectorAll('#lang-seg button').forEach(b => b.classList.toggle('is-active', b.dataset.lang === LANG));
+  document.getElementById('status-legend').innerHTML = STATUSES.map(s => `<span class="ox-badge ox-badge--${STATUS_BADGE[s]}">${s}</span> ${t('st.' + s)}`).join(' ');
+  document.title = t('brand');
+  if (ALL.length && SOURCE === 'gviz') document.getElementById('warn-msg').textContent = t('warn.partial', { n: fmtN(ALL.length) });
+}
+
+/* ===== 2. วันที่ / ตัวเลข (ตามภาษา) ===== */
+const locale = () => LANG === 'th' ? 'th-TH-u-ca-gregory' : 'en-GB';
+const fmtN = v => new Intl.NumberFormat(locale(), { maximumFractionDigits: 0 }).format(v);
+const fmtD = d => new Intl.DateTimeFormat(locale(), { day: 'numeric', month: 'short' }).format(d);
+const fmtDY = d => new Intl.DateTimeFormat(locale(), { day: 'numeric', month: 'short', year: 'numeric' }).format(d);
+const fmtT = d => new Intl.DateTimeFormat(locale(), { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }).format(d);
+const toD = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const thDate = s => s ? fmtDY(toD(s)) : '—';
+const addDays = (s, n) => { const d = toD(s); d.setDate(d.getDate() + n); return iso(d); };
+const daysBetween = (a, b) => Math.round((toD(b) - toD(a)) / 864e5) + 1;
+const TODAY = iso(new Date());
+function weekRange(offset){ const d = toD(TODAY); d.setDate(d.getDate() - ((d.getDay() + 6) % 7) + offset * 7); const s = iso(d); return [s, addDays(s, 6)]; }
+function presetRange(p, year){
+  const n = new Date();
+  if (p === 'this_week') return weekRange(0);
+  if (p === 'last_week') return weekRange(-1);
+  if (p === 'this_month') return [iso(new Date(n.getFullYear(), n.getMonth(), 1)), iso(new Date(n.getFullYear(), n.getMonth() + 1, 0))];
+  if (p === 'last_month') return [iso(new Date(n.getFullYear(), n.getMonth() - 1, 1)), iso(new Date(n.getFullYear(), n.getMonth(), 0))];
+  return [`${year}-01-01`, `${year}-12-31`];
+}
+/* สัปดาห์ที่ใช้คิดเป้า = สัปดาห์ที่ผ่านมาแล้วในช่วง (ปัดขึ้น) — ช่วงที่ยังมาไม่ถึงไม่นับ */
+function targetWeeks(start, end){ const e = end < TODAY ? end : TODAY; return e < start ? 0 : Math.ceil(daysBetween(start, e) / 7); }
+const inRange = (c, s, e) => !!c.date && c.date >= s && c.date <= e;
+const pctOf = (done, target) => target > 0 ? Math.round(done / target * 100) : (done > 0 ? 100 : 0);
+
+/* ===== 3. ชิ้นส่วน UI ===== */
+const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const ICO = { up: 'm12 5-7 7 1.4 1.4L11 8.8V19h2V8.8l4.6 4.6L19 12z', down: 'm12 19 7-7-1.4-1.4L13 15.2V5h-2v10.2l-4.6-4.6L5 12z',
+  copy: 'M14 8H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM4 20V10h10l.002 10H4zM20 2H10c-1.1 0-2 .9-2 2v2h2V4h10v10h-2v2h2c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z',
+  ext: 'M13 3l3.3 3.3-7 7 1.4 1.4 7-7L21 11V3zM19 19H5V5h7V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7z' };
+const ico = n => `<svg class="ox-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="${ICO[n]}"/></svg>`;
+const STATUS_BADGE = { Done: 'success', 'In Progress': 'warning', Draft: 'info', Reject: 'accent', Stuck: 'danger' };
+const badgeStatus = s => STATUS_BADGE[s] ? `<span class="ox-badge ox-badge--${STATUS_BADGE[s]}" title="${t('st.' + s)}">${s}</span>` : `<span class="ox-badge">${esc(s || '—')}</span>`;
+const badgeBrand = b => `<span class="ox-badge" style="--c:var(--omnix-chart-${b === 'Moov' ? 2 : 1})">${BRAND_LABEL[b] || esc(b)}</span>`;
+const badgeType = ty => ty ? `<span class="ox-badge">${esc(ty)}</span>` : '<span class="ox-muted">—</span>';
+const highlight = (text, q) => q ? esc(text).replace(new RegExp(`(${escRe(esc(q))})`, 'gi'), '<mark class="kpi-hl">$1</mark>') : esc(text);
+const btnOpen = c => c.url ? `<a class="ox-btn ox-btn--secondary ox-btn--sm kpi-inline-btn" href="${esc(c.url)}" target="_blank" rel="noopener">${ico('ext')}${t('open')}</a>` : `<span class="ox-muted ox-xs">${t('noLink')}</span>`;
+const btnCopy = (val, label, msg) => val ? `<button class="ox-btn ox-btn--secondary ox-btn--sm kpi-inline-btn" type="button" data-copy="${esc(val)}" data-msg="${esc(msg)}">${ico('copy')}${label}</button>` : '';
+const emptyRow = (cols, title, hint, action) => `<tr class="kpi-empty-row"><td colspan="${cols}"><div class="ox-empty"><div class="ox-empty__title">${title}</div><div class="ox-xs">${hint}</div>${action || ''}</div></td></tr>`;
+function setDelta(el, kind, text){ el.className = 'ox-kpi__delta' + (kind === 'up' ? ' is-up' : kind === 'down' ? ' is-down' : ''); el.innerHTML = (kind === 'up' ? ico('up') : kind === 'down' ? ico('down') : '') + text; }
+const signed = n => (n > 0 ? '+' : '') + n;
+function progress(p){ const cls = p >= 100 ? 'is-ok' : p < 70 ? 'is-low' : ''; return `<div class="kpi-progress"><div class="kpi-progress__track"><div class="kpi-progress__fill ${cls}" style="width:${Math.min(p, 100)}%"></div></div><span class="ox-num ox-xs">${p}%</span></div>`; }
+let toastTimer;
+function toast(msg){ const el = document.getElementById('toast'); document.getElementById('toast-msg').textContent = msg; el.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => el.hidden = true, 2500); }
+function copyText(text, msg){
+  const ok = () => toast(msg);
+  const fallback = () => { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); ok(); } catch { toast(t('copyFail')); } ta.remove(); };
+  if (navigator.clipboard) navigator.clipboard.writeText(text).then(ok, fallback); else fallback();
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-copy]'); if (b) copyText(b.dataset.copy, b.dataset.msg); });
+
+/* ===== 4. กราฟ ===== */
+const tok = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const chartColor = i => tok(`--omnix-chart-${i}`) || tok('--omnix-chart-other');
+const brandColor = b => chartColor(b === 'Moov' ? 2 : 1);   // สีตามตัวตน: Eloop = 1, Moov = 2 ทุกกราฟ
+function oxChartDefaults(){
+  if (!window.Chart) return;
+  Chart.defaults.font.family = tok('--omnix-font'); Chart.defaults.font.size = 12; Chart.defaults.color = tok('--omnix-chart-axis');
+  Chart.defaults.plugins.legend.display = false;
+  Object.assign(Chart.defaults.plugins.tooltip, { backgroundColor: tok('--omnix-surface'), titleColor: tok('--omnix-fg'), bodyColor: tok('--omnix-fg'), borderColor: tok('--omnix-border'), borderWidth: 1, padding: 10, cornerRadius: 8, mode: 'index', intersect: false });
+  Chart.defaults.animation = false; Chart.defaults.maintainAspectRatio = false;
+  Chart.defaults.elements.line.borderWidth = 2; Chart.defaults.elements.line.tension = 0.25;
+  Chart.defaults.elements.point.radius = 0; Chart.defaults.elements.point.hoverRadius = 5; Chart.defaults.elements.point.hoverBorderWidth = 2;
+  Chart.defaults.elements.bar.borderRadius = 4; Chart.defaults.elements.bar.borderSkipped = 'start';
+}
+const gridOpts = () => ({ color: tok('--omnix-chart-grid'), drawTicks: false });
+const noGrid = { display: false };
+const charts = {};
+function legend(el, items){ el.innerHTML = items.map(([n, c]) => `<span class="ox-legend__item"><span class="ox-legend__swatch" style="--c:${c}"></span>${esc(n)}</span>`).join(''); }
+function chartState(id, kind, label){
+  const cv = document.getElementById(id), wrap = cv.parentElement;
+  wrap.querySelectorAll('.ox-chart__empty, .kpi-chart-skel').forEach(e => e.remove());
+  if (kind === 'loading') { const s = document.createElement('div'); s.className = 'ox-skeleton kpi-chart-skel'; wrap.appendChild(s); }
+  if (kind === 'empty') { const el = document.createElement('div'); el.className = 'ox-chart__empty'; el.innerHTML = `<div>${t('noDataIn', { r: label })}<br><button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" style="margin-top:8px" onclick="setMgrPreset('all_year')">${t('viewYear')}</button></div>`; wrap.appendChild(el); }
+  cv.style.visibility = kind ? 'hidden' : 'visible';
+}
+
+/* ===== 5. โหลดชีต ===== */
+let ALL = [], CLIPS = [], YEARS = [], LOADED_AT = null, loading = false;
+const S = {
+  mode: 'manager', year: new Date().getFullYear(),
+  mgr: { preset: 'this_week', start: '', end: '', brand: 'all', creators: [], statuses: [], q: '', page: 1, size: 30 },
+  my: { creator: 'Moth', preset: 'this_week', start: '', end: '', brand: 'all', status: 'all', q: '' },
+  re: { q: '', status: 'Done', type: 'all', brand: 'all', preset: 'all_year', start: '', end: '', sort: 'newest', page: 1, size: 50 }
+};
+function parseUSDate(s){ const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec((s || '').trim()); return m ? `${m[3]}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}` : ''; }
+function parseRows(data){
+  const header = data[0].map(h => (h || '').trim().toLowerCase());
+  const idx = {}; for (const [k, name] of Object.entries(COLS)) { idx[k] = header.indexOf(name.toLowerCase()); if (idx[k] < 0 && ['shop', 'status', 'date', 'creator'].includes(k)) throw new Error(t('err.fmt', { c: name })); }
+  const get = (r, k) => idx[k] >= 0 ? (r[idx[k]] || '').trim() : '';
+  let sectionYear = null, id = 0; const out = [];
+  for (const r of data.slice(1)) {
+    const a = (r[0] || '').trim(); if (/^20\d\d$/.test(a)) sectionYear = +a;
+    const shop = get(r, 'shop'); if (!BRANDS.includes(shop)) continue;
+    const status = get(r, 'status'), topic = get(r, 'topic'), date = parseUSDate(get(r, 'date'));
+    if (!status && !topic && !date) continue;   // แถวว่างที่มีแค่ชื่อคน
+    out.push({ id: ++id, year: date ? +date.slice(0, 4) : sectionYear, shop, product: get(r, 'product'), type: get(r, 'type'), topic, title: get(r, 'title'), url: get(r, 'url'), creator: get(r, 'creator').replace(/\s+/g, ' '), status: status || 'Draft', date, path: get(r, 'path').replace(/^'|'$/g, ''), editor: get(r, 'editor') });
+  }
+  return out;
+}
+const getQuotas = () => storage.get('ELOOP_MOOV_QUOTAS') || JSON.parse(JSON.stringify(DEFAULT_QUOTAS));
+function allStaff(){ const set = new Set(Object.keys(getQuotas())); CLIPS.forEach(c => { if (c.creator && c.creator.length < 20) set.add(c.creator); }); return [...set].sort(); }
+function setYear(y){
+  S.year = y; CLIPS = ALL.filter(c => c.year === y);
+  const cur = new Date().getFullYear();
+  if (y !== cur) { S.mgr.preset = 'all_year'; S.my.preset = 'all_year'; }
+  [S.mgr.start, S.mgr.end] = presetRange(S.mgr.preset, y); [S.my.start, S.my.end] = presetRange(S.my.preset, y); [S.re.start, S.re.end] = presetRange(S.re.preset, y);
+  S.mgr.page = S.re.page = 1;
+  const staff = allStaff();
+  if (!staff.includes(S.my.creator)) S.my.creator = staff[0] || '';
+  document.getElementById('my-creator').innerHTML = staff.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
+  const types = [...new Set(CLIPS.map(c => c.type).filter(Boolean))].sort();
+  document.getElementById('re-type').innerHTML = `<option value="all">${t('allTypes')}</option>` + types.map(x => `<option value="${esc(x)}">${esc(x)}</option>`).join('');
+}
+function setLoading(on){
+  ['c-trend', 'c-people', 'c-type'].forEach(id => chartState(id, on ? 'loading' : ''));
+  ['k-target', 'k-done', 'k-bal', 'k-pct'].forEach(id => { if (on) document.getElementById(id).innerHTML = '<span class="ox-skeleton kpi-kpi-skel"></span>'; });
+}
+let SOURCE = 'gviz';
+function fetchCsvRows(){ return fetch(`${PUB_CSV_URL}${PUB_CSV_URL.includes('?') ? '&' : '?'}_=${Date.now()}`, { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error('http ' + r.status); return r.text(); }).then(txt => Papa.parse(txt, { skipEmptyLines: false }).data); }
+function fetchGvizRows(){
+  return new Promise((resolve, reject) => {
+    const cb = 'oxSheet_' + Date.now(), script = document.createElement('script');
+    const done = () => { clearTimeout(timer); script.remove(); delete window[cb]; };
+    const timer = setTimeout(() => { done(); reject(new Error('timeout')); }, 20000);
+    window[cb] = resp => {
+      done();
+      if (!resp || resp.status !== 'ok' || !resp.table) return reject(new Error('bad response'));
+      const header = resp.table.cols.map(c => c.label || '');
+      const rows = resp.table.rows.map(r => r.c.map(cell => {
+        if (!cell || cell.v == null) return '';
+        const m = /^Date\((\d+),(\d+),(\d+)/.exec(String(cell.v));
+        return m ? `${+m[2] + 1}/${m[3]}/${m[1]}` : String(cell.v);   // ให้รูปเดียวกับ CSV (M/D/YYYY)
+      }));
+      resolve([header, ...rows]);
+    };
+    script.onerror = () => { done(); reject(new Error('network')); };
+    script.src = `${GVIZ_URL};responseHandler:${cb}&_=${Date.now()}`;
+    document.head.appendChild(script);
+  });
+}
+/* โหลด data_sheet.js ใหม่ทุกครั้ง (กัน cache) — ไฟล์นี้ถูก launchd/update_data.sh เขียนทับทุก 15 นาที */
+function loadSnapshot(){
+  return new Promise(resolve => {
+    const sc = document.createElement('script');
+    sc.onload = () => { sc.remove(); resolve(!!(window.SHEET_SNAPSHOT && window.SHEET_SNAPSHOT.rows)); };
+    sc.onerror = () => { sc.remove(); resolve(!!(window.SHEET_SNAPSHOT && window.SHEET_SNAPSHOT.rows)); };
+    sc.src = location.protocol === 'file:' ? 'data_sheet.js' : `data_sheet.js?_=${Date.now()}`;   // file:// ไม่ใส่ query กันบางเบราว์เซอร์หาไฟล์ไม่เจอ
+    document.head.appendChild(sc);
+  });
+}
+async function loadSheet(){
+  if (loading) return; loading = true;
+  document.getElementById('err').hidden = true; document.getElementById('warn').hidden = true;
+  document.getElementById('meta').textContent = t('loading'); setLoading(true);
+  try {
+    let data;
+    if (PUB_CSV_URL) { data = await fetchCsvRows(); SOURCE = 'pub'; LOADED_AT = new Date(); }
+    else if (await loadSnapshot()) { data = window.SHEET_SNAPSHOT.rows; SOURCE = 'snap'; LOADED_AT = window.SHEET_SNAPSHOT.fetched_at; }
+    else { data = await fetchGvizRows(); SOURCE = 'gviz'; LOADED_AT = new Date(); }
+    ALL = parseRows(data);
+    YEARS = [...new Set(ALL.map(c => c.year).filter(Boolean))].sort((a, b) => b - a);
+    const sel = document.getElementById('sel-year'); sel.innerHTML = YEARS.map(y => `<option value="${y}">${y}</option>`).join('');
+    if (!YEARS.includes(S.year)) S.year = YEARS[0];
+    setYear(S.year);
+    if (SOURCE === 'gviz') { document.getElementById('warn').hidden = false; document.getElementById('warn-msg').textContent = t('warn.partial', { n: fmtN(ALL.length) }); }
+    loading = false; setLoading(false); render();
+  } catch (e) {
+    loading = false; setLoading(false);
+    document.getElementById('err').hidden = false; document.getElementById('err-msg').textContent = /ไม่พบคอลัมน์|column/.test(e.message) ? e.message : t('err.net');
+    document.getElementById('meta').textContent = t('loadFail');
+    ['k-target', 'k-done', 'k-bal', 'k-pct'].forEach(id => document.getElementById(id).textContent = '—');
+  }
+}
+
+/* ===== 6. ภาพรวมทีม ===== */
+function computeStaff(clips, start, end, brand, quotas){
+  const weeks = targetWeeks(start, end);
+  return allStaff().map(name => {
+    const q = quotas[name] || { eloop: 0, moov: 0 }, elT = q.eloop * weeks, mvT = q.moov * weeks;
+    let elD = 0, mvD = 0;
+    clips.forEach(c => { if (c.status === 'Done' && c.creator.toLowerCase() === name.toLowerCase()) { if (c.shop === 'EloopTH') elD++; else mvD++; } });
+    const target = brand === 'EloopTH' ? elT : brand === 'Moov' ? mvT : elT + mvT, done = brand === 'EloopTH' ? elD : brand === 'Moov' ? mvD : elD + mvD;
+    return { name, elT, elD, mvT, mvD, target, done, gap: target - done, pct: pctOf(done, target) };
+  });
+}
+function renderChips(el, items, selected, onToggle){
+  const isAll = selected.length === 0;
+  el.innerHTML = items.map(v => `<button type="button" class="ox-chip ${isAll || selected.includes(v) ? 'is-active' : ''}" data-v="${esc(v)}" aria-pressed="${isAll || selected.includes(v)}">${esc(v)}</button>`).join('') + (isAll ? '' : `<button type="button" class="ox-btn ox-btn--ghost ox-btn--sm" data-v="__all">${t('all')}</button>`);
+  el.onclick = e => { const b = e.target.closest('[data-v]'); if (b) onToggle(b.dataset.v); };
+}
+function toggleIn(list, v, all){ if (v === '__all') return []; const next = list.length === 0 ? [v] : list.includes(v) ? list.filter(x => x !== v) : [...list, v]; return next.length === all.length ? [] : next; }
+function renderManager(){
+  const st = S.mgr, quotas = getQuotas(), staffNames = allStaff();
+  const $ = id => document.getElementById(id);
+  $('sel-year').value = S.year; $('mgr-start').value = st.start; $('mgr-end').value = st.end; $('mgr-brand').value = st.brand;
+  document.querySelectorAll('#mgr-preset button').forEach(b => b.classList.toggle('is-active', b.dataset.preset === st.preset));
+  $('meta').textContent = t('updated', { t: LOADED_AT ? (LOADED_AT instanceof Date ? fmtT(LOADED_AT) : LOADED_AT) : '—', src: t('src.' + SOURCE), n: fmtN(CLIPS.length) });
+  const weeks = targetWeeks(st.start, st.end);
+  $('mgr-period-label').textContent = t('period', { a: thDate(st.start), b: thDate(st.end), w: weeks });
+  renderChips($('mgr-creators'), staffNames, st.creators, v => { st.creators = toggleIn(st.creators, v, staffNames); st.page = 1; renderManager(); });
+  renderChips($('mgr-statuses'), STATUSES, st.statuses, v => { st.statuses = toggleIn(st.statuses, v, STATUSES); st.page = 1; renderManager(); });
+
+  const base = CLIPS.filter(c => (st.brand === 'all' || c.shop === st.brand) && inRange(c, st.start, st.end));
+  const isAllCr = st.creators.length === 0, crSet = new Set(st.creators.map(s => s.toLowerCase()));
+  const byCreator = c => isAllCr || crSet.has(c.creator.toLowerCase());
+  const visible = base.filter(byCreator), doneVisible = visible.filter(c => c.status === 'Done');
+  const staff = computeStaff(base, st.start, st.end, st.brand, quotas).filter(s => isAllCr || crSet.has(s.name.toLowerCase())).sort((a, b) => b.done - a.done);
+  const T = staff.reduce((a, s) => a + s.target, 0), D = staff.reduce((a, s) => a + s.done, 0), bal = T - D, P = pctOf(D, T);
+  const len = daysBetween(st.start, st.end), pEnd = addDays(st.start, -1), pStart = addDays(pEnd, -(len - 1));
+  const prevDone = ALL.filter(c => (st.brand === 'all' || c.shop === st.brand) && inRange(c, pStart, pEnd) && byCreator(c) && c.status === 'Done').length;
+  const wip = visible.filter(c => c.status !== 'Done').length;
+  const rangeLabel = `${fmtD(toD(st.start))} – ${fmtDY(toD(st.end))}`;
+
+  $('k-target').textContent = T ? fmtN(T) : '—'; setDelta($('d-target'), '', t('quotaLine', { n: staff.length, w: weeks }));
+  $('k-done').textContent = visible.length || T ? fmtN(D) : '—'; { const d = D - prevDone; setDelta($('d-done'), d > 0 ? 'up' : d < 0 ? 'down' : '', t('vsPrev', { d: signed(d), p: prevDone })); }
+  $('k-bal').textContent = T ? (bal > 0 ? `-${fmtN(bal)}` : `+${fmtN(-bal)}`) : '—'; setDelta($('d-bal'), bal > 0 ? 'down' : 'up', bal > 0 ? t('short', { n: bal }) : bal === 0 ? t('onTarget') : t('over', { n: -bal }));
+  $('k-pct').textContent = T ? `${P}%` : '—'; setDelta($('d-pct'), P >= 100 ? 'up' : P < 70 ? 'down' : '', t('wip', { n: wip }));
+
+  /* กราฟหลัก */
+  oxChartDefaults(); Object.values(charts).forEach(c => c.destroy());
+  const daily = len <= 31, keyOf = s => { if (daily) return s; const d = toD(s); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return iso(d); };
+  const buckets = []; for (let s = keyOf(st.start); s <= st.end; s = addDays(s, daily ? 1 : 7)) buckets.push(s);
+  const counts = {}; doneVisible.forEach(c => { const k = `${c.shop}|${keyOf(c.date)}`; counts[k] = (counts[k] || 0) + 1; });
+  const actBrands = BRANDS.filter(b => st.brand === 'all' || b === st.brand);
+  const series = actBrands.map(b => ({ label: BRAND_LABEL[b], data: buckets.map(k => counts[`${b}|${k}`] || 0), borderColor: brandColor(b), backgroundColor: brandColor(b), pointHoverBackgroundColor: brandColor(b), pointHoverBorderColor: tok('--omnix-surface') }));
+  legend($('lg-trend'), series.length > 1 ? series.map(s => [s.label, s.borderColor]) : []);
+  $('sub-trend').textContent = `${daily ? t('daily') : t('weekly')} · ${rangeLabel}`;
+  chartState('c-trend', doneVisible.length ? '' : 'empty', rangeLabel);
+  if (window.Chart) charts.trend = new Chart($('c-trend'), { type: 'line', data: { labels: buckets.map(k => fmtD(toD(k))), datasets: series },
+    options: { interaction: { mode: 'index', intersect: false }, scales: { x: { grid: noGrid, ticks: { maxTicksLimit: 10, maxRotation: 0 } }, y: { beginAtZero: true, grid: gridOpts(), border: { display: false }, ticks: { precision: 0, maxTicksLimit: 5 } } }, plugins: { tooltip: { callbacks: { label: i => ` ${i.dataset.label}: ${i.parsed.y} ${t('clips')}` } } } } });
+  /* กราฟรอง 1 */
+  chartState('c-people', staff.some(s => s.done > 0) ? '' : 'empty', rangeLabel);
+  if (window.Chart) charts.people = new Chart($('c-people'), { type: 'bar', data: { labels: staff.map(s => s.name), datasets: [{ data: staff.map(s => s.done), backgroundColor: chartColor(1), barThickness: 14 }] },
+    options: { indexAxis: 'y', scales: { x: { beginAtZero: true, grid: gridOpts(), border: { display: false }, ticks: { precision: 0, maxTicksLimit: 5 } }, y: { grid: noGrid, ticks: { autoSkip: false } } }, plugins: { tooltip: { mode: 'nearest', intersect: true, callbacks: { label: i => ` ${i.parsed.x} ${t('clips')}` } } } } });
+  /* กราฟรอง 2 */
+  const tc = {}; doneVisible.forEach(c => { const k = c.type || t('unknownType'); tc[k] = (tc[k] || 0) + 1; });
+  const sorted = Object.entries(tc).sort((a, b) => b[1] - a[1]), top = sorted.slice(0, 5), rest = sorted.slice(5).reduce((a, x) => a + x[1], 0);
+  if (rest) top.push([t('other'), rest]);
+  const typeColors = top.map((x, i) => i === 5 ? tok('--omnix-chart-other') : chartColor(i + 1));
+  legend($('lg-type'), top.map((x, i) => [x[0], typeColors[i]]));
+  chartState('c-type', top.length ? '' : 'empty', rangeLabel);
+  if (window.Chart) charts.type = new Chart($('c-type'), { type: 'doughnut', data: { labels: top.map(x => x[0]), datasets: [{ data: top.map(x => x[1]), backgroundColor: typeColors, borderColor: tok('--omnix-surface'), borderWidth: 2, hoverOffset: 4 }] },
+    options: { cutout: '65%', plugins: { tooltip: { mode: 'nearest', intersect: true, callbacks: { label: i => { const tot = i.dataset.data.reduce((a, b) => a + b, 0); return ` ${i.parsed} ${t('clips')} (${(i.parsed / tot * 100).toFixed(1)}%)`; } } } } } });
+
+  /* ตารางรายบุคคล */
+  $('mgr-matrix').innerHTML = staff.length === 0 ? emptyRow(11, t('noCreators'), t('noCreatorsHint')) : staff.map(s => {
+    const badge = s.target === 0 && s.done > 0 ? `<span class="ox-badge ox-badge--success">${t('extra')}</span>` : s.gap < 0 ? `<span class="ox-badge ox-badge--success">${t('overN', { n: -s.gap })}</span>` : s.gap === 0 ? `<span class="ox-badge ox-badge--info">${t('met')}</span>` : `<span class="ox-badge ox-badge--danger">${t('shortN', { n: s.gap })}</span>`;
+    return `<tr><td><span class="ox-row"><span class="kpi-avatar">${esc(s.name.charAt(0))}</span><strong>${esc(s.name)}</strong></span></td><td class="is-num">${s.elT}</td><td class="is-num">${s.elD}</td><td class="is-num">${s.mvT}</td><td class="is-num">${s.mvD}</td><td class="is-num"><strong>${s.target}</strong></td><td class="is-num"><strong>${s.done}</strong></td><td class="is-num">${s.gap > 0 ? `-${s.gap}` : s.gap === 0 ? '0' : `+${-s.gap}`}</td><td>${progress(s.pct)}</td><td class="is-nowrap">${badge}</td><td class="is-nowrap"><button class="ox-btn ox-btn--ghost ox-btn--sm" type="button" data-jump="${esc(s.name)}">${t('viewPerson')}</button></td></tr>`;
+  }).join('');
+
+  /* ตารางคลิป */
+  const q = st.q.toLowerCase(), isAllSt = st.statuses.length === 0;
+  const rows = visible.filter(c => (isAllSt || st.statuses.includes(c.status)) && (!q || `${c.topic} ${c.title} ${c.product} ${c.creator} ${c.type}`.toLowerCase().includes(q))).sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id);
+  $('mgr-count').textContent = fmtN(rows.length);
+  const pages = Math.max(1, Math.ceil(rows.length / st.size)); st.page = Math.min(Math.max(1, st.page), pages);
+  const off = (st.page - 1) * st.size, pageRows = rows.slice(off, off + st.size);
+  $('mgr-rows').innerHTML = pageRows.length === 0 ? emptyRow(9, t('noDataIn', { r: rangeLabel }), t('noClipsHint'), `<button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" onclick="setMgrPreset('all_year')">${t('viewYear')}</button>`) : pageRows.map((c, i) => `<tr><td class="is-num ox-muted">${off + i + 1}</td><td class="ox-num is-nowrap">${thDate(c.date)}</td><td>${badgeBrand(c.shop)}</td><td>${esc(c.product || '—')}</td><td>${badgeType(c.type)}</td><td class="is-topic"><div class="line-clamp-2" title="${esc(c.topic || c.title)}">${highlight(c.topic || c.title || '—', st.q)}</div></td><td>${badgeStatus(c.status)}</td><td>${esc(c.creator || '—')}</td><td>${btnOpen(c)}</td></tr>`).join('');
+  $('mgr-pageinfo').textContent = rows.length ? t('showing', { a: off + 1, b: Math.min(off + st.size, rows.length), n: fmtN(rows.length) }) : t('none');
+  $('mgr-prev').disabled = st.page <= 1; $('mgr-next').disabled = st.page >= pages;
+  S.exportRows = rows;
+}
+function setMgrPreset(p){ S.mgr.preset = p; [S.mgr.start, S.mgr.end] = presetRange(p, S.year); S.mgr.page = 1; renderManager(); }
+
+/* ===== 7. ภาระงานรายคน ===== */
+function renderPersonal(){
+  const st = S.my, quotas = getQuotas(), name = st.creator, q = quotas[name] || { eloop: 0, moov: 0 }, $ = id => document.getElementById(id);
+  $('my-creator').value = name; $('my-preset').value = st.preset; $('my-start').value = st.start; $('my-end').value = st.end; $('my-brand').value = st.brand; $('my-status').value = st.status;
+  $('my-name').textContent = name || '—'; $('my-avatar').textContent = (name || '–').charAt(0);
+  $('my-quota').textContent = t('myQuota', { n: q.eloop + q.moov, e: q.eloop, m: q.moov });
+  const weeks = targetWeeks(st.start, st.end), elT = q.eloop * weeks, mvT = q.moov * weeks;
+  const mine = CLIPS.filter(c => c.creator.toLowerCase() === name.toLowerCase() || (c.editor && c.editor.toLowerCase() === name.toLowerCase()));
+  const period = mine.filter(c => inRange(c, st.start, st.end));
+  const elD = period.filter(c => c.status === 'Done' && c.shop === 'EloopTH').length, mvD = period.filter(c => c.status === 'Done' && c.shop === 'Moov').length;
+  const T = st.brand === 'EloopTH' ? elT : st.brand === 'Moov' ? mvT : elT + mvT, D = st.brand === 'EloopTH' ? elD : st.brand === 'Moov' ? mvD : elD + mvD, gap = T - D, P = pctOf(D, T);
+  $('my-k-target').textContent = T ? fmtN(T) : '—'; setDelta($('my-d-target'), '', st.brand === 'all' ? t('myTargetSub', { e: elT, m: mvT, w: weeks }) : t('myTargetSubBrand', { b: st.brand, w: weeks }));
+  $('my-k-done').textContent = fmtN(D); setDelta($('my-d-done'), '', st.brand === 'all' ? t('myDoneSub', { e: elD, m: mvD }) : t('fromTarget', { n: T }));
+  $('my-k-bal').textContent = T ? (gap > 0 ? fmtN(gap) : `+${fmtN(-gap)}`) : '—'; setDelta($('my-d-bal'), gap > 0 ? 'down' : 'up', gap > 0 ? t('todo', { n: gap }) : gap === 0 ? t('metAll') : t('over', { n: -gap }));
+  $('my-k-pct').textContent = T ? `${P}%` : '—'; setDelta($('my-d-pct'), P >= 100 ? 'up' : P < 70 ? 'down' : '', `${thDate(st.start)} – ${thDate(st.end)}`);
+  const qs = st.q.toLowerCase();
+  const rows = period.filter(c => (st.brand === 'all' || c.shop === st.brand) && (st.status === 'all' || c.status === st.status) && (!qs || `${c.topic} ${c.title} ${c.product} ${c.type}`.toLowerCase().includes(qs))).sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id);
+  $('my-count').textContent = fmtN(rows.length);
+  $('my-rows').innerHTML = rows.length === 0 ? emptyRow(9, t('noMatch'), t('noMatchHint')) : rows.map((c, i) => `<tr><td class="is-num ox-muted">${i + 1}</td><td class="ox-num is-nowrap">${thDate(c.date)}</td><td>${badgeBrand(c.shop)}</td><td>${esc(c.product || '—')}</td><td>${badgeType(c.type)}</td><td class="is-topic"><div class="line-clamp-2" title="${esc(c.topic || c.title)}">${highlight(c.topic || c.title || '—', st.q)}</div></td><td>${badgeStatus(c.status)}</td><td class="is-nowrap">${btnCopy(c.path, t('copyPath'), t('copiedPath')) || '<span class="ox-muted">—</span>'}</td><td>${btnOpen(c)}</td></tr>`).join('');
+  S.exportRows = rows;
+}
+
+/* ===== 8. คลังคลิป ===== */
+function renderReuse(){
+  const st = S.re, q = st.q.toLowerCase(), $ = id => document.getElementById(id);
+  $('re-status').value = st.status; $('re-type').value = st.type; $('re-brand').value = st.brand; $('re-preset').value = st.preset; $('re-start').value = st.start; $('re-end').value = st.end; $('re-sort').value = st.sort;
+  const rows = CLIPS.filter(c => c.topic && (st.brand === 'all' || c.shop === st.brand) && (st.type === 'all' || c.type === st.type) && (st.status === 'all' || c.status === st.status) && (st.preset === 'all_year' || inRange(c, st.start, st.end)) && (!q || `${c.topic} ${c.title} ${c.product} ${c.creator} ${c.type}`.toLowerCase().includes(q)));
+  rows.sort((a, b) => { if (a.date !== b.date) { if (!a.date) return 1; if (!b.date) return -1; return st.sort === 'newest' ? b.date.localeCompare(a.date) : a.date.localeCompare(b.date); } return st.sort === 'newest' ? b.id - a.id : a.id - b.id; });
+  $('re-count').textContent = `${fmtN(rows.length)} ${t('clips')}`;
+  const pages = Math.max(1, Math.ceil(rows.length / st.size)); st.page = Math.min(Math.max(1, st.page), pages);
+  const off = (st.page - 1) * st.size, pageRows = rows.slice(off, off + st.size);
+  $('re-rows').innerHTML = pageRows.length === 0 ? emptyRow(9, t('noSearch'), t('noSearchHint')) : pageRows.map((c, i) => `<tr><td class="is-num ox-muted">${off + i + 1}</td><td class="ox-num is-nowrap">${thDate(c.date)}</td><td>${badgeBrand(c.shop)}</td><td>${esc(c.product || '—')}</td><td>${badgeType(c.type)}</td><td class="is-topic"><div class="line-clamp-2" title="${esc(c.topic)}">${highlight(c.topic, st.q)}</div></td><td>${badgeStatus(c.status)}</td><td>${esc(c.creator || '—')}</td><td class="is-nowrap"><span class="ox-row" style="flex-wrap:nowrap">${btnCopy(c.url, t('copyLink'), t('copiedLink'))}${btnCopy(c.path, t('copyPath'), t('copiedPath'))}${c.url ? btnOpen(c) : ''}</span></td></tr>`).join('');
+  $('re-pageinfo').textContent = rows.length ? t('showing', { a: off + 1, b: Math.min(off + st.size, rows.length), n: fmtN(rows.length) }) : t('none');
+  $('re-prev').disabled = st.page <= 1; $('re-next').disabled = st.page >= pages;
+  S.exportRows = rows;
+}
+
+/* ===== 9. โหมด / โควต้า / เหตุการณ์ ===== */
+function render(){ if (!ALL.length) return; ({ manager: renderManager, personal: renderPersonal, reuse: renderReuse })[S.mode](); }
+function switchMode(m){
+  S.mode = m;
+  document.querySelectorAll('#mode-tabs [role=tab]').forEach(b => { b.classList.toggle('is-active', b.dataset.mode === m); b.setAttribute('aria-selected', b.dataset.mode === m); });
+  ['manager', 'personal', 'reuse'].forEach(k => document.getElementById(`page-${k}`).classList.toggle('is-active', k === m));
+  render();
+}
+const $ = id => document.getElementById(id), on = (id, ev, fn) => $(id).addEventListener(ev, fn);
+$('mode-tabs').addEventListener('click', e => { const b = e.target.closest('[role=tab]'); if (b) switchMode(b.dataset.mode); });
+$('lang-seg').addEventListener('click', e => { const b = e.target.closest('[data-lang]'); if (!b) return; LANG = b.dataset.lang; storage.set('CK_LANG', LANG); applyLang(); if (ALL.length) { setYear(S.year); render(); } });
+on('sel-year', 'change', e => { setYear(+e.target.value); render(); });
+$('mgr-preset').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setMgrPreset(b.dataset.preset); });
+const mgrCustom = () => { const s = $('mgr-start').value, e = $('mgr-end').value; if (!s || !e || s > e) return; S.mgr.preset = 'custom'; S.mgr.start = s; S.mgr.end = e; S.mgr.page = 1; renderManager(); };
+on('mgr-start', 'change', mgrCustom); on('mgr-end', 'change', mgrCustom);
+on('mgr-brand', 'change', e => { S.mgr.brand = e.target.value; S.mgr.page = 1; renderManager(); });
+on('mgr-search', 'input', e => { S.mgr.q = e.target.value.trim(); S.mgr.page = 1; renderManager(); });
+on('mgr-pagesize', 'change', e => { S.mgr.size = +e.target.value; S.mgr.page = 1; renderManager(); });
+on('mgr-prev', 'click', () => { S.mgr.page--; renderManager(); }); on('mgr-next', 'click', () => { S.mgr.page++; renderManager(); });
+$('mgr-matrix').addEventListener('click', e => { const b = e.target.closest('[data-jump]'); if (b) { S.my.creator = b.dataset.jump; S.my.preset = S.mgr.preset === 'custom' ? 'custom' : S.mgr.preset; S.my.start = S.mgr.start; S.my.end = S.mgr.end; switchMode('personal'); } });
+on('my-creator', 'change', e => { S.my.creator = e.target.value; renderPersonal(); });
+on('my-preset', 'change', e => { S.my.preset = e.target.value; if (e.target.value !== 'custom') [S.my.start, S.my.end] = presetRange(e.target.value, S.year); renderPersonal(); });
+const myCustom = () => { const s = $('my-start').value, e = $('my-end').value; if (!s || !e || s > e) return; S.my.preset = 'custom'; S.my.start = s; S.my.end = e; renderPersonal(); };
+on('my-start', 'change', myCustom); on('my-end', 'change', myCustom);
+on('my-brand', 'change', e => { S.my.brand = e.target.value; renderPersonal(); });
+on('my-status', 'change', e => { S.my.status = e.target.value; renderPersonal(); });
+on('my-search', 'input', e => { S.my.q = e.target.value.trim(); renderPersonal(); });
+on('re-search', 'input', e => { S.re.q = e.target.value.trim(); S.re.page = 1; renderReuse(); });
+['status', 'type', 'brand', 'sort'].forEach(k => on(`re-${k}`, 'change', e => { S.re[k] = e.target.value; S.re.page = 1; renderReuse(); }));
+on('re-preset', 'change', e => { S.re.preset = e.target.value; if (e.target.value !== 'custom') [S.re.start, S.re.end] = presetRange(e.target.value, S.year); S.re.page = 1; renderReuse(); });
+const reCustom = () => { const s = $('re-start').value, e = $('re-end').value; if (!s || !e || s > e) return; S.re.preset = 'custom'; S.re.start = s; S.re.end = e; S.re.page = 1; renderReuse(); };
+on('re-start', 'change', reCustom); on('re-end', 'change', reCustom);
+on('re-pagesize', 'change', e => { S.re.size = +e.target.value; S.re.page = 1; renderReuse(); });
+on('re-prev', 'click', () => { S.re.page--; renderReuse(); }); on('re-next', 'click', () => { S.re.page++; renderReuse(); });
+
+function openQuota(){
+  $('quota-list').innerHTML = Object.entries(getQuotas()).map(([n, q]) => `<div class="kpi-quota-row"><strong>${esc(n)}</strong><label>Eloop <input type="number" min="0" max="20" class="ox-control" value="${q.eloop}" data-name="${esc(n)}" data-brand="eloop"></label><label>Moov <input type="number" min="0" max="20" class="ox-control" value="${q.moov}" data-name="${esc(n)}" data-brand="moov"></label></div>`).join('');
+  $('quota-modal').hidden = false;
+}
+const closeQuota = () => $('quota-modal').hidden = true;
+on('btn-quota', 'click', openQuota); on('quota-cancel', 'click', closeQuota);
+$('quota-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeQuota(); });
+on('quota-save', 'click', () => { const next = {}; $('quota-list').querySelectorAll('input').forEach(i => { const n = i.dataset.name; next[n] = next[n] || { eloop: 0, moov: 0 }; next[n][i.dataset.brand] = Math.max(0, parseInt(i.value, 10) || 0); }); storage.set('ELOOP_MOOV_QUOTAS', next); closeQuota(); toast(t('quota.saved')); render(); });
+on('quota-reset', 'click', () => { if (confirm(t('quota.confirm'))) { storage.set('ELOOP_MOOV_QUOTAS', DEFAULT_QUOTAS); closeQuota(); toast(t('quota.resetDone')); render(); } });
+
+on('btn-refresh', 'click', loadSheet);
+on('btn-theme', 'click', () => { const r = document.documentElement, dark = r.getAttribute('data-theme') === 'dark' || (!r.getAttribute('data-theme') && matchMedia('(prefers-color-scheme: dark)').matches); r.setAttribute('data-theme', dark ? 'light' : 'dark'); r.classList.toggle('dark', !dark); render(); });
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', render);
+on('btn-csv', 'click', () => {
+  const rows = S.exportRows || [], head = ['id', 'date', 'shop', 'product', 'type', 'topic', 'status', 'creator', 'url', 'path'];
+  const csv = [head.join(','), ...rows.map(c => head.map(k => `"${String(c[k] ?? '').replace(/"/g, '""')}"`).join(','))].join('\n');
+  const a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8,﻿' + encodeURIComponent(csv); a.download = `content-svdo-${S.mode}-${S.year}-${TODAY}.csv`; a.click();
+});
+
+/* ===== 10. เริ่มต้น ===== */
+applyLang();
+loadSheet();
+setInterval(loadSheet, 15 * 60 * 1000);   // ซิงค์ซ้ำทุก 15 นาทีขณะเปิดหน้าอยู่
+</script>
+</body>
+</html>

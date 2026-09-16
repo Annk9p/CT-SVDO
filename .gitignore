@@ -1,0 +1,5 @@
+.sync.log
+.claude/
+_legacy/
+artifact.html
+.DS_Store
