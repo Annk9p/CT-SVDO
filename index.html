@@ -340,6 +340,22 @@ select.ox-control { appearance: none; padding-right: var(--omnix-space-8); backg
 
 
 /* ---- CSS เฉพาะหน้า (อ้าง token เท่านั้น) ---- */
+.kpi-dd { position: relative; }
+.kpi-dd__btn { display: inline-flex; align-items: center; justify-content: space-between; gap: var(--omnix-space-2); min-width: 200px; text-align: left; }
+.kpi-dd__btn::after { content: ''; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); flex: 0 0 auto; }
+.kpi-dd__menu { position: absolute; z-index: 40; top: calc(100% + 4px); left: 0; min-width: 240px; max-height: 320px; overflow-y: auto; padding: var(--omnix-space-2); background: var(--omnix-surface); border: 1px solid var(--omnix-border); border-radius: var(--omnix-radius-lg); display: flex; flex-direction: column; gap: 2px; }
+.kpi-dd__menu[hidden] { display: none; }
+.kpi-dd__menu .ox-check { padding: var(--omnix-space-1) var(--omnix-space-2); border-radius: 6px; font-size: var(--omnix-text-xs); }
+.kpi-dd__menu .ox-check:hover { background: var(--omnix-surface-2); }
+.kpi-dd__foot { display: flex; justify-content: space-between; gap: var(--omnix-space-2); padding-top: var(--omnix-space-2); margin-top: var(--omnix-space-1); border-top: 1px solid var(--omnix-border); }
+.kpi-topic { display: flex; align-items: flex-start; gap: var(--omnix-space-2); }
+.kpi-topic .line-clamp-2 { flex: 1; }
+.kpi-topic .ox-btn--icon { flex: 0 0 auto; }
+.kpi-status-counts { display: flex; flex-wrap: wrap; gap: var(--omnix-space-2); align-items: center; }
+.kpi-status-counts .ox-badge { cursor: pointer; }
+.kpi-status-counts .ox-badge.is-dim { opacity: .45; }
+.kpi-status-counts .ox-num { font-weight: 600; margin-left: 2px; }
+.ox-table .is-crew { white-space: nowrap; font-size: var(--omnix-text-xs); }
 .kpi-page { display: none; flex-direction: column; gap: var(--omnix-space-5); }
 .kpi-page.is-active { display: flex; }
 .kpi-tabs { display: flex; align-items: center; gap: var(--omnix-space-3); flex-wrap: wrap; }
@@ -445,10 +461,9 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
     </div>
     <div class="ox-filter-bar" role="group">
       <span class="ox-label" style="margin:0" data-i18n="creators">ครีเอเตอร์</span>
-      <div class="kpi-chips" id="mgr-creators"></div>
-      <span class="ox-filter-bar__spacer"></span>
+      <div class="kpi-dd" id="dd-creators"><button type="button" class="ox-btn ox-btn--secondary ox-btn--sm kpi-dd__btn" aria-haspopup="listbox" aria-expanded="false"><span class="kpi-dd__label">—</span></button><div class="kpi-dd__menu" role="listbox" hidden></div></div>
       <span class="ox-label" style="margin:0" data-i18n="status">สถานะ</span>
-      <div class="kpi-chips" id="mgr-statuses"></div>
+      <div class="kpi-dd" id="dd-statuses"><button type="button" class="ox-btn ox-btn--secondary ox-btn--sm kpi-dd__btn" aria-haspopup="listbox" aria-expanded="false"><span class="kpi-dd__label">—</span></button><div class="kpi-dd__menu" role="listbox" hidden></div></div>
     </div>
 
     <div class="ox-kpi-grid">
@@ -473,6 +488,14 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
       </div>
     </div>
 
+    <div class="ox-section-title"><h2 data-i18n="t.crew">บทบาททีมงาน — จำนวนคลิปต่อคน</h2><span class="ox-xs ox-muted" data-i18n="t.crew.sub">นับจากคอลัมน์ Recorder / Editor / Actor / Voice over ทุกสถานะในช่วงที่เลือก</span></div>
+    <div class="ox-chart-grid">
+      <div class="ox-chart"><div class="ox-chart__head"><div><div class="ox-chart__title" data-i18n="h.recorder">ถ่าย (Recorder)</div><div class="ox-chart__sub" id="sub-recorder">—</div></div></div><div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-recorder" role="img"></canvas></div></div></div>
+      <div class="ox-chart"><div class="ox-chart__head"><div><div class="ox-chart__title" data-i18n="h.editor">ตัดต่อ (Editor)</div><div class="ox-chart__sub" id="sub-editor">—</div></div></div><div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-editor" role="img"></canvas></div></div></div>
+      <div class="ox-chart"><div class="ox-chart__head"><div><div class="ox-chart__title" data-i18n="h.actor">นักแสดง (Actor)</div><div class="ox-chart__sub" id="sub-actor">—</div></div></div><div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-actor" role="img"></canvas></div></div></div>
+      <div class="ox-chart"><div class="ox-chart__head"><div><div class="ox-chart__title" data-i18n="h.voice">พากย์ (Voice over)</div><div class="ox-chart__sub" id="sub-voice">—</div></div></div><div class="ox-chart__body"><div class="ox-chart__canvas"><canvas id="c-voice" role="img"></canvas></div></div></div>
+    </div>
+
     <div class="kpi-card">
       <div class="kpi-table-head"><h2 data-i18n="t.matrix">ผลงานรายบุคคล เทียบเป้าหมาย</h2><span class="ox-xs ox-muted" id="mgr-period-label"></span></div>
       <div class="ox-table-wrap"><table class="ox-table ox-table--data">
@@ -487,7 +510,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
         <div class="kpi-search"><input type="search" id="mgr-search" class="ox-control" data-i18n-ph="ph.search"></div>
       </div>
       <div class="ox-table-wrap"><table class="ox-table ox-table--data">
-        <thead><tr><th class="is-num">#</th><th data-i18n="h.date">วันที่</th><th data-i18n="h.brand">แบรนด์</th><th data-i18n="h.product">สินค้า</th><th data-i18n="h.type">ประเภท</th><th class="is-topic" data-i18n="h.topic">หัวข้อคลิป</th><th data-i18n="h.status">สถานะ</th><th data-i18n="h.creator">ครีเอเตอร์</th><th>TikTok</th></tr></thead>
+        <thead><tr><th class="is-num">#</th><th data-i18n="h.date">วันที่</th><th data-i18n="h.brand">แบรนด์</th><th data-i18n="h.product">สินค้า</th><th data-i18n="h.type">ประเภท</th><th class="is-topic" data-i18n="h.topic">หัวข้อคลิป</th><th data-i18n="h.status">สถานะ</th><th data-i18n="h.creator">ครีเอเตอร์</th><th class="is-crew" data-i18n="h.recorder">ถ่าย</th><th class="is-crew" data-i18n="h.editor">ตัดต่อ</th><th class="is-crew" data-i18n="h.actor">นักแสดง</th><th class="is-crew" data-i18n="h.voice">พากย์</th><th>TikTok</th></tr></thead>
         <tbody id="mgr-rows"></tbody></table></div>
       <div class="kpi-table-foot"><span id="mgr-pageinfo">—</span><span class="ox-row"><button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" id="mgr-prev" data-i18n="prev">ก่อนหน้า</button><button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" id="mgr-next" data-i18n="next">ถัดไป</button></span></div>
     </div>
@@ -515,6 +538,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
     <div class="kpi-card">
       <div class="kpi-table-head">
         <h2><span data-i18n="t.myClips">รายการคลิป</span> <span class="ox-badge ox-badge--accent ox-num" id="my-count">0</span></h2>
+        <div class="kpi-status-counts" id="my-status-counts" aria-label="จำนวนตามสถานะ"></div>
         <div class="kpi-search"><input type="search" id="my-search" class="ox-control" data-i18n-ph="ph.search2"></div>
       </div>
       <div class="ox-table-wrap"><table class="ox-table ox-table--data">
@@ -577,7 +601,7 @@ const SHEET = { id: '139OFW8jnXZ6PgelZ6zEVo9Fp0bRUbnbaVvvaM56jBuA', gid: '456905
    3) gviz (JSONP) — สดแต่เห็นเฉพาะแถวที่ "ไม่ได้ยุบ/ซ่อน" ในชีต ใช้เมื่อไม่มีสองอย่างแรก */
 const PUB_CSV_URL = '';
 const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET.id}/gviz/tq?gid=${SHEET.gid}&tqx=out:json`;
-const COLS = { shop: 'Shop Name', product: 'Product', type: 'Content type', topic: 'Topic', title: 'title', url: 'URL', creator: 'Creator', status: 'Status', date: 'DATE', path: 'Path', editor: 'Editor' };
+const COLS = { shop: 'Shop Name', product: 'Product', type: 'Content type', topic: 'Topic', title: 'title', url: 'URL', creator: 'Creator', status: 'Status', date: 'DATE', path: 'Path', recorder: 'Recorder', editor: 'Editor', actor: 'Actor', voice: 'Voice over' };
 const STATUSES = ['Done', 'In Progress', 'Draft', 'Reject', 'Stuck'];
 const BRANDS = ['EloopTH', 'Moov'];
 const BRAND_LABEL = { EloopTH: 'Eloop', Moov: 'Moov' };
@@ -594,7 +618,7 @@ const DICT = {
     'c.trend': 'คลิปที่โพสต์แล้วตามช่วงเวลา', 'c.people': 'โพสต์แล้วต่อคน', 'c.people.sub': 'เรียงจากมากไปน้อย', 'c.type': 'สัดส่วนตามประเภทคลิป', 'c.type.sub': 'เฉพาะที่โพสต์แล้ว',
     't.matrix': 'ผลงานรายบุคคล เทียบเป้าหมาย', 't.clips': 'รายการคลิปตามเงื่อนไข', 't.myClips': 'รายการคลิป', 't.reuse': 'คลิปพร้อมนำไปใช้', 't.reuse.sub': 'คัดลอกลิงก์ TikTok หรือที่อยู่ไฟล์ต้นฉบับได้ทันที',
     'h.creator': 'ครีเอเตอร์', 'h.elT': 'Eloop เป้า', 'h.elD': 'Eloop โพสต์', 'h.mvT': 'Moov เป้า', 'h.mvD': 'Moov โพสต์', 'h.target': 'รวมเป้า', 'h.done': 'โพสต์แล้ว', 'h.gap': 'ขาด/เกิน', 'h.pct': 'ความสำเร็จ', 'h.status': 'สถานะ',
-    'h.date': 'วันที่', 'h.brand': 'แบรนด์', 'h.product': 'สินค้า', 'h.type': 'ประเภท', 'h.topic': 'หัวข้อคลิป', 'h.file': 'ไฟล์', 'h.actions': 'นำไปใช้',
+    'h.recorder': 'ถ่าย (Recorder)', 'h.editor': 'ตัดต่อ (Editor)', 'h.actor': 'นักแสดง (Actor)', 'h.voice': 'พากย์ (Voice)', 't.crew': 'บทบาททีมงาน — จำนวนคลิปต่อคน', 't.crew.sub': 'นับจากคอลัมน์ Recorder / Editor / Actor / Voice over ทุกสถานะในช่วงที่เลือก', crewSub: '{n} คลิป · {p} คน', copyTopic: 'คัดลอกหัวข้อ', copiedTopic: 'คัดลอกหัวข้อแล้ว', nSelected: 'เลือก {n} รายการ', clear: 'ล้าง', byStatus: 'แยกตามสถานะ', 'h.date': 'วันที่', 'h.brand': 'แบรนด์', 'h.product': 'สินค้า', 'h.type': 'ประเภท', 'h.topic': 'หัวข้อคลิป', 'h.file': 'ไฟล์', 'h.actions': 'นำไปใช้',
     'ph.search': 'ค้นหาหัวข้อ สินค้า ประเภท หรือชื่อคน', 'ph.search2': 'ค้นหาหัวข้อหรือสินค้า', 'ph.search3': 'ค้นหาตามหัวข้อหรือสินค้า เช่น E29, iPhone 18, ชาร์จเร็ว, ฟิล์ม',
     're.done': 'Done — แนะนำสำหรับยิงแอด', 'sort.newest': 'ล่าสุดก่อน', 'sort.oldest': 'เก่าสุดก่อน',
     'quota.btn': 'ตั้งค่าโควต้า', 'quota.title': 'ตั้งค่าโควต้าเป้าหมายรายสัปดาห์', 'quota.help': 'จำนวนคลิปต่อสัปดาห์ของแต่ละคน แยกแบรนด์ — บันทึกไว้ในเบราว์เซอร์นี้', 'quota.reset': 'คืนค่าเริ่มต้น', 'quota.save': 'บันทึกโควต้า', 'quota.saved': 'บันทึกโควต้าแล้ว', 'quota.resetDone': 'คืนค่าเริ่มต้นแล้ว', 'quota.confirm': 'คืนค่าโควต้าเริ่มต้นทั้งหมด?',
@@ -617,7 +641,7 @@ const DICT = {
     'c.trend': 'Posted clips over time', 'c.people': 'Posted per creator', 'c.people.sub': 'Sorted high to low', 'c.type': 'Share by content type', 'c.type.sub': 'Posted clips only',
     't.matrix': 'Per-creator delivery vs target', 't.clips': 'Clips matching filters', 't.myClips': 'Clips', 't.reuse': 'Ready-to-use clips', 't.reuse.sub': 'Copy the TikTok link or the source file path instantly',
     'h.creator': 'Creator', 'h.elT': 'Eloop target', 'h.elD': 'Eloop posted', 'h.mvT': 'Moov target', 'h.mvD': 'Moov posted', 'h.target': 'Target', 'h.done': 'Posted', 'h.gap': 'Gap', 'h.pct': 'Achievement', 'h.status': 'Status',
-    'h.date': 'Date', 'h.brand': 'Brand', 'h.product': 'Product', 'h.type': 'Type', 'h.topic': 'Topic', 'h.file': 'File', 'h.actions': 'Use',
+    'h.recorder': 'Recorder', 'h.editor': 'Editor', 'h.actor': 'Actor', 'h.voice': 'Voice over', 't.crew': 'Crew roles — clips per person', 't.crew.sub': 'From the Recorder / Editor / Actor / Voice over columns, all statuses in the selected period', crewSub: '{n} clips · {p} people', copyTopic: 'Copy topic', copiedTopic: 'Topic copied', nSelected: '{n} selected', clear: 'Clear', byStatus: 'By status', 'h.date': 'Date', 'h.brand': 'Brand', 'h.product': 'Product', 'h.type': 'Type', 'h.topic': 'Topic', 'h.file': 'File', 'h.actions': 'Use',
     'ph.search': 'Search topic, product, type or creator', 'ph.search2': 'Search topic or product', 'ph.search3': 'Search by topic or product, e.g. E29, iPhone 18, fast charge, film',
     're.done': 'Done — recommended for ads', 'sort.newest': 'Newest first', 'sort.oldest': 'Oldest first',
     'quota.btn': 'Set quotas', 'quota.title': 'Weekly target quotas', 'quota.help': 'Clips per week for each creator, per brand — saved in this browser', 'quota.reset': 'Reset to defaults', 'quota.save': 'Save quotas', 'quota.saved': 'Quotas saved', 'quota.resetDone': 'Defaults restored', 'quota.confirm': 'Reset all quotas to defaults?',
@@ -686,6 +710,7 @@ const badgeStatus = s => STATUS_BADGE[s] ? `<span class="ox-badge ox-badge--${ST
 const badgeBrand = b => `<span class="ox-badge" style="--c:var(--omnix-chart-${b === 'Moov' ? 2 : 1})">${BRAND_LABEL[b] || esc(b)}</span>`;
 const badgeType = ty => ty ? `<span class="ox-badge">${esc(ty)}</span>` : '<span class="ox-muted">—</span>';
 const highlight = (text, q) => q ? esc(text).replace(new RegExp(`(${escRe(esc(q))})`, 'gi'), '<mark class="kpi-hl">$1</mark>') : esc(text);
+const topicCell = (c, q) => { const txt = c.topic || c.title || ''; return `<div class="kpi-topic"><div class="line-clamp-2" title="${esc(txt)}">${highlight(txt || '—', q)}</div>${txt ? `<button class="ox-btn ox-btn--ghost ox-btn--icon ox-btn--sm" type="button" data-copy="${esc(txt)}" data-msg="${esc(t('copiedTopic'))}" aria-label="${t('copyTopic')}" title="${t('copyTopic')}">${ico('copy')}</button>` : ''}</div>`; };
 const btnOpen = c => c.url ? `<a class="ox-btn ox-btn--secondary ox-btn--sm kpi-inline-btn" href="${esc(c.url)}" target="_blank" rel="noopener">${ico('ext')}${t('open')}</a>` : `<span class="ox-muted ox-xs">${t('noLink')}</span>`;
 const btnCopy = (val, label, msg) => val ? `<button class="ox-btn ox-btn--secondary ox-btn--sm kpi-inline-btn" type="button" data-copy="${esc(val)}" data-msg="${esc(msg)}">${ico('copy')}${label}</button>` : '';
 const emptyRow = (cols, title, hint, action) => `<tr class="kpi-empty-row"><td colspan="${cols}"><div class="ox-empty"><div class="ox-empty__title">${title}</div><div class="ox-xs">${hint}</div>${action || ''}</div></td></tr>`;
@@ -746,7 +771,7 @@ function parseRows(data){
     const shop = get(r, 'shop'); if (!BRANDS.includes(shop)) continue;
     const status = get(r, 'status'), topic = get(r, 'topic'), date = parseUSDate(get(r, 'date'));
     if (!status && !topic && !date) continue;   // แถวว่างที่มีแค่ชื่อคน
-    out.push({ id: ++id, year: date ? +date.slice(0, 4) : sectionYear, shop, product: get(r, 'product'), type: get(r, 'type'), topic, title: get(r, 'title'), url: get(r, 'url'), creator: get(r, 'creator').replace(/\s+/g, ' '), status: status || 'Draft', date, path: get(r, 'path').replace(/^'|'$/g, ''), editor: get(r, 'editor') });
+    out.push({ id: ++id, year: date ? +date.slice(0, 4) : sectionYear, shop, product: get(r, 'product'), type: get(r, 'type'), topic, title: get(r, 'title'), url: get(r, 'url'), creator: get(r, 'creator').replace(/\s+/g, ' '), status: status || 'Draft', date, path: get(r, 'path').replace(/^'|'$/g, ''), recorder: get(r, 'recorder'), editor: get(r, 'editor'), actor: get(r, 'actor'), voice: get(r, 'voice') });
   }
   return out;
 }
@@ -765,7 +790,7 @@ function setYear(y){
   document.getElementById('re-type').innerHTML = `<option value="all">${t('allTypes')}</option>` + types.map(x => `<option value="${esc(x)}">${esc(x)}</option>`).join('');
 }
 function setLoading(on){
-  ['c-trend', 'c-people', 'c-type'].forEach(id => chartState(id, on ? 'loading' : ''));
+  ['c-trend', 'c-people', 'c-type', 'c-recorder', 'c-editor', 'c-actor', 'c-voice'].forEach(id => chartState(id, on ? 'loading' : ''));
   ['k-target', 'k-done', 'k-bal', 'k-pct'].forEach(id => { if (on) document.getElementById(id).innerHTML = '<span class="ox-skeleton kpi-kpi-skel"></span>'; });
 }
 let SOURCE = 'gviz';
@@ -836,11 +861,21 @@ function computeStaff(clips, start, end, brand, quotas){
     return { name, elT, elD, mvT, mvD, target, done, gap: target - done, pct: pctOf(done, target) };
   });
 }
-function renderChips(el, items, selected, onToggle){
-  const isAll = selected.length === 0;
-  el.innerHTML = items.map(v => `<button type="button" class="ox-chip ${isAll || selected.includes(v) ? 'is-active' : ''}" data-v="${esc(v)}" aria-pressed="${isAll || selected.includes(v)}">${esc(v)}</button>`).join('') + (isAll ? '' : `<button type="button" class="ox-btn ox-btn--ghost ox-btn--sm" data-v="__all">${t('all')}</button>`);
-  el.onclick = e => { const b = e.target.closest('[data-v]'); if (b) onToggle(b.dataset.v); };
+/* เมนูเลื่อนลงเลือกได้หลายรายการ — [] = ทั้งหมด */
+function renderDropdown(root, items, selected, labelOf, onChange){
+  const isAll = selected.length === 0, btn = root.querySelector('.kpi-dd__btn'), menu = root.querySelector('.kpi-dd__menu');
+  root.querySelector('.kpi-dd__label').textContent = isAll ? `${t('all')} (${items.length})` : selected.length <= 2 ? selected.map(labelOf).join(', ') : t('nSelected', { n: selected.length });
+  if (menu.dataset.sig !== items.join('|')) {
+    menu.innerHTML = items.map(v => `<label class="ox-check"><input type="checkbox" value="${esc(v)}"><span>${esc(labelOf(v))}</span></label>`).join('') +
+      `<div class="kpi-dd__foot"><button type="button" class="ox-btn ox-btn--ghost ox-btn--sm" data-act="all">${t('all')}</button><button type="button" class="ox-btn ox-btn--ghost ox-btn--sm" data-act="clear">${t('clear')}</button></div>`;
+    menu.dataset.sig = items.join('|');
+  }
+  menu.querySelectorAll('input').forEach(i => i.checked = isAll || selected.includes(i.value));
+  btn.onclick = e => { e.stopPropagation(); const open = menu.hidden; document.querySelectorAll('.kpi-dd__menu').forEach(m => m.hidden = true); menu.hidden = !open; btn.setAttribute('aria-expanded', String(open)); };
+  menu.onclick = e => { e.stopPropagation(); const a = e.target.closest('[data-act]'); if (a) { onChange(a.dataset.act === 'all' ? [] : ['__none']); } };
+  menu.onchange = e => { const i = e.target; if (i.type !== 'checkbox') return; const cur = isAll ? items.slice() : selected.filter(v => v !== '__none'); const next = i.checked ? [...new Set([...cur, i.value])] : cur.filter(v => v !== i.value); onChange(next.length === items.length ? [] : next); };
 }
+document.addEventListener('click', () => document.querySelectorAll('.kpi-dd__menu').forEach(m => { m.hidden = true; m.parentElement.querySelector('.kpi-dd__btn').setAttribute('aria-expanded', 'false'); }));
 function toggleIn(list, v, all){ if (v === '__all') return []; const next = list.length === 0 ? [v] : list.includes(v) ? list.filter(x => x !== v) : [...list, v]; return next.length === all.length ? [] : next; }
 function renderManager(){
   const st = S.mgr, quotas = getQuotas(), staffNames = allStaff();
@@ -850,11 +885,11 @@ function renderManager(){
   $('meta').textContent = t('updated', { t: LOADED_AT ? (LOADED_AT instanceof Date ? fmtT(LOADED_AT) : LOADED_AT) : '—', src: t('src.' + SOURCE), n: fmtN(CLIPS.length) });
   const weeks = targetWeeks(st.start, st.end);
   $('mgr-period-label').textContent = t('period', { a: thDate(st.start), b: thDate(st.end), w: weeks });
-  renderChips($('mgr-creators'), staffNames, st.creators, v => { st.creators = toggleIn(st.creators, v, staffNames); st.page = 1; renderManager(); });
-  renderChips($('mgr-statuses'), STATUSES, st.statuses, v => { st.statuses = toggleIn(st.statuses, v, STATUSES); st.page = 1; renderManager(); });
+  renderDropdown($('dd-creators'), staffNames, st.creators, v => v, next => { st.creators = next; st.page = 1; renderManager(); });
+  renderDropdown($('dd-statuses'), STATUSES, st.statuses, v => `${v} · ${t('st.' + v)}`, next => { st.statuses = next; st.page = 1; renderManager(); });
 
   const base = CLIPS.filter(c => (st.brand === 'all' || c.shop === st.brand) && inRange(c, st.start, st.end));
-  const isAllCr = st.creators.length === 0, crSet = new Set(st.creators.map(s => s.toLowerCase()));
+  const isAllCr = st.creators.length === 0, crSet = new Set(st.creators.filter(v => v !== '__none').map(s => s.toLowerCase()));
   const byCreator = c => isAllCr || crSet.has(c.creator.toLowerCase());
   const visible = base.filter(byCreator), doneVisible = visible.filter(c => c.status === 'Done');
   const staff = computeStaff(base, st.start, st.end, st.brand, quotas).filter(s => isAllCr || crSet.has(s.name.toLowerCase())).sort((a, b) => b.done - a.done);
@@ -895,6 +930,16 @@ function renderManager(){
   if (window.Chart) charts.type = new Chart($('c-type'), { type: 'doughnut', data: { labels: top.map(x => x[0]), datasets: [{ data: top.map(x => x[1]), backgroundColor: typeColors, borderColor: tok('--omnix-surface'), borderWidth: 2, hoverOffset: 4 }] },
     options: { cutout: '65%', plugins: { tooltip: { mode: 'nearest', intersect: true, callbacks: { label: i => { const tot = i.dataset.data.reduce((a, b) => a + b, 0); return ` ${i.parsed} ${t('clips')} (${(i.parsed / tot * 100).toFixed(1)}%)`; } } } } } });
 
+  /* กราฟบทบาททีมงาน 4 ตัว (P Q R S) — แท่งแนวนอน เรียงมากไปน้อย สีเดียว */
+  [['recorder', 'c-recorder'], ['editor', 'c-editor'], ['actor', 'c-actor'], ['voice', 'c-voice']].forEach(([key, id]) => {
+    const cnt = {}; visible.forEach(c => { const v = (c[key] || '').trim(); if (v) cnt[v] = (cnt[v] || 0) + 1; });
+    const list = Object.entries(cnt).sort((a, b) => b[1] - a[1]), total = list.reduce((a, x) => a + x[1], 0);
+    $(`sub-${key}`).textContent = t('crewSub', { n: fmtN(total), p: list.length });
+    chartState(id, list.length ? '' : 'empty', rangeLabel);
+    if (window.Chart) charts[key] = new Chart($(id), { type: 'bar', data: { labels: list.map(x => x[0]), datasets: [{ data: list.map(x => x[1]), backgroundColor: chartColor(1), barThickness: 14 }] },
+      options: { indexAxis: 'y', scales: { x: { beginAtZero: true, grid: gridOpts(), border: { display: false }, ticks: { precision: 0, maxTicksLimit: 5 } }, y: { grid: noGrid, ticks: { autoSkip: false } } }, plugins: { tooltip: { mode: 'nearest', intersect: true, callbacks: { label: i => ` ${i.parsed.x} ${t('clips')} (${(i.parsed.x / total * 100).toFixed(1)}%)` } } } } });
+  });
+
   /* ตารางรายบุคคล */
   $('mgr-matrix').innerHTML = staff.length === 0 ? emptyRow(11, t('noCreators'), t('noCreatorsHint')) : staff.map(s => {
     const badge = s.target === 0 && s.done > 0 ? `<span class="ox-badge ox-badge--success">${t('extra')}</span>` : s.gap < 0 ? `<span class="ox-badge ox-badge--success">${t('overN', { n: -s.gap })}</span>` : s.gap === 0 ? `<span class="ox-badge ox-badge--info">${t('met')}</span>` : `<span class="ox-badge ox-badge--danger">${t('shortN', { n: s.gap })}</span>`;
@@ -902,12 +947,12 @@ function renderManager(){
   }).join('');
 
   /* ตารางคลิป */
-  const q = st.q.toLowerCase(), isAllSt = st.statuses.length === 0;
+  const q = st.q.toLowerCase(), isAllSt = st.statuses.length === 0;   // ['__none'] = ไม่เลือกเลย → ไม่ตรงสถานะไหน
   const rows = visible.filter(c => (isAllSt || st.statuses.includes(c.status)) && (!q || `${c.topic} ${c.title} ${c.product} ${c.creator} ${c.type}`.toLowerCase().includes(q))).sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id);
   $('mgr-count').textContent = fmtN(rows.length);
   const pages = Math.max(1, Math.ceil(rows.length / st.size)); st.page = Math.min(Math.max(1, st.page), pages);
   const off = (st.page - 1) * st.size, pageRows = rows.slice(off, off + st.size);
-  $('mgr-rows').innerHTML = pageRows.length === 0 ? emptyRow(9, t('noDataIn', { r: rangeLabel }), t('noClipsHint'), `<button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" onclick="setMgrPreset('all_year')">${t('viewYear')}</button>`) : pageRows.map((c, i) => `<tr><td class="is-num ox-muted">${off + i + 1}</td><td class="ox-num is-nowrap">${thDate(c.date)}</td><td>${badgeBrand(c.shop)}</td><td>${esc(c.product || '—')}</td><td>${badgeType(c.type)}</td><td class="is-topic"><div class="line-clamp-2" title="${esc(c.topic || c.title)}">${highlight(c.topic || c.title || '—', st.q)}</div></td><td>${badgeStatus(c.status)}</td><td>${esc(c.creator || '—')}</td><td>${btnOpen(c)}</td></tr>`).join('');
+  $('mgr-rows').innerHTML = pageRows.length === 0 ? emptyRow(13, t('noDataIn', { r: rangeLabel }), t('noClipsHint'), `<button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" onclick="setMgrPreset('all_year')">${t('viewYear')}</button>`) : pageRows.map((c, i) => `<tr><td class="is-num ox-muted">${off + i + 1}</td><td class="ox-num is-nowrap">${thDate(c.date)}</td><td>${badgeBrand(c.shop)}</td><td>${esc(c.product || '—')}</td><td>${badgeType(c.type)}</td><td class="is-topic">${topicCell(c, st.q)}</td><td>${badgeStatus(c.status)}</td><td>${esc(c.creator || '—')}</td><td class="is-crew">${esc(c.recorder || '—')}</td><td class="is-crew">${esc(c.editor || '—')}</td><td class="is-crew">${esc(c.actor || '—')}</td><td class="is-crew">${esc(c.voice || '—')}</td><td>${btnOpen(c)}</td></tr>`).join('');
   $('mgr-pageinfo').textContent = rows.length ? t('showing', { a: off + 1, b: Math.min(off + st.size, rows.length), n: fmtN(rows.length) }) : t('none');
   $('mgr-prev').disabled = st.page <= 1; $('mgr-next').disabled = st.page >= pages;
   S.exportRows = rows;
@@ -932,7 +977,10 @@ function renderPersonal(){
   const qs = st.q.toLowerCase();
   const rows = period.filter(c => (st.brand === 'all' || c.shop === st.brand) && (st.status === 'all' || c.status === st.status) && (!qs || `${c.topic} ${c.title} ${c.product} ${c.type}`.toLowerCase().includes(qs))).sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id);
   $('my-count').textContent = fmtN(rows.length);
-  $('my-rows').innerHTML = rows.length === 0 ? emptyRow(9, t('noMatch'), t('noMatchHint')) : rows.map((c, i) => `<tr><td class="is-num ox-muted">${i + 1}</td><td class="ox-num is-nowrap">${thDate(c.date)}</td><td>${badgeBrand(c.shop)}</td><td>${esc(c.product || '—')}</td><td>${badgeType(c.type)}</td><td class="is-topic"><div class="line-clamp-2" title="${esc(c.topic || c.title)}">${highlight(c.topic || c.title || '—', st.q)}</div></td><td>${badgeStatus(c.status)}</td><td class="is-nowrap">${btnCopy(c.path, t('copyPath'), t('copiedPath')) || '<span class="ox-muted">—</span>'}</td><td>${btnOpen(c)}</td></tr>`).join('');
+  const inBrand = period.filter(c => st.brand === 'all' || c.shop === st.brand);
+  $('my-status-counts').innerHTML = `<span class="ox-xs ox-muted">${t('byStatus')}:</span>` + STATUSES.map(k => `<span class="ox-badge ox-badge--${STATUS_BADGE[k]} ${st.status !== 'all' && st.status !== k ? 'is-dim' : ''}" data-st="${k}" role="button" tabindex="0" title="${t('st.' + k)}">${k}<span class="ox-num">${inBrand.filter(c => c.status === k).length}</span></span>`).join('');
+  $('my-status-counts').onclick = e => { const b = e.target.closest('[data-st]'); if (!b) return; st.status = st.status === b.dataset.st ? 'all' : b.dataset.st; renderPersonal(); };
+  $('my-rows').innerHTML = rows.length === 0 ? emptyRow(9, t('noMatch'), t('noMatchHint')) : rows.map((c, i) => `<tr><td class="is-num ox-muted">${i + 1}</td><td class="ox-num is-nowrap">${thDate(c.date)}</td><td>${badgeBrand(c.shop)}</td><td>${esc(c.product || '—')}</td><td>${badgeType(c.type)}</td><td class="is-topic">${topicCell(c, st.q)}</td><td>${badgeStatus(c.status)}</td><td class="is-nowrap">${btnCopy(c.path, t('copyPath'), t('copiedPath')) || '<span class="ox-muted">—</span>'}</td><td>${btnOpen(c)}</td></tr>`).join('');
   S.exportRows = rows;
 }
 
@@ -945,7 +993,7 @@ function renderReuse(){
   $('re-count').textContent = `${fmtN(rows.length)} ${t('clips')}`;
   const pages = Math.max(1, Math.ceil(rows.length / st.size)); st.page = Math.min(Math.max(1, st.page), pages);
   const off = (st.page - 1) * st.size, pageRows = rows.slice(off, off + st.size);
-  $('re-rows').innerHTML = pageRows.length === 0 ? emptyRow(9, t('noSearch'), t('noSearchHint')) : pageRows.map((c, i) => `<tr><td class="is-num ox-muted">${off + i + 1}</td><td class="ox-num is-nowrap">${thDate(c.date)}</td><td>${badgeBrand(c.shop)}</td><td>${esc(c.product || '—')}</td><td>${badgeType(c.type)}</td><td class="is-topic"><div class="line-clamp-2" title="${esc(c.topic)}">${highlight(c.topic, st.q)}</div></td><td>${badgeStatus(c.status)}</td><td>${esc(c.creator || '—')}</td><td class="is-nowrap"><span class="ox-row" style="flex-wrap:nowrap">${btnCopy(c.url, t('copyLink'), t('copiedLink'))}${btnCopy(c.path, t('copyPath'), t('copiedPath'))}${c.url ? btnOpen(c) : ''}</span></td></tr>`).join('');
+  $('re-rows').innerHTML = pageRows.length === 0 ? emptyRow(9, t('noSearch'), t('noSearchHint')) : pageRows.map((c, i) => `<tr><td class="is-num ox-muted">${off + i + 1}</td><td class="ox-num is-nowrap">${thDate(c.date)}</td><td>${badgeBrand(c.shop)}</td><td>${esc(c.product || '—')}</td><td>${badgeType(c.type)}</td><td class="is-topic">${topicCell(c, st.q)}</td><td>${badgeStatus(c.status)}</td><td>${esc(c.creator || '—')}</td><td class="is-nowrap"><span class="ox-row" style="flex-wrap:nowrap">${btnCopy(c.url, t('copyLink'), t('copiedLink'))}${btnCopy(c.path, t('copyPath'), t('copiedPath'))}${c.url ? btnOpen(c) : ''}</span></td></tr>`).join('');
   $('re-pageinfo').textContent = rows.length ? t('showing', { a: off + 1, b: Math.min(off + st.size, rows.length), n: fmtN(rows.length) }) : t('none');
   $('re-prev').disabled = st.page <= 1; $('re-next').disabled = st.page >= pages;
   S.exportRows = rows;
