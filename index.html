@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Content SVDO 2026</title>
+<title>Content 2026</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Noto+Sans+Thai:wght@400;500;600&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
@@ -360,6 +360,25 @@ select.ox-control { appearance: none; padding-right: var(--omnix-space-8); backg
 .kpi-page.is-active { display: flex; }
 .kpi-platform { display: flex; align-items: center; gap: var(--omnix-space-3); flex-wrap: wrap; }
 .kpi-platform .ox-segment button { height: 32px; font-weight: 600; }
+.kpi-platform .ox-segment button { display: inline-flex; align-items: center; gap: 6px; }
+.kpi-platform .ox-segment button svg { width: 16px; height: 16px; fill: currentColor; }
+.kpi-updated { display: inline-flex; align-items: center; gap: var(--omnix-space-2); font-size: var(--omnix-text-xs); color: var(--omnix-fg-muted); }
+.kpi-updated .ox-dot { width: 8px; height: 8px; border-radius: var(--omnix-radius-full); background: var(--omnix-success-fg); display: inline-block; }
+.kpi-updated.is-stale .ox-dot { background: var(--omnix-warning-fg); }
+.kpi-preview { width: min(960px, 100%); }
+.kpi-preview__body { display: grid; grid-template-columns: 340px 1fr; gap: var(--omnix-space-4); }
+.kpi-preview__player { position: relative; width: 100%; aspect-ratio: 9 / 16; max-height: 70vh; background: var(--omnix-surface-2); border-radius: var(--omnix-radius-lg); overflow: hidden; }
+.kpi-preview__player.is-wide { aspect-ratio: 16 / 9; }
+.kpi-preview__player iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.kpi-preview__meta { display: flex; flex-direction: column; gap: var(--omnix-space-3); min-width: 0; }
+.kpi-preview__meta dl { display: grid; grid-template-columns: auto 1fr; gap: var(--omnix-space-1) var(--omnix-space-3); margin: 0; font-size: var(--omnix-text-xs); }
+.kpi-preview__meta dt { color: var(--omnix-fg-muted); }
+.kpi-preview__meta dd { margin: 0; word-break: break-word; }
+.kpi-preview__topic { font-weight: 600; font-size: var(--omnix-text-base); text-wrap: balance; }
+.ox-table tr.is-clickable { cursor: pointer; }
+.ox-table tr.is-clickable:hover td { background: var(--omnix-surface-2); }
+.kpi-sum-table td.is-num { font-variant-numeric: tabular-nums; }
+@media (max-width: 767px) { .kpi-preview__body { grid-template-columns: 1fr; } .kpi-preview__player { max-height: 60vh; } }
 .kpi-tabs { display: flex; align-items: center; gap: var(--omnix-space-3); flex-wrap: wrap; }
 .kpi-legend-bar { display: flex; flex-wrap: wrap; gap: var(--omnix-space-2); align-items: center; }
 .kpi-chips { display: flex; flex-wrap: wrap; gap: var(--omnix-space-1); align-items: center; }
@@ -405,7 +424,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
 <body>
 <div class="ox-app">
 <div class="ox-topbar">
-  <div class="ox-brand"><span class="ox-brand__mark">SV</span><span data-i18n="brand">Content SVDO 2026</span></div>
+  <div class="ox-brand"><span class="ox-brand__mark">C26</span><span data-i18n="brand">Content 2026</span></div>
   <span class="ox-topbar__spacer"></span>
   <div class="ox-segment" id="lang-seg" role="group" aria-label="Language">
     <button type="button" data-lang="th">ไทย</button>
@@ -417,10 +436,11 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
 
   <div class="ox-page-head">
     <div>
-      <h1 class="ox-page-title" data-i18n="title">Content SVDO 2026 — EloopTH &amp; Moov</h1>
+      <h1 class="ox-page-title" data-i18n="title">Content 2026 — EloopTH &amp; Moov</h1>
       <p class="ox-muted" data-i18n="subtitle">ติดตามเป้าหมายการส่งคลิปรายสัปดาห์ ภาระงานรายคน และคลังคลิปสำหรับนำไปใช้ต่อ — อ่านสดจาก Google Sheet</p>
     </div>
     <div class="ox-page-head__actions">
+      <span class="kpi-updated" id="updated-badge"><span class="ox-dot"></span><span id="updated-text">—</span></span>
       <button class="ox-btn ox-btn--ghost" id="btn-refresh" type="button" data-i18n="refresh">รีเฟรชข้อมูล</button>
       <button class="ox-btn ox-btn--secondary" id="btn-csv" type="button" data-i18n="csv">ดาวน์โหลด CSV</button>
     </div>
@@ -436,8 +456,8 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
 
   <div class="kpi-platform">
     <div class="ox-segment" role="tablist" id="platform-tabs" aria-label="Platform">
-      <button type="button" role="tab" data-platform="tiktok" class="is-active" aria-selected="true">TikTok</button>
-      <button type="button" role="tab" data-platform="youtube" aria-selected="false">YouTube</button>
+      <button type="button" role="tab" data-platform="tiktok" class="is-active" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5 2.6 2.6 0 0 1-2.59-2.6 2.6 2.6 0 0 1 3.4-2.47V9.66a5.7 5.7 0 0 0-5.02 9.83 5.69 5.69 0 0 0 9.9-3.98V9.13a7.35 7.35 0 0 0 4.3 1.38V7.42a4.3 4.3 0 0 1-3.25-1.6z"/></svg>TikTok</button>
+      <button type="button" role="tab" data-platform="youtube" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.76-1.77C18.3 5 12 5 12 5s-6.3 0-7.84.43A2.5 2.5 0 0 0 2.4 7.2 26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.76 1.77C5.7 19 12 19 12 19s6.3 0 7.84-.43a2.5 2.5 0 0 0 1.76-1.77A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8zM10 15V9l5.2 3L10 15z"/></svg>YouTube</button>
     </div>
   </div>
 
@@ -544,7 +564,14 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
       <div class="ox-kpi"><div class="ox-kpi__label" data-i18n="k.todo">คงเหลือต้องทำ</div><div class="ox-kpi__value" id="my-k-bal">—</div><div class="ox-kpi__delta" id="my-d-bal">—</div></div>
       <div class="ox-kpi"><div class="ox-kpi__label" data-i18n="k.pct">ความสำเร็จ</div><div class="ox-kpi__value" id="my-k-pct">—</div><div class="ox-kpi__delta" id="my-d-pct">—</div></div>
     </div>
-    <div class="kpi-card">
+    <div class="kpi-card" id="my-summary-card" hidden>
+      <div class="kpi-table-head"><h2 data-i18n="t.summary">รวมภาระงานทุกคน</h2><span class="ox-xs ox-muted" id="my-summary-sub">—</span></div>
+      <div class="ox-table-wrap"><table class="ox-table ox-table--data kpi-sum-table">
+        <thead><tr><th data-i18n="h.creator">ครีเอเตอร์</th><th class="is-num">TikTok Done</th><th class="is-num">In Progress</th><th class="is-num">Draft</th><th class="is-num">Reject</th><th class="is-num">Stuck</th><th class="is-num" data-i18n="h.ttTotal">TikTok รวม</th><th class="is-num" data-i18n="h.ttTarget">เป้า TikTok</th><th data-i18n="h.pct">ความสำเร็จ</th><th class="is-num">YT Owner</th><th class="is-num">YT MC</th><th class="is-num">YT Editor</th><th class="is-num" data-i18n="h.ytTotal">YouTube รวม</th><th class="is-num" data-i18n="h.grand">รวมทั้งหมด</th></tr></thead>
+        <tbody id="my-summary-rows"></tbody></table></div>
+    </div>
+
+    <div class="kpi-card" id="my-clips-card">
       <div class="kpi-table-head">
         <h2><span data-i18n="t.myClips">รายการคลิป</span> <span class="ox-badge ox-badge--accent ox-num" id="my-count">0</span></h2>
         <div class="kpi-status-counts" id="my-status-counts" aria-label="จำนวนตามสถานะ"></div>
@@ -623,6 +650,14 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
 
 <div class="kpi-toast ox-alert ox-alert--success" id="toast" role="status" hidden><span id="toast-msg"></span></div>
 
+<div class="ox-modal-mask" id="preview-modal" hidden>
+  <div class="ox-modal kpi-preview" role="dialog" aria-modal="true" aria-labelledby="preview-title">
+    <div class="ox-modal__head" id="preview-title" data-i18n="preview">ตัวอย่างคลิป</div>
+    <div class="ox-modal__body"><div class="kpi-preview__body"><div class="kpi-preview__player" id="preview-player"></div><div class="kpi-preview__meta" id="preview-meta"></div></div></div>
+    <div class="ox-modal__foot"><button class="ox-btn ox-btn--secondary" type="button" id="preview-close" data-i18n="close">ปิด</button></div>
+  </div>
+</div>
+
 <div class="ox-modal-mask" id="quota-modal" hidden>
   <div class="ox-modal" role="dialog" aria-modal="true" aria-labelledby="quota-title">
     <div class="ox-modal__head" id="quota-title" data-i18n="quota.title">ตั้งค่าโควต้าเป้าหมายรายสัปดาห์</div>
@@ -656,15 +691,15 @@ const DEFAULT_QUOTAS = { Moth:{eloop:1,moov:1}, Guild:{eloop:2,moov:1}, Yung:{el
 /* ===== 1. i18n — ทุกข้อความผ่าน t() สองภาษา ===== */
 const DICT = {
   th: {
-    brand: 'Content SVDO 2026', theme: 'สลับธีม', title: 'Content SVDO 2026 — EloopTH & Moov', subtitle: 'ติดตามเป้าหมายการส่งคลิปรายสัปดาห์ ภาระงานรายคน และคลังคลิปสำหรับนำไปใช้ต่อ — อ่านสดจาก Google Sheet',
+    brand: 'Content 2026', theme: 'สลับธีม', title: 'Content 2026 — EloopTH & Moov', subtitle: 'ติดตามเป้าหมายการส่งคลิปรายสัปดาห์ ภาระงานรายคน และคลังคลิปสำหรับนำไปใช้ต่อ — อ่านสดจาก Google Sheet',
     refresh: 'รีเฟรชข้อมูล', csv: 'ดาวน์โหลด CSV', reload: 'โหลดใหม่', 'tab.manager': 'ภาพรวม', 'tab.personal': 'ภาระงาน', 'tab.reuse': 'คลังวิดีโอ',
     'p.this_week': 'สัปดาห์นี้', 'p.last_week': 'สัปดาห์ก่อน', 'p.this_month': 'เดือนนี้', 'p.last_month': 'เดือนก่อน', 'p.all_year': 'ทั้งปี', 'p.custom': 'กำหนดเอง', to: 'ถึง',
     allBrands: 'ทุกแบรนด์', allStatus: 'ทุกสถานะ', allTypes: 'ทุกประเภท', creators: 'ครีเอเตอร์', status: 'สถานะ', all: 'ทั้งหมด', perPage: 'แสดงต่อหน้า', prev: 'ก่อนหน้า', next: 'ถัดไป', cancel: 'ยกเลิก',
     'k.target': 'เป้าหมายรวม (คลิป)', 'k.done': 'โพสต์แล้ว (Done)', 'k.bal': 'ขาด / เกินเป้า', 'k.pct': 'ความสำเร็จ', 'k.myTarget': 'เป้าหมายช่วงนี้', 'k.todo': 'คงเหลือต้องทำ',
     'c.trend': 'คลิปที่โพสต์แล้วตามช่วงเวลา', 'c.people': 'โพสต์แล้วต่อคน', 'c.people.sub': 'เรียงจากมากไปน้อย', 'c.type': 'สัดส่วนตามประเภทคลิป', 'c.type.sub': 'เฉพาะที่โพสต์แล้ว',
-    't.matrix': 'ผลงานรายบุคคล เทียบเป้าหมาย', 't.clips': 'รายการคลิปตามเงื่อนไข', 't.myClips': 'รายการคลิป', 't.reuse': 'คลิปพร้อมนำไปใช้', 't.reuse.sub': 'คัดลอกลิงก์ TikTok หรือที่อยู่ไฟล์ต้นฉบับได้ทันที',
+    't.matrix': 'ผลงานรายบุคคล เทียบเป้าหมาย', 't.clips': 'รายการคลิปตามเงื่อนไข', 't.myClips': 'รายการคลิป', 't.reuse': 'คลิปพร้อมนำไปใช้', 't.reuse.sub': 'คลิกแถวเพื่อดูตัวอย่างคลิป · คัดลอกลิงก์ TikTok หรือที่อยู่ไฟล์ต้นฉบับได้ทันที',
     'h.creator': 'ครีเอเตอร์', 'h.elT': 'Eloop เป้า', 'h.elD': 'Eloop โพสต์', 'h.mvT': 'Moov เป้า', 'h.mvD': 'Moov โพสต์', 'h.target': 'รวมเป้า', 'h.done': 'โพสต์แล้ว', 'h.gap': 'ขาด/เกิน', 'h.pct': 'ความสำเร็จ', 'h.status': 'สถานะ',
-    'h.recorder': 'ถ่าย (Recorder)', 'h.editor': 'ตัดต่อ (Editor)', 'h.actor': 'นักแสดง (Actor)', 'h.voice': 'พากย์ (Voice)', 'yt.allPlaylists': 'ทุก Playlist', 'yt.allOwners': 'ทุก Owner', 'yt.notStarted': 'ยังไม่เริ่ม', 'yt.search': 'ค้นหาหัวข้อ สินค้า หรือชื่อคน', 'yt.k.total': 'หัวข้อทั้งหมด (2026)', 'yt.k.done': 'เสร็จแล้ว (Done)', 'yt.k.wip': 'กำลังทำ (In Progress + Draft)', 'yt.k.todo': 'ยังไม่เริ่ม', 'yt.c.playlist': 'หัวข้อต่อ Playlist', 'yt.c.playlist.sub': 'แยกตามสถานะ', 'yt.c.status': 'สัดส่วนสถานะ', 'yt.c.status.sub': 'ทุกหัวข้อปี 2026 ตามตัวกรอง', 'yt.crew': 'บทบาททีมงาน — จำนวนหัวข้อต่อคน', 'yt.crew.sub': 'นับจากคอลัมน์ Owner / MC / Editor', 'yt.t.list': 'รายการหัวข้อ YouTube 2026', 'yt.shoot': 'วันถ่าย', 'yt.links': 'ลิงก์', 'yt.script': 'สคริปต์', 'yt.video': 'วิดีโอ', 'yt.ofTotal': '{p}% ของทั้งหมด', 'yt.topics': 'หัวข้อ', 'yt.updated': 'อัปเดตล่าสุด {t} · แหล่งข้อมูล: Google Sheet (YouTube Plan) · เฉพาะส่วน "Youtube 2026"', 'yt.noData': 'ยังไม่มีข้อมูล YouTube 2026', 'yt.noDataHint': 'ตรวจว่าชีตมีแถวหัวข้อ "Youtube 2026" และรัน update_data.sh', 't.crew': 'บทบาททีมงาน — จำนวนคลิปต่อคน', 't.crew.sub': 'นับจากคอลัมน์ Recorder / Editor / Actor / Voice over ทุกสถานะในช่วงที่เลือก', crewSub: '{n} คลิป · {p} คน', copyTopic: 'คัดลอกหัวข้อ', copiedTopic: 'คัดลอกหัวข้อแล้ว', nSelected: 'เลือก {n} รายการ', clear: 'ล้าง', byStatus: 'แยกตามสถานะ', 'h.date': 'วันที่', 'h.brand': 'แบรนด์', 'h.product': 'สินค้า', 'h.type': 'ประเภท', 'h.topic': 'หัวข้อคลิป', 'h.file': 'ไฟล์', 'h.actions': 'นำไปใช้',
+    'h.recorder': 'ถ่าย (Recorder)', 'h.editor': 'ตัดต่อ (Editor)', 'h.actor': 'นักแสดง (Actor)', 'h.voice': 'พากย์ (Voice)', 'yt.allPlaylists': 'ทุก Playlist', 'yt.allOwners': 'ทุก Owner', 'yt.notStarted': 'ยังไม่เริ่ม', 'yt.search': 'ค้นหาหัวข้อ สินค้า หรือชื่อคน', 'yt.k.total': 'หัวข้อทั้งหมด (2026)', 'yt.k.done': 'เสร็จแล้ว (Done)', 'yt.k.wip': 'กำลังทำ (In Progress + Draft)', 'yt.k.todo': 'ยังไม่เริ่ม', 'yt.c.playlist': 'หัวข้อต่อ Playlist', 'yt.c.playlist.sub': 'แยกตามสถานะ', 'yt.c.status': 'สัดส่วนสถานะ', 'yt.c.status.sub': 'ทุกหัวข้อปี 2026 ตามตัวกรอง', 'yt.crew': 'บทบาททีมงาน — จำนวนหัวข้อต่อคน', 'yt.crew.sub': 'นับจากคอลัมน์ Owner / MC / Editor', 'yt.t.list': 'รายการหัวข้อ YouTube 2026', 'yt.shoot': 'วันถ่าย', 'yt.links': 'ลิงก์', 'yt.script': 'สคริปต์', 'yt.video': 'วิดีโอ', 'yt.ofTotal': '{p}% ของทั้งหมด', 'yt.topics': 'หัวข้อ', 'yt.updated': 'อัปเดตล่าสุด {t} · แหล่งข้อมูล: Google Sheet (YouTube Plan) · เฉพาะส่วน "Youtube 2026"', 'yt.noData': 'ยังไม่มีข้อมูล YouTube 2026', 'yt.noDataHint': 'ตรวจว่าชีตมีแถวหัวข้อ "Youtube 2026" และรัน update_data.sh', allPeople: 'ทุกคน (รวมภาระงาน)', 't.summary': 'รวมภาระงานทุกคน', 'h.ttTotal': 'TikTok รวม', 'h.ttTarget': 'เป้า TikTok', 'h.ytTotal': 'YouTube รวม', 'h.grand': 'รวมทั้งหมด', summarySub: 'TikTok: คลิปในช่วง {a} – {b} · YouTube: หัวข้อปี 2026 ทั้งหมด (นับตามบทบาท)', allPeopleName: 'ทุกคน', allPeopleQuota: 'ภาระงานรวมของทีม', updatedAt: 'ข้อมูลล่าสุด {t}', updatedStale: 'ข้อมูลล่าสุด {t} (เกิน 1 ชม.)', preview: 'ตัวอย่างคลิป', previewHint: 'คลิกแถวเพื่อดูตัวอย่างคลิป', noVideo: 'คลิปนี้ยังไม่มีลิงก์วิดีโอ', close: 'ปิด', 't.crew': 'บทบาททีมงาน — จำนวนคลิปต่อคน', 't.crew.sub': 'นับจากคอลัมน์ Recorder / Editor / Actor / Voice over ทุกสถานะในช่วงที่เลือก', crewSub: '{n} คลิป · {p} คน', copyTopic: 'คัดลอกหัวข้อ', copiedTopic: 'คัดลอกหัวข้อแล้ว', nSelected: 'เลือก {n} รายการ', clear: 'ล้าง', byStatus: 'แยกตามสถานะ', 'h.date': 'วันที่', 'h.brand': 'แบรนด์', 'h.product': 'สินค้า', 'h.type': 'ประเภท', 'h.topic': 'หัวข้อคลิป', 'h.file': 'ไฟล์', 'h.actions': 'นำไปใช้',
     'ph.search': 'ค้นหาหัวข้อ สินค้า ประเภท หรือชื่อคน', 'ph.search2': 'ค้นหาหัวข้อหรือสินค้า', 'ph.search3': 'ค้นหาตามหัวข้อหรือสินค้า เช่น E29, iPhone 18, ชาร์จเร็ว, ฟิล์ม',
     're.done': 'Done — แนะนำสำหรับยิงแอด', 'sort.newest': 'ล่าสุดก่อน', 'sort.oldest': 'เก่าสุดก่อน',
     'quota.btn': 'ตั้งค่าโควต้า', 'quota.title': 'ตั้งค่าโควต้าเป้าหมายรายสัปดาห์', 'quota.help': 'จำนวนคลิปต่อสัปดาห์ของแต่ละคน แยกแบรนด์ — บันทึกไว้ในเบราว์เซอร์นี้', 'quota.reset': 'คืนค่าเริ่มต้น', 'quota.save': 'บันทึกโควต้า', 'quota.saved': 'บันทึกโควต้าแล้ว', 'quota.resetDone': 'คืนค่าเริ่มต้นแล้ว', 'quota.confirm': 'คืนค่าโควต้าเริ่มต้นทั้งหมด?',
@@ -679,15 +714,15 @@ const DICT = {
     noMatch: 'ไม่พบคลิปตามเงื่อนไข', noMatchHint: 'ลองเปลี่ยนช่วงเวลา แบรนด์ หรือสถานะ', noSearch: 'ไม่พบคลิปที่ตรงกับคำค้น', noSearchHint: 'ลองเลือก "ทุกสถานะ" หรือพิมพ์คำอื่น'
   },
   en: {
-    brand: 'Content SVDO 2026', theme: 'Toggle theme', title: 'Content SVDO 2026 — EloopTH & Moov', subtitle: 'Weekly clip delivery targets, per-creator workload and a reusable video library — live from Google Sheets',
+    brand: 'Content 2026', theme: 'Toggle theme', title: 'Content 2026 — EloopTH & Moov', subtitle: 'Weekly clip delivery targets, per-creator workload and a reusable video library — live from Google Sheets',
     refresh: 'Refresh data', csv: 'Download CSV', reload: 'Reload', 'tab.manager': 'Overview', 'tab.personal': 'Workload', 'tab.reuse': 'Video library',
     'p.this_week': 'This week', 'p.last_week': 'Last week', 'p.this_month': 'This month', 'p.last_month': 'Last month', 'p.all_year': 'Whole year', 'p.custom': 'Custom', to: 'to',
     allBrands: 'All brands', allStatus: 'All statuses', allTypes: 'All types', creators: 'Creators', status: 'Status', all: 'All', perPage: 'Per page', prev: 'Previous', next: 'Next', cancel: 'Cancel',
     'k.target': 'Total target (clips)', 'k.done': 'Posted (Done)', 'k.bal': 'Short / over target', 'k.pct': 'Achievement', 'k.myTarget': 'Target this period', 'k.todo': 'Remaining to do',
     'c.trend': 'Posted clips over time', 'c.people': 'Posted per creator', 'c.people.sub': 'Sorted high to low', 'c.type': 'Share by content type', 'c.type.sub': 'Posted clips only',
-    't.matrix': 'Per-creator delivery vs target', 't.clips': 'Clips matching filters', 't.myClips': 'Clips', 't.reuse': 'Ready-to-use clips', 't.reuse.sub': 'Copy the TikTok link or the source file path instantly',
+    't.matrix': 'Per-creator delivery vs target', 't.clips': 'Clips matching filters', 't.myClips': 'Clips', 't.reuse': 'Ready-to-use clips', 't.reuse.sub': 'Click a row to preview the clip · copy the TikTok link or source file path instantly',
     'h.creator': 'Creator', 'h.elT': 'Eloop target', 'h.elD': 'Eloop posted', 'h.mvT': 'Moov target', 'h.mvD': 'Moov posted', 'h.target': 'Target', 'h.done': 'Posted', 'h.gap': 'Gap', 'h.pct': 'Achievement', 'h.status': 'Status',
-    'h.recorder': 'Recorder', 'h.editor': 'Editor', 'h.actor': 'Actor', 'h.voice': 'Voice over', 'yt.allPlaylists': 'All playlists', 'yt.allOwners': 'All owners', 'yt.notStarted': 'Not started', 'yt.search': 'Search topic, product or person', 'yt.k.total': 'Total topics (2026)', 'yt.k.done': 'Done', 'yt.k.wip': 'In progress + Draft', 'yt.k.todo': 'Not started', 'yt.c.playlist': 'Topics per playlist', 'yt.c.playlist.sub': 'By status', 'yt.c.status': 'Status share', 'yt.c.status.sub': 'All 2026 topics matching filters', 'yt.crew': 'Crew roles — topics per person', 'yt.crew.sub': 'From the Owner / MC / Editor columns', 'yt.t.list': 'YouTube 2026 topics', 'yt.shoot': 'Shoot date', 'yt.links': 'Links', 'yt.script': 'Script', 'yt.video': 'Video', 'yt.ofTotal': '{p}% of total', 'yt.topics': 'topics', 'yt.updated': 'Updated {t} · Source: Google Sheet (YouTube Plan) · "Youtube 2026" section only', 'yt.noData': 'No YouTube 2026 data yet', 'yt.noDataHint': 'Check the sheet has a "Youtube 2026" header row and run update_data.sh', 't.crew': 'Crew roles — clips per person', 't.crew.sub': 'From the Recorder / Editor / Actor / Voice over columns, all statuses in the selected period', crewSub: '{n} clips · {p} people', copyTopic: 'Copy topic', copiedTopic: 'Topic copied', nSelected: '{n} selected', clear: 'Clear', byStatus: 'By status', 'h.date': 'Date', 'h.brand': 'Brand', 'h.product': 'Product', 'h.type': 'Type', 'h.topic': 'Topic', 'h.file': 'File', 'h.actions': 'Use',
+    'h.recorder': 'Recorder', 'h.editor': 'Editor', 'h.actor': 'Actor', 'h.voice': 'Voice over', 'yt.allPlaylists': 'All playlists', 'yt.allOwners': 'All owners', 'yt.notStarted': 'Not started', 'yt.search': 'Search topic, product or person', 'yt.k.total': 'Total topics (2026)', 'yt.k.done': 'Done', 'yt.k.wip': 'In progress + Draft', 'yt.k.todo': 'Not started', 'yt.c.playlist': 'Topics per playlist', 'yt.c.playlist.sub': 'By status', 'yt.c.status': 'Status share', 'yt.c.status.sub': 'All 2026 topics matching filters', 'yt.crew': 'Crew roles — topics per person', 'yt.crew.sub': 'From the Owner / MC / Editor columns', 'yt.t.list': 'YouTube 2026 topics', 'yt.shoot': 'Shoot date', 'yt.links': 'Links', 'yt.script': 'Script', 'yt.video': 'Video', 'yt.ofTotal': '{p}% of total', 'yt.topics': 'topics', 'yt.updated': 'Updated {t} · Source: Google Sheet (YouTube Plan) · "Youtube 2026" section only', 'yt.noData': 'No YouTube 2026 data yet', 'yt.noDataHint': 'Check the sheet has a "Youtube 2026" header row and run update_data.sh', allPeople: 'All people (workload summary)', 't.summary': 'Workload summary — all people', 'h.ttTotal': 'TikTok total', 'h.ttTarget': 'TikTok target', 'h.ytTotal': 'YouTube total', 'h.grand': 'Grand total', summarySub: 'TikTok: clips in {a} – {b} · YouTube: all 2026 topics (by role)', allPeopleName: 'All people', allPeopleQuota: 'Team workload summary', updatedAt: 'Data updated {t}', updatedStale: 'Data updated {t} (over 1 h ago)', preview: 'Clip preview', previewHint: 'Click a row to preview the clip', noVideo: 'This clip has no video link yet', close: 'Close', 't.crew': 'Crew roles — clips per person', 't.crew.sub': 'From the Recorder / Editor / Actor / Voice over columns, all statuses in the selected period', crewSub: '{n} clips · {p} people', copyTopic: 'Copy topic', copiedTopic: 'Topic copied', nSelected: '{n} selected', clear: 'Clear', byStatus: 'By status', 'h.date': 'Date', 'h.brand': 'Brand', 'h.product': 'Product', 'h.type': 'Type', 'h.topic': 'Topic', 'h.file': 'File', 'h.actions': 'Use',
     'ph.search': 'Search topic, product, type or creator', 'ph.search2': 'Search topic or product', 'ph.search3': 'Search by topic or product, e.g. E29, iPhone 18, fast charge, film',
     're.done': 'Done — recommended for ads', 'sort.newest': 'Newest first', 'sort.oldest': 'Oldest first',
     'quota.btn': 'Set quotas', 'quota.title': 'Weekly target quotas', 'quota.help': 'Clips per week for each creator, per brand — saved in this browser', 'quota.reset': 'Reset to defaults', 'quota.save': 'Save quotas', 'quota.saved': 'Quotas saved', 'quota.resetDone': 'Defaults restored', 'quota.confirm': 'Reset all quotas to defaults?',
@@ -757,6 +792,27 @@ const badgeBrand = b => `<span class="ox-badge" style="--c:var(--omnix-chart-${b
 const badgeType = ty => ty ? `<span class="ox-badge">${esc(ty)}</span>` : '<span class="ox-muted">—</span>';
 const highlight = (text, q) => q ? esc(text).replace(new RegExp(`(${escRe(esc(q))})`, 'gi'), '<mark class="kpi-hl">$1</mark>') : esc(text);
 const topicCell = (c, q) => { const txt = c.topic || c.title || ''; return `<div class="kpi-topic"><div class="line-clamp-2" title="${esc(txt)}">${highlight(txt || '—', q)}</div>${txt ? `<button class="ox-btn ox-btn--ghost ox-btn--icon ox-btn--sm" type="button" data-copy="${esc(txt)}" data-msg="${esc(t('copiedTopic'))}" aria-label="${t('copyTopic')}" title="${t('copyTopic')}">${ico('copy')}</button>` : ''}</div>`; };
+/* ตัวอย่างคลิป — TikTok ใช้ player embed, YouTube ใช้ embed; ไม่มีลิงก์ → แจ้ง */
+function videoEmbed(url){
+  let m = /tiktok\.com\/.*\/video\/(\d+)/.exec(url || ''); if (m) return { src: `https://www.tiktok.com/player/v1/${m[1]}?autoplay=0&music_info=1&description=1`, wide: false };
+  m = /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([\w-]{11})/.exec(url || ''); if (m) return { src: `https://www.youtube.com/embed/${m[1]}`, wide: !/shorts\//.test(url) };
+  return null;
+}
+function openPreview(item){
+  const url = item.url || item.link || '', emb = videoEmbed(url), player = document.getElementById('preview-player');
+  player.className = 'kpi-preview__player' + (emb && emb.wide ? ' is-wide' : '');
+  player.innerHTML = emb ? `<iframe src="${esc(emb.src)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" title="${esc(item.topic || '')}"></iframe>` : `<div class="ox-chart__empty"><div>${t('noVideo')}</div></div>`;
+  const rows = [[t('h.brand'), item.shop], [t('h.status'), item.status], [t('h.date'), item.date ? thDate(item.date) : (item.shoot ? thDate(item.shoot) : '')], [t('h.product'), item.product], [t('h.type'), item.type || item.playlist], [t('h.creator'), item.creator || item.owner], ['Recorder', item.recorder], ['Editor', item.editor], ['Actor', item.actor], ['Voice', item.voice], ['MC', item.mc]].filter(x => x[1]);
+  document.getElementById('preview-meta').innerHTML = `<div class="kpi-preview__topic">${esc(item.topic || item.title || '—')}</div><dl>${rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl><div class="ox-row">${btnCopy(item.topic, t('copyTopic'), t('copiedTopic'))}${url ? btnCopy(url, t('copyLink'), t('copiedLink')) : ''}${btnCopy(item.path, t('copyPath'), t('copiedPath'))}${url ? `<a class="ox-btn ox-btn--primary ox-btn--sm kpi-inline-btn" href="${esc(url)}" target="_blank" rel="noopener">${ico('ext')}${t('open')}</a>` : ''}${item.script ? `<a class="ox-btn ox-btn--secondary ox-btn--sm kpi-inline-btn" href="${esc(item.script)}" target="_blank" rel="noopener">${ico('ext')}${t('yt.script')}</a>` : ''}</div>`;
+  document.getElementById('preview-modal').hidden = false;
+}
+function closePreview(){ const m = document.getElementById('preview-modal'); m.hidden = true; document.getElementById('preview-player').innerHTML = ''; }
+/* คลิกแถว (ไม่ใช่ปุ่ม/ลิงก์ในแถว) → เปิดตัวอย่าง */
+document.addEventListener('click', e => {
+  if (e.target.closest('a, button, input, select, label')) return;
+  const tr = e.target.closest('tr[data-pv]'); if (!tr) return;
+  const [kind, id] = tr.dataset.pv.split(':'); const item = (kind === 'yt' ? YT : CLIPS).find(x => String(x.id) === id); if (item) openPreview(item);
+});
 const btnOpen = c => c.url ? `<a class="ox-btn ox-btn--secondary ox-btn--sm kpi-inline-btn" href="${esc(c.url)}" target="_blank" rel="noopener">${ico('ext')}${t('open')}</a>` : `<span class="ox-muted ox-xs">${t('noLink')}</span>`;
 const btnCopy = (val, label, msg) => val ? `<button class="ox-btn ox-btn--secondary ox-btn--sm kpi-inline-btn" type="button" data-copy="${esc(val)}" data-msg="${esc(msg)}">${ico('copy')}${label}</button>` : '';
 const emptyRow = (cols, title, hint, action) => `<tr class="kpi-empty-row"><td colspan="${cols}"><div class="ox-empty"><div class="ox-empty__title">${title}</div><div class="ox-xs">${hint}</div>${action || ''}</div></td></tr>`;
@@ -831,8 +887,8 @@ function setYear(y){
   [S.mgr.start, S.mgr.end] = presetRange(S.mgr.preset, y); [S.my.start, S.my.end] = presetRange(S.my.preset, y); [S.re.start, S.re.end] = presetRange(S.re.preset, y);
   S.mgr.page = S.re.page = 1;
   const staff = allStaff();
-  if (!staff.includes(S.my.creator)) S.my.creator = staff[0] || '';
-  document.getElementById('my-creator').innerHTML = staff.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
+  if (S.my.creator !== '__all' && !staff.includes(S.my.creator)) S.my.creator = staff[0] || '';
+  document.getElementById('my-creator').innerHTML = `<option value="__all">${t('allPeople')}</option>` + staff.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
   const types = [...new Set(CLIPS.map(c => c.type).filter(Boolean))].sort();
   document.getElementById('re-type').innerHTML = `<option value="all">${t('allTypes')}</option>` + types.map(x => `<option value="${esc(x)}">${esc(x)}</option>`).join('');
 }
@@ -1000,7 +1056,7 @@ function renderManager(){
   $('mgr-count').textContent = fmtN(rows.length);
   const pages = Math.max(1, Math.ceil(rows.length / st.size)); st.page = Math.min(Math.max(1, st.page), pages);
   const off = (st.page - 1) * st.size, pageRows = rows.slice(off, off + st.size);
-  $('mgr-rows').innerHTML = pageRows.length === 0 ? emptyRow(13, t('noDataIn', { r: rangeLabel }), t('noClipsHint'), `<button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" onclick="setMgrPreset('all_year')">${t('viewYear')}</button>`) : pageRows.map((c, i) => `<tr><td class="is-num ox-muted">${off + i + 1}</td><td class="ox-num is-nowrap">${thDate(c.date)}</td><td>${badgeBrand(c.shop)}</td><td>${esc(c.product || '—')}</td><td>${badgeType(c.type)}</td><td class="is-topic">${topicCell(c, st.q)}</td><td>${badgeStatus(c.status)}</td><td>${esc(c.creator || '—')}</td><td class="is-crew">${esc(c.recorder || '—')}</td><td class="is-crew">${esc(c.editor || '—')}</td><td class="is-crew">${esc(c.actor || '—')}</td><td class="is-crew">${esc(c.voice || '—')}</td><td>${btnOpen(c)}</td></tr>`).join('');
+  $('mgr-rows').innerHTML = pageRows.length === 0 ? emptyRow(13, t('noDataIn', { r: rangeLabel }), t('noClipsHint'), `<button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" onclick="setMgrPreset('all_year')">${t('viewYear')}</button>`) : pageRows.map((c, i) => `<tr class="is-clickable" data-pv="tt:${c.id}" title="${t('previewHint')}"><td class="is-num ox-muted">${off + i + 1}</td><td class="ox-num is-nowrap">${thDate(c.date)}</td><td>${badgeBrand(c.shop)}</td><td>${esc(c.product || '—')}</td><td>${badgeType(c.type)}</td><td class="is-topic">${topicCell(c, st.q)}</td><td>${badgeStatus(c.status)}</td><td>${esc(c.creator || '—')}</td><td class="is-crew">${esc(c.recorder || '—')}</td><td class="is-crew">${esc(c.editor || '—')}</td><td class="is-crew">${esc(c.actor || '—')}</td><td class="is-crew">${esc(c.voice || '—')}</td><td>${btnOpen(c)}</td></tr>`).join('');
   $('mgr-pageinfo').textContent = rows.length ? t('showing', { a: off + 1, b: Math.min(off + st.size, rows.length), n: fmtN(rows.length) }) : t('none');
   $('mgr-prev').disabled = st.page <= 1; $('mgr-next').disabled = st.page >= pages;
   S.exportRows = rows;
@@ -1008,8 +1064,34 @@ function renderManager(){
 function setMgrPreset(p){ S.mgr.preset = p; [S.mgr.start, S.mgr.end] = presetRange(p, S.year); S.mgr.page = 1; renderManager(); }
 
 /* ===== 7. ภาระงานรายคน ===== */
+function renderSummary(){
+  const st = S.my, quotas = getQuotas(), $ = id => document.getElementById(id), weeks = targetWeeks(st.start, st.end);
+  $('my-creator').value = '__all'; $('my-preset').value = st.preset; $('my-start').value = st.start; $('my-end').value = st.end; $('my-brand').value = st.brand; $('my-status').value = st.status;
+  $('my-name').textContent = t('allPeopleName'); $('my-avatar').textContent = '∑'; $('my-quota').textContent = t('allPeopleQuota');
+  $('my-summary-card').hidden = false; $('my-clips-card').hidden = true;
+  $('my-summary-sub').textContent = t('summarySub', { a: thDate(st.start), b: thDate(st.end) });
+  const period = CLIPS.filter(c => inRange(c, st.start, st.end) && (st.brand === 'all' || c.shop === st.brand));
+  const names = new Set([...allStaff(), ...YT.flatMap(r => [r.owner, r.mc, r.editor]).filter(Boolean)]);
+  const rows = [...names].map(n => {
+    const mine = period.filter(c => c.creator.toLowerCase() === n.toLowerCase()), cnt = k => mine.filter(c => c.status === k).length;
+    const q = quotas[n] || { eloop: 0, moov: 0 }, target = (st.brand === 'EloopTH' ? q.eloop : st.brand === 'Moov' ? q.moov : q.eloop + q.moov) * weeks;
+    const yt = k => YT.filter(r => (r[k] || '').toLowerCase() === n.toLowerCase()).length, ytTot = yt('owner') + yt('mc') + yt('editor');
+    return { n, done: cnt('Done'), ip: cnt('In Progress'), dr: cnt('Draft'), rj: cnt('Reject'), sk: cnt('Stuck'), tt: mine.length, target, pct: pctOf(cnt('Done'), target), o: yt('owner'), m: yt('mc'), e: yt('editor'), ytTot, grand: mine.length + ytTot };
+  }).filter(r => r.grand > 0 || r.target > 0).sort((a, b) => b.grand - a.grand);
+  const T = k => rows.reduce((a, r) => a + r[k], 0);
+  $('my-k-target').textContent = fmtN(T('target')); setDelta($('my-d-target'), '', `${rows.length} ${LANG === 'th' ? 'คน' : 'people'} · ${weeks} ${LANG === 'th' ? 'สัปดาห์' : 'weeks'}`);
+  $('my-k-done').textContent = fmtN(T('done')); setDelta($('my-d-done'), '', `TikTok ${T('tt')} · YouTube ${T('ytTot')}`);
+  const gap = T('target') - T('done'); $('my-k-bal').textContent = T('target') ? (gap > 0 ? fmtN(gap) : `+${fmtN(-gap)}`) : '—'; setDelta($('my-d-bal'), gap > 0 ? 'down' : 'up', gap > 0 ? t('todo', { n: gap }) : gap === 0 ? t('metAll') : t('over', { n: -gap }));
+  const P = pctOf(T('done'), T('target')); $('my-k-pct').textContent = T('target') ? `${P}%` : '—'; setDelta($('my-d-pct'), P >= 100 ? 'up' : P < 70 ? 'down' : '', `${thDate(st.start)} – ${thDate(st.end)}`);
+  $('my-summary-rows').innerHTML = rows.length === 0 ? emptyRow(14, t('noMatch'), t('noMatchHint')) : rows.map(r => `<tr class="is-clickable" data-person="${esc(r.n)}"><td><span class="ox-row"><span class="kpi-avatar">${esc(r.n.charAt(0))}</span><strong>${esc(r.n)}</strong></span></td><td class="is-num">${r.done}</td><td class="is-num">${r.ip}</td><td class="is-num">${r.dr}</td><td class="is-num">${r.rj}</td><td class="is-num">${r.sk}</td><td class="is-num"><strong>${r.tt}</strong></td><td class="is-num">${r.target}</td><td>${r.target ? progress(r.pct) : '<span class="ox-muted">—</span>'}</td><td class="is-num">${r.o}</td><td class="is-num">${r.m}</td><td class="is-num">${r.e}</td><td class="is-num"><strong>${r.ytTot}</strong></td><td class="is-num"><strong>${r.grand}</strong></td></tr>`).join('') +
+    `<tr><td><strong>${LANG === 'th' ? 'รวม' : 'Total'}</strong></td><td class="is-num"><strong>${T('done')}</strong></td><td class="is-num">${T('ip')}</td><td class="is-num">${T('dr')}</td><td class="is-num">${T('rj')}</td><td class="is-num">${T('sk')}</td><td class="is-num"><strong>${T('tt')}</strong></td><td class="is-num">${T('target')}</td><td>${T('target') ? progress(P) : ''}</td><td class="is-num">${T('o')}</td><td class="is-num">${T('m')}</td><td class="is-num">${T('e')}</td><td class="is-num"><strong>${T('ytTot')}</strong></td><td class="is-num"><strong>${T('grand')}</strong></td></tr>`;
+  $('my-summary-rows').onclick = e => { const tr = e.target.closest('[data-person]'); if (tr) { S.my.creator = tr.dataset.person; renderPersonal(); } };
+  S.exportRows = rows;
+}
 function renderPersonal(){
+  if (S.my.creator === '__all') return renderSummary();
   const st = S.my, quotas = getQuotas(), name = st.creator, q = quotas[name] || { eloop: 0, moov: 0 }, $ = id => document.getElementById(id);
+  $('my-summary-card').hidden = true; $('my-clips-card').hidden = false;
   $('my-creator').value = name; $('my-preset').value = st.preset; $('my-start').value = st.start; $('my-end').value = st.end; $('my-brand').value = st.brand; $('my-status').value = st.status;
   $('my-name').textContent = name || '—'; $('my-avatar').textContent = (name || '–').charAt(0);
   $('my-quota').textContent = t('myQuota', { n: q.eloop + q.moov, e: q.eloop, m: q.moov });
@@ -1028,7 +1110,7 @@ function renderPersonal(){
   const inBrand = period.filter(c => st.brand === 'all' || c.shop === st.brand);
   $('my-status-counts').innerHTML = `<span class="ox-xs ox-muted">${t('byStatus')}:</span>` + STATUSES.map(k => `<span class="ox-badge ox-badge--${STATUS_BADGE[k]} ${st.status !== 'all' && st.status !== k ? 'is-dim' : ''}" data-st="${k}" role="button" tabindex="0" title="${t('st.' + k)}">${k}<span class="ox-num">${inBrand.filter(c => c.status === k).length}</span></span>`).join('');
   $('my-status-counts').onclick = e => { const b = e.target.closest('[data-st]'); if (!b) return; st.status = st.status === b.dataset.st ? 'all' : b.dataset.st; renderPersonal(); };
-  $('my-rows').innerHTML = rows.length === 0 ? emptyRow(9, t('noMatch'), t('noMatchHint')) : rows.map((c, i) => `<tr><td class="is-num ox-muted">${i + 1}</td><td class="ox-num is-nowrap">${thDate(c.date)}</td><td>${badgeBrand(c.shop)}</td><td>${esc(c.product || '—')}</td><td>${badgeType(c.type)}</td><td class="is-topic">${topicCell(c, st.q)}</td><td>${badgeStatus(c.status)}</td><td class="is-nowrap">${btnCopy(c.path, t('copyPath'), t('copiedPath')) || '<span class="ox-muted">—</span>'}</td><td>${btnOpen(c)}</td></tr>`).join('');
+  $('my-rows').innerHTML = rows.length === 0 ? emptyRow(9, t('noMatch'), t('noMatchHint')) : rows.map((c, i) => `<tr class="is-clickable" data-pv="tt:${c.id}" title="${t('previewHint')}"><td class="is-num ox-muted">${i + 1}</td><td class="ox-num is-nowrap">${thDate(c.date)}</td><td>${badgeBrand(c.shop)}</td><td>${esc(c.product || '—')}</td><td>${badgeType(c.type)}</td><td class="is-topic">${topicCell(c, st.q)}</td><td>${badgeStatus(c.status)}</td><td class="is-nowrap">${btnCopy(c.path, t('copyPath'), t('copiedPath')) || '<span class="ox-muted">—</span>'}</td><td>${btnOpen(c)}</td></tr>`).join('');
   S.exportRows = rows;
 }
 
@@ -1041,7 +1123,7 @@ function renderReuse(){
   $('re-count').textContent = `${fmtN(rows.length)} ${t('clips')}`;
   const pages = Math.max(1, Math.ceil(rows.length / st.size)); st.page = Math.min(Math.max(1, st.page), pages);
   const off = (st.page - 1) * st.size, pageRows = rows.slice(off, off + st.size);
-  $('re-rows').innerHTML = pageRows.length === 0 ? emptyRow(9, t('noSearch'), t('noSearchHint')) : pageRows.map((c, i) => `<tr><td class="is-num ox-muted">${off + i + 1}</td><td class="ox-num is-nowrap">${thDate(c.date)}</td><td>${badgeBrand(c.shop)}</td><td>${esc(c.product || '—')}</td><td>${badgeType(c.type)}</td><td class="is-topic">${topicCell(c, st.q)}</td><td>${badgeStatus(c.status)}</td><td>${esc(c.creator || '—')}</td><td class="is-nowrap"><span class="ox-row" style="flex-wrap:nowrap">${btnCopy(c.url, t('copyLink'), t('copiedLink'))}${btnCopy(c.path, t('copyPath'), t('copiedPath'))}${c.url ? btnOpen(c) : ''}</span></td></tr>`).join('');
+  $('re-rows').innerHTML = pageRows.length === 0 ? emptyRow(9, t('noSearch'), t('noSearchHint')) : pageRows.map((c, i) => `<tr class="is-clickable" data-pv="tt:${c.id}" title="${t('previewHint')}"><td class="is-num ox-muted">${off + i + 1}</td><td class="ox-num is-nowrap">${thDate(c.date)}</td><td>${badgeBrand(c.shop)}</td><td>${esc(c.product || '—')}</td><td>${badgeType(c.type)}</td><td class="is-topic">${topicCell(c, st.q)}</td><td>${badgeStatus(c.status)}</td><td>${esc(c.creator || '—')}</td><td class="is-nowrap"><span class="ox-row" style="flex-wrap:nowrap">${btnCopy(c.url, t('copyLink'), t('copiedLink'))}${btnCopy(c.path, t('copyPath'), t('copiedPath'))}${c.url ? btnOpen(c) : ''}</span></td></tr>`).join('');
   $('re-pageinfo').textContent = rows.length ? t('showing', { a: off + 1, b: Math.min(off + st.size, rows.length), n: fmtN(rows.length) }) : t('none');
   $('re-prev').disabled = st.page <= 1; $('re-next').disabled = st.page >= pages;
   S.exportRows = rows;
@@ -1127,7 +1209,7 @@ function renderYouTube(){
   $('yt-status-counts').innerHTML = `<span class="ox-xs ox-muted">${t('byStatus')}:</span>` + YT_STATUS.map(k => `<span class="ox-badge ${YT_BADGE[k] ? 'ox-badge--' + YT_BADGE[k] : ''} ${st.status !== 'all' && st.status !== k ? 'is-dim' : ''}" data-st="${k}" role="button" tabindex="0">${ytStatusLabel(k)}<span class="ox-num">${cnt(k)}</span></span>`).join('');
   $('yt-status-counts').onclick = e => { const b = e.target.closest('[data-st]'); if (!b) return; st.status = st.status === b.dataset.st ? 'all' : b.dataset.st; renderYouTube(); };
   const lk = (u, l) => u ? `<a class="ox-btn ox-btn--secondary ox-btn--sm kpi-inline-btn" href="${esc(u)}" target="_blank" rel="noopener">${ico('ext')}${l}</a>` : '';
-  $('yt-rows').innerHTML = rows.length === 0 ? emptyRow(11, YT.length ? t('noMatch') : t('yt.noData'), YT.length ? t('noMatchHint') : t('yt.noDataHint')) : rows.map((r, i) => `<tr><td class="is-num ox-muted">${i + 1}</td><td>${badgeBrand(r.shop === 'MoovTH' ? 'Moov' : r.shop)}</td><td>${r.playlist ? `<span class="ox-badge">${esc(r.playlist)}</span>` : '<span class="ox-muted">—</span>'}</td><td>${esc(r.product || '—')}</td><td class="is-topic">${topicCell(r, st.q)}</td><td class="is-nowrap">${ytBadge(r.status)}</td><td>${esc(r.owner || '—')}</td><td>${esc(r.mc || '—')}</td><td>${esc(r.editor || '—')}</td><td class="ox-num is-nowrap">${thDate(r.shoot)}</td><td class="is-nowrap"><span class="ox-row" style="flex-wrap:nowrap">${lk(r.script, t('yt.script'))}${lk(r.link, t('yt.video'))}</span></td></tr>`).join('');
+  $('yt-rows').innerHTML = rows.length === 0 ? emptyRow(11, YT.length ? t('noMatch') : t('yt.noData'), YT.length ? t('noMatchHint') : t('yt.noDataHint')) : rows.map((r, i) => `<tr class="is-clickable" data-pv="yt:${r.id}" title="${t('previewHint')}"><td class="is-num ox-muted">${i + 1}</td><td>${badgeBrand(r.shop === 'MoovTH' ? 'Moov' : r.shop)}</td><td>${r.playlist ? `<span class="ox-badge">${esc(r.playlist)}</span>` : '<span class="ox-muted">—</span>'}</td><td>${esc(r.product || '—')}</td><td class="is-topic">${topicCell(r, st.q)}</td><td class="is-nowrap">${ytBadge(r.status)}</td><td>${esc(r.owner || '—')}</td><td>${esc(r.mc || '—')}</td><td>${esc(r.editor || '—')}</td><td class="ox-num is-nowrap">${thDate(r.shoot)}</td><td class="is-nowrap"><span class="ox-row" style="flex-wrap:nowrap">${lk(r.script, t('yt.script'))}${lk(r.link, t('yt.video'))}</span></td></tr>`).join('');
   S.exportRows = rows;
 }
 function switchPlatform(p){
@@ -1137,7 +1219,13 @@ function switchPlatform(p){
   if (p === 'youtube') { ['manager', 'personal', 'reuse'].forEach(k => document.getElementById(`page-${k}`).classList.remove('is-active')); document.getElementById('page-youtube').classList.add('is-active'); renderYouTube(); }
   else { document.getElementById('page-youtube').classList.remove('is-active'); switchMode(S.mode); }
 }
-function render(){ if (S.platform === 'youtube') return renderYouTube(); if (!ALL.length) return; ({ manager: renderManager, personal: renderPersonal, reuse: renderReuse })[S.mode](); }
+function updateBadge(){
+  const raw = S.platform === 'youtube' ? YT_AT : LOADED_AT; if (!raw) return;
+  const d = raw instanceof Date ? raw : new Date(raw.replace(' ', 'T'));
+  const stale = (Date.now() - d.getTime()) > 3600e3, el = document.getElementById('updated-badge');
+  el.classList.toggle('is-stale', stale); document.getElementById('updated-text').textContent = t(stale ? 'updatedStale' : 'updatedAt', { t: fmtT(d) });
+}
+function render(){ updateBadge(); if (S.platform === 'youtube') return renderYouTube(); if (!ALL.length) return; ({ manager: renderManager, personal: renderPersonal, reuse: renderReuse })[S.mode](); }
 function switchMode(m){
   S.mode = m;
   document.querySelectorAll('#mode-tabs [role=tab]').forEach(b => { b.classList.toggle('is-active', b.dataset.mode === m); b.setAttribute('aria-selected', b.dataset.mode === m); });
@@ -1184,13 +1272,16 @@ $('quota-modal').addEventListener('click', e => { if (e.target === e.currentTarg
 on('quota-save', 'click', () => { const next = {}; $('quota-list').querySelectorAll('input').forEach(i => { const n = i.dataset.name; next[n] = next[n] || { eloop: 0, moov: 0 }; next[n][i.dataset.brand] = Math.max(0, parseInt(i.value, 10) || 0); }); storage.set('ELOOP_MOOV_QUOTAS', next); closeQuota(); toast(t('quota.saved')); render(); });
 on('quota-reset', 'click', () => { if (confirm(t('quota.confirm'))) { storage.set('ELOOP_MOOV_QUOTAS', DEFAULT_QUOTAS); closeQuota(); toast(t('quota.resetDone')); render(); } });
 
+on('preview-close', 'click', closePreview);
+$('preview-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closePreview(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePreview(); });
 on('btn-refresh', 'click', loadSheet);
 on('btn-theme', 'click', () => { const r = document.documentElement, dark = r.getAttribute('data-theme') === 'dark' || (!r.getAttribute('data-theme') && matchMedia('(prefers-color-scheme: dark)').matches); r.setAttribute('data-theme', dark ? 'light' : 'dark'); r.classList.toggle('dark', !dark); render(); });
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', render);
 on('btn-csv', 'click', () => {
   const rows = S.exportRows || [], head = ['id', 'date', 'shop', 'product', 'type', 'topic', 'status', 'creator', 'url', 'path'];
   const csv = [head.join(','), ...rows.map(c => head.map(k => `"${String(c[k] ?? '').replace(/"/g, '""')}"`).join(','))].join('\n');
-  const a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8,﻿' + encodeURIComponent(csv); a.download = `content-svdo-${S.platform === 'youtube' ? 'youtube' : S.mode}-${S.year}-${TODAY}.csv`; a.click();
+  const a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8,﻿' + encodeURIComponent(csv); a.download = `content-2026-${S.platform === 'youtube' ? 'youtube' : S.mode}-${S.year}-${TODAY}.csv`; a.click();
 });
 
 /* ===== 10. เริ่มต้น ===== */
