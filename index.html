@@ -842,6 +842,18 @@ function oxChartDefaults(){
   Chart.defaults.elements.point.radius = 0; Chart.defaults.elements.point.hoverRadius = 5; Chart.defaults.elements.point.hoverBorderWidth = 2;
   Chart.defaults.elements.bar.borderRadius = 4; Chart.defaults.elements.bar.borderSkipped = 'start';
 }
+/* ป้ายค่าท้ายแท่ง: จำนวน (x%) — ใช้กับกราฟบทบาททีมงาน */
+const barLabels = { id: 'barLabels', afterDatasetsDraw(chart, _a, opts){
+  const { ctx, chartArea } = chart, total = opts.total || 0; if (!total) return;
+  ctx.save(); ctx.font = `500 11px ${tok('--omnix-font')}`; ctx.textBaseline = 'middle';
+  chart.data.datasets.forEach((ds, di) => chart.getDatasetMeta(di).data.forEach((bar, i) => {
+    const v = ds.data[i]; if (!v) return;
+    const txt = `${v} (${(v / total * 100).toFixed(1)}%)`, w = ctx.measureText(txt).width, inside = bar.x - chartArea.left > w + 12;
+    ctx.fillStyle = inside ? tok('--omnix-surface') : tok('--omnix-fg'); ctx.textAlign = inside ? 'right' : 'left';
+    ctx.fillText(txt, inside ? bar.x - 6 : bar.x + 6, bar.y);
+  }));
+  ctx.restore();
+} };
 const gridOpts = () => ({ color: tok('--omnix-chart-grid'), drawTicks: false });
 const noGrid = { display: false };
 const charts = {};
@@ -1040,8 +1052,8 @@ function renderManager(){
     const list = Object.entries(cnt).sort((a, b) => b[1] - a[1]), total = list.reduce((a, x) => a + x[1], 0);
     $(`sub-${key}`).textContent = t('crewSub', { n: fmtN(total), p: list.length });
     chartState(id, list.length ? '' : 'empty', rangeLabel);
-    if (window.Chart) charts[key] = new Chart($(id), { type: 'bar', data: { labels: list.map(x => x[0]), datasets: [{ data: list.map(x => x[1]), backgroundColor: chartColor(1), barThickness: 14 }] },
-      options: { indexAxis: 'y', scales: { x: { beginAtZero: true, grid: gridOpts(), border: { display: false }, ticks: { precision: 0, maxTicksLimit: 5 } }, y: { grid: noGrid, ticks: { autoSkip: false } } }, plugins: { tooltip: { mode: 'nearest', intersect: true, callbacks: { label: i => ` ${i.parsed.x} ${t('clips')} (${(i.parsed.x / total * 100).toFixed(1)}%)` } } } } });
+    if (window.Chart) charts[key] = new Chart($(id), { type: 'bar', plugins: [barLabels], data: { labels: list.map(x => x[0]), datasets: [{ data: list.map(x => x[1]), backgroundColor: chartColor(1), barThickness: 18 }] },
+      options: { indexAxis: 'y', layout: { padding: { right: 72 } }, scales: { x: { beginAtZero: true, grid: gridOpts(), border: { display: false }, ticks: { precision: 0, maxTicksLimit: 5 } }, y: { grid: noGrid, ticks: { autoSkip: false } } }, plugins: { barLabels: { total }, tooltip: { mode: 'nearest', intersect: true, callbacks: { label: i => ` ${i.parsed.x} ${t('clips')} (${(i.parsed.x / total * 100).toFixed(1)}%)` } } } } });
   });
 
   /* ตารางรายบุคคล */
@@ -1200,8 +1212,8 @@ function renderYouTube(){
     const list = Object.entries(c).sort((a, b) => b[1] - a[1]), tot = list.reduce((a, x) => a + x[1], 0);
     $(sub).textContent = `${fmtN(tot)} ${t('yt.topics')} · ${list.length}`;
     chartState(id, list.length ? '' : 'empty', label);
-    if (window.Chart) charts['yt' + key] = new Chart($(id), { type: 'bar', data: { labels: list.map(x => x[0]), datasets: [{ data: list.map(x => x[1]), backgroundColor: chartColor(1), barThickness: 14 }] },
-      options: { indexAxis: 'y', scales: { x: { beginAtZero: true, grid: gridOpts(), border: { display: false }, ticks: { precision: 0, maxTicksLimit: 5 } }, y: { grid: noGrid, ticks: { autoSkip: false } } }, plugins: { tooltip: { mode: 'nearest', intersect: true, callbacks: { label: i => ` ${i.parsed.x} (${(i.parsed.x / tot * 100).toFixed(1)}%)` } } } } });
+    if (window.Chart) charts['yt' + key] = new Chart($(id), { type: 'bar', plugins: [barLabels], data: { labels: list.map(x => x[0]), datasets: [{ data: list.map(x => x[1]), backgroundColor: chartColor(1), barThickness: 18 }] },
+      options: { indexAxis: 'y', layout: { padding: { right: 72 } }, scales: { x: { beginAtZero: true, grid: gridOpts(), border: { display: false }, ticks: { precision: 0, maxTicksLimit: 5 } }, y: { grid: noGrid, ticks: { autoSkip: false } } }, plugins: { barLabels: { total: tot }, tooltip: { mode: 'nearest', intersect: true, callbacks: { label: i => ` ${i.parsed.x} (${(i.parsed.x / tot * 100).toFixed(1)}%)` } } } } });
   });
   /* ตาราง */
   const rows = base.filter(r => st.status === 'all' || r.status === st.status);
