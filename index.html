@@ -990,7 +990,7 @@ function renderDropdown(root, items, selected, labelOf, onChange){
   menu.querySelectorAll('input').forEach(i => i.checked = isAll || selected.includes(i.value));
   btn.onclick = e => { e.stopPropagation(); const open = menu.hidden; document.querySelectorAll('.kpi-dd__menu').forEach(m => m.hidden = true); menu.hidden = !open; btn.setAttribute('aria-expanded', String(open)); };
   menu.onclick = e => { e.stopPropagation(); const a = e.target.closest('[data-act]'); if (a) { onChange(a.dataset.act === 'all' ? [] : ['__none']); } };
-  menu.onchange = e => { const i = e.target; if (i.type !== 'checkbox') return; const cur = isAll ? items.slice() : selected.filter(v => v !== '__none'); const next = i.checked ? [...new Set([...cur, i.value])] : cur.filter(v => v !== i.value); onChange(next.length === items.length ? [] : next); };
+  menu.onchange = e => { const i = e.target; if (i.type !== 'checkbox') return; if (isAll) return onChange([i.value]);   /* จาก "ทั้งหมด" คลิกรายการไหน = ดูเฉพาะรายการนั้นทันที */ const cur = selected.filter(v => v !== '__none'); const next = i.checked ? [...new Set([...cur, i.value])] : cur.filter(v => v !== i.value); onChange(next.length === items.length ? [] : next.length ? next : ['__none']); };
 }
 document.addEventListener('click', () => document.querySelectorAll('.kpi-dd__menu').forEach(m => { m.hidden = true; m.parentElement.querySelector('.kpi-dd__btn').setAttribute('aria-expanded', 'false'); }));
 function toggleIn(list, v, all){ if (v === '__all') return []; const next = list.length === 0 ? [v] : list.includes(v) ? list.filter(x => x !== v) : [...list, v]; return next.length === all.length ? [] : next; }
