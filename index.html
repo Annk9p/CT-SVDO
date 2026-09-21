@@ -855,6 +855,18 @@ const barLabels = { id: 'barLabels', afterDatasetsDraw(chart, _a, opts){
   }));
   ctx.restore();
 } };
+/* ป้ายในชิ้นโดนัท: จำนวน (x%) — แสดงเฉพาะชิ้นที่กว้างพอ ที่เหลือดูจาก legend/tooltip */
+const donutLabels = { id: 'donutLabels', afterDatasetsDraw(chart){
+  const meta = chart.getDatasetMeta(0), data = chart.data.datasets[0].data, total = data.reduce((a, b) => a + b, 0); if (!total) return;
+  const { ctx } = chart; ctx.save(); ctx.font = `600 11px ${tok('--omnix-font')}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#fff';
+  meta.data.forEach((arc, i) => {
+    const v = data[i]; if (!v) return; const ang = arc.endAngle - arc.startAngle; if (ang < 0.42) return;
+    const mid = (arc.startAngle + arc.endAngle) / 2, r = (arc.innerRadius + arc.outerRadius) / 2;
+    const x = arc.x + Math.cos(mid) * r, y = arc.y + Math.sin(mid) * r, pct = (v / total * 100).toFixed(1) + '%';
+    if (ang < 0.8) { ctx.fillText(`${v}`, x, y - 6); ctx.fillText(pct, x, y + 6); } else ctx.fillText(`${v} (${pct})`, x, y);
+  });
+  ctx.restore();
+} };
 const gridOpts = () => ({ color: tok('--omnix-chart-grid'), drawTicks: false });
 const noGrid = { display: false };
 const charts = {};
@@ -1035,8 +1047,9 @@ function renderManager(){
     options: { interaction: { mode: 'index', intersect: false }, scales: { x: { grid: noGrid, ticks: { maxTicksLimit: 10, maxRotation: 0 } }, y: { beginAtZero: true, grid: gridOpts(), border: { display: false }, ticks: { precision: 0, maxTicksLimit: 5 } } }, plugins: { tooltip: { callbacks: { label: i => ` ${i.dataset.label}: ${i.parsed.y} ${t('clips')}` } } } } });
   /* กราฟรอง 1 */
   chartState('c-people', staff.some(s => s.done > 0) ? '' : 'empty', rangeLabel);
-  if (window.Chart) charts.people = new Chart($('c-people'), { type: 'bar', data: { labels: staff.map(s => s.name), datasets: [{ data: staff.map(s => s.done), backgroundColor: chartColor(1), barThickness: 14 }] },
-    options: { indexAxis: 'y', scales: { x: { beginAtZero: true, grid: gridOpts(), border: { display: false }, ticks: { precision: 0, maxTicksLimit: 5 } }, y: { grid: noGrid, ticks: { autoSkip: false } } }, plugins: { tooltip: { mode: 'nearest', intersect: true, callbacks: { label: i => ` ${i.parsed.x} ${t('clips')}` } } } } });
+  const peopleTotal = staff.reduce((a, s) => a + s.done, 0);
+  if (window.Chart) charts.people = new Chart($('c-people'), { type: 'bar', plugins: [barLabels], data: { labels: staff.map(s => s.name), datasets: [{ data: staff.map(s => s.done), backgroundColor: chartColor(1), barThickness: 18 }] },
+    options: { indexAxis: 'y', layout: { padding: { right: 72 } }, plugins: { barLabels: { total: peopleTotal }, tooltip: { mode: 'nearest', intersect: true, callbacks: { label: i => ` ${i.parsed.x} ${t('clips')} (${(i.parsed.x / peopleTotal * 100).toFixed(1)}%)` } } }, scales: { x: { beginAtZero: true, grid: gridOpts(), border: { display: false }, ticks: { precision: 0, maxTicksLimit: 5 } }, y: { grid: noGrid, ticks: { autoSkip: false } } } } });
   /* กราฟรอง 2 */
   const tc = {}; doneVisible.forEach(c => { const k = c.type || t('unknownType'); tc[k] = (tc[k] || 0) + 1; });
   const sorted = Object.entries(tc).sort((a, b) => b[1] - a[1]), top = sorted.slice(0, 5), rest = sorted.slice(5).reduce((a, x) => a + x[1], 0);
@@ -1044,7 +1057,7 @@ function renderManager(){
   const typeColors = top.map((x, i) => i === 5 ? tok('--omnix-chart-other') : chartColor(i + 1));
   legend($('lg-type'), top.map((x, i) => [x[0], typeColors[i]]));
   chartState('c-type', top.length ? '' : 'empty', rangeLabel);
-  if (window.Chart) charts.type = new Chart($('c-type'), { type: 'doughnut', data: { labels: top.map(x => x[0]), datasets: [{ data: top.map(x => x[1]), backgroundColor: typeColors, borderColor: tok('--omnix-surface'), borderWidth: 2, hoverOffset: 4 }] },
+  if (window.Chart) charts.type = new Chart($('c-type'), { type: 'doughnut', plugins: [donutLabels], data: { labels: top.map(x => x[0]), datasets: [{ data: top.map(x => x[1]), backgroundColor: typeColors, borderColor: tok('--omnix-surface'), borderWidth: 2, hoverOffset: 4 }] },
     options: { cutout: '65%', plugins: { tooltip: { mode: 'nearest', intersect: true, callbacks: { label: i => { const tot = i.dataset.data.reduce((a, b) => a + b, 0); return ` ${i.parsed} ${t('clips')} (${(i.parsed / tot * 100).toFixed(1)}%)`; } } } } } });
 
   /* กราฟบทบาททีมงาน 4 ตัว (P Q R S) — แท่งแนวนอน เรียงมากไปน้อย สีเดียว */
@@ -1206,7 +1219,7 @@ function renderYouTube(){
   const sk = YT_STATUS.filter(k => cnt(k) > 0);
   legend($('yt-lg-status'), sk.map(k => [ytStatusLabel(k), STC[k]]));
   chartState('yt-c-status', empty ? 'empty' : '', label);
-  if (window.Chart) charts.ytstatus = new Chart($('yt-c-status'), { type: 'doughnut', data: { labels: sk.map(ytStatusLabel), datasets: [{ data: sk.map(cnt), backgroundColor: sk.map(k => STC[k]), borderColor: tok('--omnix-surface'), borderWidth: 2, hoverOffset: 4 }] },
+  if (window.Chart) charts.ytstatus = new Chart($('yt-c-status'), { type: 'doughnut', plugins: [donutLabels], data: { labels: sk.map(ytStatusLabel), datasets: [{ data: sk.map(cnt), backgroundColor: sk.map(k => STC[k]), borderColor: tok('--omnix-surface'), borderWidth: 2, hoverOffset: 4 }] },
     options: { cutout: '65%', plugins: { tooltip: { mode: 'nearest', intersect: true, callbacks: { label: i => ` ${i.parsed} (${(i.parsed / total * 100).toFixed(1)}%)` } } } } });
   /* Owner / MC / Editor */
   [['owner', 'yt-c-owner', 'yt-sub-owner'], ['mc', 'yt-c-mc', 'yt-sub-mc'], ['editor', 'yt-c-editor', 'yt-sub-editor']].forEach(([key, id, sub]) => {
