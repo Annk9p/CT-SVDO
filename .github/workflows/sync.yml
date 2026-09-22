@@ -3,6 +3,8 @@ on:
   schedule:
     - cron: '*/10 * * * *'   # ทุก 10 นาที (UTC) — GitHub อาจหน่วงได้เล็กน้อยช่วงคิวแน่น
   workflow_dispatch:         # กด "Run workflow" ในหน้า Actions ได้ทันที
+  push:
+    paths: ['.github/workflows/sync.yml']   # แก้ไฟล์นี้แล้วรันทดสอบทันที
 permissions:
   contents: write
 concurrency:
