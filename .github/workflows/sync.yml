@@ -1,0 +1,28 @@
+name: Sync sheet data
+on:
+  schedule:
+    - cron: '*/10 * * * *'   # ทุก 10 นาที (UTC) — GitHub อาจหน่วงได้เล็กน้อยช่วงคิวแน่น
+  workflow_dispatch:         # กด "Run workflow" ในหน้า Actions ได้ทันที
+permissions:
+  contents: write
+concurrency:
+  group: sync
+  cancel-in-progress: false
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch sheets and build snapshots
+        run: |
+          set -e
+          TZ=Asia/Bangkok sh update_data.sh
+          head -c 200 data_sheet.js | grep -q SHEET_SNAPSHOT
+      - name: Commit if changed
+        run: |
+          git config user.name "sheet-sync[bot]"
+          git config user.email "sheet-sync@users.noreply.github.com"
+          git add data_sheet.js data_youtube.js
+          if git diff --cached --quiet; then echo "no changes"; exit 0; fi
+          git commit -m "sync $(TZ=Asia/Bangkok date '+%Y-%m-%d %H:%M')"
+          git push

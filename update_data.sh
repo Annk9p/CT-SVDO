@@ -20,6 +20,6 @@ if os.path.exists('/tmp/youtube_plan.csv') and os.path.getsize('/tmp/youtube_pla
 PY
 
 # push snapshot ขึ้น GitHub Pages (ถ้าตั้ง remote ไว้แล้ว) — เว็บจะเห็นข้อมูลใหม่ภายใน ~1-2 นาที
-if git remote get-url origin >/dev/null 2>&1; then
+if [ -z "$GITHUB_ACTIONS" ] && git remote get-url origin >/dev/null 2>&1; then
   git add data_sheet.js data_youtube.js && git commit -qm "sync $(date '+%Y-%m-%d %H:%M')" 2>/dev/null && git push -q origin HEAD 2>&1 | tail -1
 fi
