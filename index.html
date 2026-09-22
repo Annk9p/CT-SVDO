@@ -418,6 +418,39 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
 .kpi-kpi-skel { display: inline-block; height: 28px; width: 60%; }
 .kpi-chart-skel { position: absolute; inset: 0; }
 .ox-modal-mask[hidden] { display: none; }
+/* ปฏิทินคอนเทนต์ */
+.kpi-cal-nav { display: inline-flex; align-items: center; gap: var(--omnix-space-2); }
+.kpi-cal-nav__title { min-width: 150px; text-align: center; font-size: var(--omnix-text-base); }
+.kpi-cal-wrap { overflow-x: auto; border-top: 1px solid var(--omnix-border); }
+.kpi-cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); min-width: 840px; }
+.kpi-cal__wd { padding: var(--omnix-space-2); text-align: center; font-size: var(--omnix-text-xs); font-weight: 500; color: var(--omnix-fg-muted); border-bottom: 1px solid var(--omnix-border); border-right: 1px solid var(--omnix-border); background: var(--omnix-surface-2); }
+.kpi-cal__wd:nth-child(7n) { border-right: 0; }
+.kpi-cal__day { min-height: 128px; padding: var(--omnix-space-2); display: flex; flex-direction: column; gap: 3px; border-right: 1px solid var(--omnix-border); border-bottom: 1px solid var(--omnix-border); cursor: pointer; min-width: 0; }
+.kpi-cal__day:nth-child(7n) { border-right: 0; }
+.kpi-cal__day:hover { background: var(--omnix-surface-2); }
+.kpi-cal__day.is-out { color: var(--omnix-fg-muted); background: color-mix(in srgb, var(--omnix-surface-2) 55%, var(--omnix-surface)); }
+.kpi-cal__day.is-out .kpi-cal__item { opacity: .6; }
+.kpi-cal__head { display: flex; align-items: center; justify-content: space-between; gap: var(--omnix-space-1); }
+.kpi-cal__num { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: var(--omnix-radius-full); font-size: var(--omnix-text-xs); font-weight: 600; }
+.kpi-cal__day.is-today .kpi-cal__num { background: var(--omnix-accent); color: var(--omnix-surface); }
+.kpi-cal__day.is-past .kpi-cal__num { color: var(--omnix-fg-muted); }
+.kpi-cal__count { font-size: 10px; color: var(--omnix-fg-muted); font-variant-numeric: tabular-nums; }
+.kpi-cal__item { display: block; font-size: 11px; line-height: 1.3; padding: 2px 6px; border-radius: 4px; border-left: 3px solid var(--c, var(--omnix-chart-other)); background: var(--omnix-surface-2); color: var(--omnix-fg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; border-top: 0; border-right: 0; border-bottom: 0; font-family: inherit; width: 100%; cursor: pointer; }
+.kpi-cal__day:hover .kpi-cal__item { background: var(--omnix-surface); }
+.kpi-cal__item .ox-dot { display: inline-block; width: 6px; height: 6px; border-radius: var(--omnix-radius-full); margin-right: 4px; vertical-align: middle; background: var(--omnix-fg-muted); }
+.kpi-cal__item.st-Done .ox-dot { background: var(--omnix-success-fg); }
+.kpi-cal__item.st-In\ Progress .ox-dot { background: var(--omnix-warning-fg); }
+.kpi-cal__item.st-Draft .ox-dot { background: var(--omnix-info-fg); }
+.kpi-cal__item.st-Stuck .ox-dot { background: var(--omnix-danger-fg); }
+.kpi-cal__item.st-Reject .ox-dot { background: var(--omnix-accent); }
+.kpi-cal__item.is-plan { border: 1px dashed var(--omnix-accent); border-left: 3px solid var(--omnix-accent); background: var(--omnix-accent-soft); color: var(--omnix-accent); }
+.kpi-cal__item.is-plan .ox-dot { background: var(--omnix-accent); }
+.kpi-cal__item.is-demo { display: inline-block; width: auto; cursor: default; padding-right: 8px; }
+.kpi-cal__more { font-size: 10px; color: var(--omnix-accent); background: none; border: 0; padding: 0 6px; text-align: left; cursor: pointer; font-family: inherit; }
+.kpi-plan-form { display: grid; grid-template-columns: 1fr 1fr; gap: var(--omnix-space-3); }
+.kpi-plan-form .is-full { grid-column: 1 / -1; }
+.kpi-plan-form .ox-field { margin: 0; }
+@media (max-width: 767px) { .kpi-plan-form { grid-template-columns: 1fr; } .kpi-cal-nav__title { min-width: 110px; } }
 @media (max-width: 767px) { .kpi-toast { left: var(--omnix-space-4); right: var(--omnix-space-4); } .ox-table .is-topic { min-width: 220px; } }
 </style>
 </head>
@@ -466,6 +499,7 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
       <button type="button" role="tab" data-mode="manager" class="is-active" data-i18n="tab.manager">ภาพรวม</button>
       <button type="button" role="tab" data-mode="personal" data-i18n="tab.personal">ภาระงาน</button>
       <button type="button" role="tab" data-mode="reuse" data-i18n="tab.reuse">คลังวิดีโอ</button>
+      <button type="button" role="tab" data-mode="cal" data-i18n="tab.cal">ปฏิทินคอนเทนต์</button>
     </div>
     <div class="kpi-legend-bar ox-xs ox-muted" id="status-legend"></div>
   </div>
@@ -608,6 +642,46 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
     </div>
   </section>
 
+  <!-- ===================== ปฏิทินคอนเทนต์ ===================== -->
+  <section class="kpi-page" id="page-cal" role="tabpanel">
+    <div class="ox-filter-bar" role="group">
+      <div class="kpi-cal-nav">
+        <button class="ox-btn ox-btn--secondary ox-btn--sm ox-btn--icon" type="button" id="cal-prev" aria-label="Previous month"><svg class="ox-ico" viewBox="0 0 24 24"><path d="M15.4 7.4 14 6l-6 6 6 6 1.4-1.4L10.8 12z"/></svg></button>
+        <strong class="kpi-cal-nav__title" id="cal-title">—</strong>
+        <button class="ox-btn ox-btn--secondary ox-btn--sm ox-btn--icon" type="button" id="cal-next" aria-label="Next month"><svg class="ox-ico" viewBox="0 0 24 24"><path d="m8.6 7.4 1.4-1.4 6 6-6 6-1.4-1.4 4.6-4.6z"/></svg></button>
+        <button class="ox-btn ox-btn--ghost ox-btn--sm" type="button" id="cal-today" data-i18n="cal.today">วันนี้</button>
+      </div>
+      <select id="cal-brand" class="ox-control"><option value="all" data-i18n="allBrands">ทุกแบรนด์</option><option value="EloopTH">EloopTH</option><option value="Moov">Moov</option></select>
+      <select id="cal-creator" class="ox-control"><option value="all" data-i18n="allPeopleName">ทุกคน</option></select>
+      <span class="ox-filter-bar__spacer"></span>
+      <span class="ox-filter-bar__meta" id="cal-meta">—</span>
+      <button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" id="cal-export" data-i18n="cal.export">ส่งออกแผน (CSV)</button>
+      <button class="ox-btn ox-btn--primary ox-btn--sm" type="button" id="cal-add" data-i18n="cal.add">วางคอนเทนต์</button>
+    </div>
+
+    <div class="ox-kpi-grid">
+      <div class="ox-kpi"><div class="ox-kpi__label" data-i18n="cal.k.month">คลิปในชีตเดือนนี้</div><div class="ox-kpi__value" id="cal-k-month">—</div><div class="ox-kpi__delta" id="cal-d-month">—</div></div>
+      <div class="ox-kpi"><div class="ox-kpi__label" data-i18n="k.done">โพสต์แล้ว (Done)</div><div class="ox-kpi__value" id="cal-k-done">—</div><div class="ox-kpi__delta" id="cal-d-done">—</div></div>
+      <div class="ox-kpi"><div class="ox-kpi__label" data-i18n="cal.k.plans">แผนที่วางไว้</div><div class="ox-kpi__value" id="cal-k-plans">—</div><div class="ox-kpi__delta" id="cal-d-plans">—</div></div>
+      <div class="ox-kpi"><div class="ox-kpi__label" data-i18n="cal.k.free">วันที่ยังว่าง</div><div class="ox-kpi__value" id="cal-k-free">—</div><div class="ox-kpi__delta" id="cal-d-free">—</div></div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-table-head">
+        <h2 data-i18n="cal.grid">ปฏิทินรายเดือน</h2>
+        <div class="kpi-legend-bar ox-xs ox-muted"><span class="kpi-cal__item is-demo" style="--c:var(--omnix-chart-1)">Eloop</span><span class="kpi-cal__item is-demo" style="--c:var(--omnix-chart-2)">Moov</span><span class="kpi-cal__item is-plan is-demo" data-i18n="cal.legendPlan">แผนที่วางไว้</span><span data-i18n="cal.hint">คลิกวันเพื่อวางคอนเทนต์ · คลิกคลิปเพื่อดูตัวอย่าง</span></div>
+      </div>
+      <div class="kpi-cal-wrap"><div class="kpi-cal" id="cal-grid" role="grid"></div></div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-table-head"><h2><span data-i18n="cal.upcoming">แผนคอนเทนต์ที่วางไว้</span> <span class="ox-badge ox-badge--accent ox-num" id="cal-plan-count">0</span></h2><span class="ox-xs ox-muted" data-i18n="cal.local">บันทึกไว้ในเบราว์เซอร์นี้ — ส่งออก CSV เพื่อนำไปวางในชีต</span></div>
+      <div class="ox-table-wrap"><table class="ox-table ox-table--data">
+        <thead><tr><th data-i18n="h.date">วันที่</th><th data-i18n="h.brand">แบรนด์</th><th data-i18n="h.creator">ครีเอเตอร์</th><th data-i18n="h.product">สินค้า</th><th data-i18n="h.type">ประเภท</th><th class="is-topic" data-i18n="h.topic">หัวข้อคลิป</th><th data-i18n="h.status">สถานะ</th><th class="is-nowrap" data-i18n="h.actions">นำไปใช้</th></tr></thead>
+        <tbody id="cal-plan-rows"></tbody></table></div>
+    </div>
+  </section>
+
   <!-- ===================== YouTube 2026 ===================== -->
   <section class="kpi-page" id="page-youtube" role="tabpanel">
     <div class="ox-filter-bar" role="group">
@@ -655,6 +729,30 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
     <div class="ox-modal__head" id="preview-title" data-i18n="preview">ตัวอย่างคลิป</div>
     <div class="ox-modal__body"><div class="kpi-preview__body"><div class="kpi-preview__player" id="preview-player"></div><div class="kpi-preview__meta" id="preview-meta"></div></div></div>
     <div class="ox-modal__foot"><button class="ox-btn ox-btn--secondary" type="button" id="preview-close" data-i18n="close">ปิด</button></div>
+  </div>
+</div>
+
+<div class="ox-modal-mask" id="plan-modal" hidden>
+  <div class="ox-modal" role="dialog" aria-modal="true" aria-labelledby="plan-title">
+    <div class="ox-modal__head" id="plan-title" data-i18n="cal.newTitle">วางคอนเทนต์ล่วงหน้า</div>
+    <div class="ox-modal__body">
+      <div class="kpi-plan-form">
+        <div class="ox-field"><label class="ox-label ox-label--required" for="plan-date" data-i18n="h.date">วันที่</label><input type="date" id="plan-date" class="ox-control" required></div>
+        <div class="ox-field"><label class="ox-label" for="plan-brand" data-i18n="h.brand">แบรนด์</label><select id="plan-brand" class="ox-control"><option value="EloopTH">EloopTH</option><option value="Moov">Moov</option></select></div>
+        <div class="ox-field"><label class="ox-label" for="plan-creator" data-i18n="h.creator">ครีเอเตอร์</label><input id="plan-creator" class="ox-control" list="plan-creator-list" autocomplete="off"><datalist id="plan-creator-list"></datalist></div>
+        <div class="ox-field"><label class="ox-label" for="plan-status" data-i18n="h.status">สถานะ</label><select id="plan-status" class="ox-control"><option value="Plan" data-i18n="cal.st.Plan">วางแผน</option><option value="Shooting" data-i18n="cal.st.Shooting">ถ่าย/ตัดต่อ</option><option value="Ready" data-i18n="cal.st.Ready">พร้อมโพสต์</option></select></div>
+        <div class="ox-field"><label class="ox-label" for="plan-product" data-i18n="h.product">สินค้า</label><input id="plan-product" class="ox-control" list="plan-product-list" autocomplete="off"><datalist id="plan-product-list"></datalist></div>
+        <div class="ox-field"><label class="ox-label" for="plan-type" data-i18n="h.type">ประเภท</label><input id="plan-type" class="ox-control" list="plan-type-list" autocomplete="off"><datalist id="plan-type-list"></datalist></div>
+        <div class="ox-field is-full"><label class="ox-label ox-label--required" for="plan-topic" data-i18n="h.topic">หัวข้อคลิป</label><textarea id="plan-topic" class="ox-control" rows="2" required></textarea></div>
+        <div class="ox-field is-full"><label class="ox-label" for="plan-note" data-i18n="cal.f.note">โน้ต / ไอเดีย</label><textarea id="plan-note" class="ox-control" rows="2"></textarea><div class="ox-error" id="plan-err" hidden></div></div>
+      </div>
+    </div>
+    <div class="ox-modal__foot">
+      <button class="ox-btn ox-btn--danger" type="button" id="plan-delete" data-i18n="cal.delete" hidden>ลบแผนนี้</button>
+      <span class="ox-topbar__spacer"></span>
+      <button class="ox-btn ox-btn--secondary" type="button" id="plan-cancel" data-i18n="cancel">ยกเลิก</button>
+      <button class="ox-btn ox-btn--primary" type="button" id="plan-save" data-i18n="cal.save">บันทึกแผน</button>
+    </div>
   </div>
 </div>
 
@@ -712,7 +810,12 @@ const DICT = {
     extra: 'ช่วยทำพิเศษ', overN: 'เกินเป้า +{n}', met: 'ครบเป้า', shortN: 'ขาดอีก {n}', viewPerson: 'ดูงานรายคน', noCreators: 'ไม่มีครีเอเตอร์ที่เลือก', noCreatorsHint: 'กดปุ่ม "ทั้งหมด" ในแถวครีเอเตอร์',
     noClipsHint: 'ลองขยายช่วงเวลา หรือเลือกสถานะ "ทั้งหมด"', showing: 'แสดง {a}–{b} จาก {n} รายการ', none: 'ไม่มีรายการ', open: 'เปิด', noLink: 'ไม่มีลิงก์', copyPath: 'คัดลอก Path', copiedPath: 'คัดลอกที่อยู่ไฟล์แล้ว', copyLink: 'คัดลอกลิงก์', copiedLink: 'คัดลอกลิงก์ TikTok แล้ว', copyFail: 'คัดลอกไม่สำเร็จ',
     myQuota: 'โควต้า {n} คลิป/สัปดาห์ (Eloop {e} · Moov {m})', myTargetSub: 'Eloop {e} · Moov {m} · {w} สัปดาห์', myTargetSubBrand: '{b} · {w} สัปดาห์', myDoneSub: 'Eloop {e} · Moov {m}', fromTarget: 'จากเป้า {n} คลิป', todo: 'ต้องทำอีก {n} คลิป', metAll: 'ครบตามเป้าแล้ว',
-    noMatch: 'ไม่พบคลิปตามเงื่อนไข', noMatchHint: 'ลองเปลี่ยนช่วงเวลา แบรนด์ หรือสถานะ', noSearch: 'ไม่พบคลิปที่ตรงกับคำค้น', noSearchHint: 'ลองเลือก "ทุกสถานะ" หรือพิมพ์คำอื่น'
+    noMatch: 'ไม่พบคลิปตามเงื่อนไข', noMatchHint: 'ลองเปลี่ยนช่วงเวลา แบรนด์ หรือสถานะ', noSearch: 'ไม่พบคลิปที่ตรงกับคำค้น', noSearchHint: 'ลองเลือก "ทุกสถานะ" หรือพิมพ์คำอื่น',
+    'tab.cal': 'ปฏิทินคอนเทนต์', 'cal.today': 'วันนี้', 'cal.add': 'วางคอนเทนต์', 'cal.export': 'ส่งออกแผน (CSV)', 'cal.grid': 'ปฏิทินรายเดือน', 'cal.legendPlan': 'แผนที่วางไว้', 'cal.hint': 'คลิกวันเพื่อวางคอนเทนต์ · คลิกคลิปเพื่อดูตัวอย่าง · คลิกแผนเพื่อแก้ไข',
+    'cal.k.month': 'คลิปในชีตเดือนนี้', 'cal.k.plans': 'แผนที่วางไว้', 'cal.k.free': 'วันที่ยังว่าง', 'cal.monthSub': 'Eloop {e} · Moov {m}', 'cal.doneSub': '{p}% ของคลิปเดือนนี้', 'cal.plansSub': 'ยังไม่ถึงวัน {n} รายการ', 'cal.freeSub': 'จากวันที่เหลือในเดือน {n} วัน', 'cal.freePast': 'เดือนนี้ผ่านไปแล้ว',
+    'cal.meta': '{n} คลิปจากชีต · {p} แผน · {a} – {b}', 'cal.more': 'อีก {n} รายการ', 'cal.less': 'ย่อ', 'cal.upcoming': 'แผนคอนเทนต์ที่วางไว้', 'cal.local': 'บันทึกไว้ในเบราว์เซอร์นี้ — ส่งออก CSV เพื่อนำไปวางในชีต', 'cal.noPlans': 'ยังไม่มีแผนคอนเทนต์ในเดือนนี้', 'cal.noPlansHint': 'คลิกวันในปฏิทิน หรือกดปุ่ม "วางคอนเทนต์"',
+    'cal.newTitle': 'วางคอนเทนต์ล่วงหน้า', 'cal.editTitle': 'แก้ไขแผนคอนเทนต์', 'cal.f.note': 'โน้ต / ไอเดีย', 'cal.save': 'บันทึกแผน', 'cal.delete': 'ลบแผนนี้', 'cal.saved': 'บันทึกแผนแล้ว', 'cal.deleted': 'ลบแผนแล้ว', 'cal.confirmDel': 'ลบแผนคอนเทนต์นี้?', 'cal.needTopic': 'กรอกวันที่และหัวข้อคลิปก่อนบันทึก', 'cal.edit': 'แก้ไข', 'cal.dup': 'ทำซ้ำ', 'cal.exported': 'ส่งออกแผน {n} รายการแล้ว', 'cal.noExport': 'ยังไม่มีแผนให้ส่งออก',
+    'cal.st.Plan': 'วางแผน', 'cal.st.Shooting': 'ถ่าย/ตัดต่อ', 'cal.st.Ready': 'พร้อมโพสต์', 'cal.planTag': 'แผน', 'cal.overdue': 'เลยกำหนด'
   },
   en: {
     brand: 'Content 2026', theme: 'Toggle theme', title: 'Content 2026 — EloopTH & Moov', subtitle: 'Weekly clip delivery targets, per-creator workload and a reusable video library — live from Google Sheets',
@@ -735,7 +838,12 @@ const DICT = {
     extra: 'Extra help', overN: 'Over +{n}', met: 'On target', shortN: '{n} short', viewPerson: 'View workload', noCreators: 'No creators selected', noCreatorsHint: 'Press "All" in the creators row',
     noClipsHint: 'Try a wider date range or "All" statuses', showing: 'Showing {a}–{b} of {n}', none: 'No items', open: 'Open', noLink: 'No link', copyPath: 'Copy path', copiedPath: 'File path copied', copyLink: 'Copy link', copiedLink: 'TikTok link copied', copyFail: 'Copy failed',
     myQuota: 'Quota {n} clips/week (Eloop {e} · Moov {m})', myTargetSub: 'Eloop {e} · Moov {m} · {w} weeks', myTargetSubBrand: '{b} · {w} weeks', myDoneSub: 'Eloop {e} · Moov {m}', fromTarget: 'of {n} target', todo: '{n} more clips to do', metAll: 'Target met',
-    noMatch: 'No clips match the filters', noMatchHint: 'Try another period, brand or status', noSearch: 'No clips match your search', noSearchHint: 'Try "All statuses" or another keyword'
+    noMatch: 'No clips match the filters', noMatchHint: 'Try another period, brand or status', noSearch: 'No clips match your search', noSearchHint: 'Try "All statuses" or another keyword',
+    'tab.cal': 'Content calendar', 'cal.today': 'Today', 'cal.add': 'Plan content', 'cal.export': 'Export plans (CSV)', 'cal.grid': 'Monthly calendar', 'cal.legendPlan': 'Planned', 'cal.hint': 'Click a day to plan content · click a clip to preview · click a plan to edit',
+    'cal.k.month': 'Sheet clips this month', 'cal.k.plans': 'Planned items', 'cal.k.free': 'Empty days left', 'cal.monthSub': 'Eloop {e} · Moov {m}', 'cal.doneSub': '{p}% of this month\'s clips', 'cal.plansSub': '{n} still upcoming', 'cal.freeSub': 'of {n} days left this month', 'cal.freePast': 'Month has passed',
+    'cal.meta': '{n} clips from sheet · {p} plans · {a} – {b}', 'cal.more': '{n} more', 'cal.less': 'Less', 'cal.upcoming': 'Planned content', 'cal.local': 'Saved in this browser — export CSV to paste into the sheet', 'cal.noPlans': 'No planned content this month', 'cal.noPlansHint': 'Click a day in the calendar or press "Plan content"',
+    'cal.newTitle': 'Plan content ahead', 'cal.editTitle': 'Edit planned content', 'cal.f.note': 'Notes / ideas', 'cal.save': 'Save plan', 'cal.delete': 'Delete plan', 'cal.saved': 'Plan saved', 'cal.deleted': 'Plan deleted', 'cal.confirmDel': 'Delete this plan?', 'cal.needTopic': 'Enter a date and topic before saving', 'cal.edit': 'Edit', 'cal.dup': 'Duplicate', 'cal.exported': 'Exported {n} plans', 'cal.noExport': 'No plans to export yet',
+    'cal.st.Plan': 'Planned', 'cal.st.Shooting': 'Shooting/editing', 'cal.st.Ready': 'Ready to post', 'cal.planTag': 'Plan', 'cal.overdue': 'Overdue'
   }
 };
 const storage = {
@@ -886,7 +994,8 @@ const S = {
   yt: { brand: 'all', playlist: 'all', status: 'all', owner: 'all', q: '' },
   mgr: { preset: 'this_week', start: '', end: '', brand: 'all', creators: [], statuses: [], q: '', page: 1, size: 30 },
   my: { creator: 'Moth', preset: 'this_week', start: '', end: '', brand: 'all', status: 'all', q: '' },
-  re: { q: '', status: 'Done', type: 'all', brand: 'all', preset: 'all_year', start: '', end: '', sort: 'newest', page: 1, size: 50 }
+  re: { q: '', status: 'Done', type: 'all', brand: 'all', preset: 'all_year', start: '', end: '', sort: 'newest', page: 1, size: 50 },
+  cal: { ym: iso(new Date()).slice(0, 7), brand: 'all', creator: 'all', expanded: new Set() }
 };
 function parseUSDate(s){ const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec((s || '').trim()); return m ? `${m[3]}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}` : ''; }
 function parseRows(data){
@@ -1239,11 +1348,101 @@ function renderYouTube(){
   $('yt-rows').innerHTML = rows.length === 0 ? emptyRow(11, YT.length ? t('noMatch') : t('yt.noData'), YT.length ? t('noMatchHint') : t('yt.noDataHint')) : rows.map((r, i) => `<tr class="is-clickable" data-pv="yt:${r.id}" title="${t('previewHint')}"><td class="is-num ox-muted">${i + 1}</td><td>${badgeBrand(r.shop === 'MoovTH' ? 'Moov' : r.shop)}</td><td>${r.playlist ? `<span class="ox-badge">${esc(r.playlist)}</span>` : '<span class="ox-muted">—</span>'}</td><td>${esc(r.product || '—')}</td><td class="is-topic">${topicCell(r, st.q)}</td><td class="is-nowrap">${ytBadge(r.status)}</td><td>${esc(r.owner || '—')}</td><td>${esc(r.mc || '—')}</td><td>${esc(r.editor || '—')}</td><td class="ox-num is-nowrap">${thDate(r.shoot)}</td><td class="is-nowrap"><span class="ox-row" style="flex-wrap:nowrap">${lk(r.script, t('yt.script'))}${lk(r.link, t('yt.video'))}</span></td></tr>`).join('');
   S.exportRows = rows;
 }
+/* ===== 9b. ปฏิทินคอนเทนต์ — คลิปจากชีต (TikTok) + แผนที่วางล่วงหน้า (เก็บใน localStorage ผ่าน storage) ===== */
+const PLAN_KEY = 'CK_PLANS';
+const getPlans = () => (storage.get(PLAN_KEY) || []).filter(p => p && p.date && p.topic);
+const savePlans = list => storage.set(PLAN_KEY, list);
+const PLAN_BADGE = { Plan: 'accent', Shooting: 'warning', Ready: 'success' };
+const badgePlan = s => `<span class="ox-badge ox-badge--${PLAN_BADGE[s] || 'accent'}">${t('cal.st.' + s)}</span>`;
+const fmtMonth = ym => new Intl.DateTimeFormat(locale(), { month: 'long', year: 'numeric' }).format(toD(ym + '-01'));
+const fmtDW = d => new Intl.DateTimeFormat(locale(), { weekday: 'short', day: 'numeric', month: 'short' }).format(d);
+function shiftMonth(ym, n){ const [y, m] = ym.split('-').map(Number); const d = new Date(y, m - 1 + n, 1); return iso(d).slice(0, 7); }
+function calFilter(list, creatorKey){
+  const { brand, creator } = S.cal;
+  return list.filter(x => (brand === 'all' || x.shop === brand) && (creator === 'all' || (x[creatorKey] || '').split(/[,/]/).map(v => v.trim()).includes(creator)));
+}
+function renderCal(){
+  const ym = S.cal.ym, [y, m] = ym.split('-').map(Number), first = new Date(y, m - 1, 1), last = new Date(y, m, 0);
+  const start = iso(first), end = iso(last), nDays = last.getDate();
+  $('cal-title').textContent = fmtMonth(ym);
+  // ตัวเลือกครีเอเตอร์ = คนในชีต + คนในแผน
+  const people = new Set(allStaff()); getPlans().forEach(p => { if (p.creator) people.add(p.creator); });
+  const sel = $('cal-creator'), cur = S.cal.creator;
+  sel.innerHTML = `<option value="all">${t('allPeopleName')}</option>` + [...people].sort().map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
+  sel.value = [...people].includes(cur) ? cur : 'all'; S.cal.creator = sel.value;
+  $('cal-brand').value = S.cal.brand;
+  const clips = calFilter(ALL.filter(c => c.date && c.date >= start && c.date <= end), 'creator');
+  const plans = calFilter(getPlans().filter(p => p.date >= start && p.date <= end), 'creator').sort((a, b) => a.date.localeCompare(b.date) || a.id - b.id);
+  // KPI
+  const done = clips.filter(c => c.status === 'Done').length, el = clips.filter(c => c.shop === 'EloopTH').length, mv = clips.length - el;
+  $('cal-k-month').textContent = clips.length ? fmtN(clips.length) : '—'; setDelta($('cal-d-month'), '', t('cal.monthSub', { e: fmtN(el), m: fmtN(mv) }));
+  $('cal-k-done').textContent = clips.length ? fmtN(done) : '—'; setDelta($('cal-d-done'), done && done === clips.length ? 'up' : '', t('cal.doneSub', { p: pctOf(done, clips.length) }));
+  const upcoming = plans.filter(p => p.date >= TODAY).length;
+  $('cal-k-plans').textContent = plans.length ? fmtN(plans.length) : '—'; setDelta($('cal-d-plans'), '', t('cal.plansSub', { n: fmtN(upcoming) }));
+  const busy = new Set([...clips.map(c => c.date), ...plans.map(p => p.date)]);
+  let left = 0, free = 0; for (let d = 1; d <= nDays; d++) { const s = iso(new Date(y, m - 1, d)); if (s < TODAY) continue; left++; if (!busy.has(s)) free++; }
+  $('cal-k-free').textContent = left ? fmtN(free) : '—'; setDelta($('cal-d-free'), free > left / 2 ? 'down' : '', left ? t('cal.freeSub', { n: fmtN(left) }) : t('cal.freePast'));
+  $('cal-meta').textContent = t('cal.meta', { n: fmtN(clips.length), p: fmtN(plans.length), a: fmtD(first), b: fmtDY(last) });
+  // ตาราง 7 คอลัมน์ เริ่มวันจันทร์ — เติมวันของเดือนก่อน/หลังให้ครบแถว
+  const byDay = {}; clips.forEach(c => (byDay[c.date] = byDay[c.date] || []).push({ kind: 'clip', ...c })); plans.forEach(p => (byDay[p.date] = byDay[p.date] || []).push({ kind: 'plan', ...p }));
+  const lead = (first.getDay() + 6) % 7, cells = Math.ceil((lead + nDays) / 7) * 7, wd = [];
+  for (let i = 0; i < 7; i++) wd.push(new Intl.DateTimeFormat(locale(), { weekday: 'short' }).format(new Date(2024, 0, 1 + i)));   // 1 ม.ค. 2024 = จันทร์
+  let html = wd.map(w => `<div class="kpi-cal__wd" role="columnheader">${w}</div>`).join('');
+  for (let i = 0; i < cells; i++) {
+    const d = new Date(y, m - 1, i - lead + 1), s = iso(d), out = d.getMonth() !== m - 1, items = byDay[s] || [];
+    const expanded = S.cal.expanded.has(s), max = expanded ? items.length : 3, shown = items.slice(0, max);
+    const cls = ['kpi-cal__day', out && 'is-out', s === TODAY && 'is-today', s < TODAY && 'is-past'].filter(Boolean).join(' ');
+    html += `<div class="${cls}" role="gridcell" data-day="${s}"><div class="kpi-cal__head"><span class="kpi-cal__num">${d.getDate()}</span>${items.length ? `<span class="kpi-cal__count">${items.length}</span>` : ''}</div>`;
+    html += shown.map(it => it.kind === 'clip'
+      ? `<button type="button" class="kpi-cal__item st-${esc(it.status)}" style="--c:${it.shop === 'Moov' ? 'var(--omnix-chart-2)' : 'var(--omnix-chart-1)'}" data-clip="${it.id}" title="${esc(`${it.status} · ${it.creator} · ${it.topic || it.title}`)}"><span class="ox-dot"></span>${esc(it.creator ? it.creator + ': ' : '')}${esc(it.topic || it.title || it.product || '—')}</button>`
+      : `<button type="button" class="kpi-cal__item is-plan" data-plan="${it.id}" title="${esc(`${t('cal.st.' + it.status)} · ${it.creator || ''} · ${it.topic}`)}"><span class="ox-dot"></span>${esc(it.creator ? it.creator + ': ' : '')}${esc(it.topic)}</button>`).join('');
+    if (items.length > 3) html += `<button type="button" class="kpi-cal__more" data-more="${s}">${expanded ? t('cal.less') : t('cal.more', { n: items.length - 3 })}</button>`;
+    html += '</div>';
+  }
+  $('cal-grid').innerHTML = html;
+  // ตารางแผน
+  $('cal-plan-count').textContent = fmtN(plans.length);
+  $('cal-plan-rows').innerHTML = plans.length ? plans.map(p => `<tr>
+    <td class="is-nowrap">${thDate(p.date)}${p.date < TODAY && p.status !== 'Ready' ? ` <span class="ox-badge ox-badge--danger">${t('cal.overdue')}</span>` : ''}</td><td>${badgeBrand(p.shop)}</td><td>${esc(p.creator || '—')}</td><td>${esc(p.product || '—')}</td><td>${badgeType(p.type)}</td>
+    <td class="is-topic"><div class="line-clamp-2" title="${esc(p.topic)}">${esc(p.topic)}</div>${p.note ? `<div class="ox-xs ox-muted line-clamp-2">${esc(p.note)}</div>` : ''}</td><td>${badgePlan(p.status)}</td>
+    <td class="is-nowrap"><span class="ox-row"><button class="ox-btn ox-btn--secondary ox-btn--sm" type="button" data-edit-plan="${p.id}">${t('cal.edit')}</button><button class="ox-btn ox-btn--ghost ox-btn--sm" type="button" data-dup-plan="${p.id}">${t('cal.dup')}</button>${btnCopy(p.topic, t('copyTopic'), t('copiedTopic'))}</span></td></tr>`).join('')
+    : emptyRow(8, t('cal.noPlans'), t('cal.noPlansHint'), `<button class="ox-btn ox-btn--primary ox-btn--sm" type="button" style="margin-top:8px" onclick="openPlan(null, S.cal.ym + '-01')">${t('cal.add')}</button>`);
+}
+function openPlan(id, date){
+  const p = id ? getPlans().find(x => x.id === id) : null;
+  S.cal.editing = p ? p.id : null;
+  $('plan-title').textContent = t(p ? 'cal.editTitle' : 'cal.newTitle');
+  $('plan-date').value = p ? p.date : (date || TODAY); $('plan-brand').value = p ? p.shop : (S.cal.brand !== 'all' ? S.cal.brand : 'EloopTH');
+  $('plan-creator').value = p ? p.creator : (S.cal.creator !== 'all' ? S.cal.creator : ''); $('plan-status').value = p ? p.status : 'Plan';
+  $('plan-product').value = p ? p.product : ''; $('plan-type').value = p ? p.type : ''; $('plan-topic').value = p ? p.topic : ''; $('plan-note').value = p ? p.note : '';
+  $('plan-creator-list').innerHTML = allStaff().map(n => `<option value="${esc(n)}">`).join('');
+  $('plan-product-list').innerHTML = [...new Set(CLIPS.map(c => c.product).filter(Boolean))].sort().slice(0, 200).map(v => `<option value="${esc(v)}">`).join('');
+  $('plan-type-list').innerHTML = [...new Set(CLIPS.map(c => c.type).filter(Boolean))].sort().map(v => `<option value="${esc(v)}">`).join('');
+  $('plan-delete').hidden = !p; $('plan-err').hidden = true;
+  $('plan-modal').hidden = false; $('plan-topic').focus();
+}
+const closePlan = () => { $('plan-modal').hidden = true; S.cal.editing = null; };
+function savePlan(){
+  const date = $('plan-date').value, topic = $('plan-topic').value.trim();
+  if (!date || !topic) { $('plan-err').textContent = t('cal.needTopic'); $('plan-err').hidden = false; return; }
+  const list = getPlans(), item = { id: S.cal.editing || Date.now(), date, shop: $('plan-brand').value, creator: $('plan-creator').value.trim(), status: $('plan-status').value, product: $('plan-product').value.trim(), type: $('plan-type').value.trim(), topic, note: $('plan-note').value.trim() };
+  const i = list.findIndex(x => x.id === item.id); if (i >= 0) list[i] = item; else list.push(item);
+  savePlans(list); closePlan(); toast(t('cal.saved')); S.cal.ym = date.slice(0, 7); renderCal();
+}
+function deletePlan(id){ if (!confirm(t('cal.confirmDel'))) return; savePlans(getPlans().filter(x => x.id !== id)); closePlan(); toast(t('cal.deleted')); renderCal(); }
+function exportPlans(){
+  const list = getPlans().sort((a, b) => a.date.localeCompare(b.date)); if (!list.length) return toast(t('cal.noExport'));
+  // คอลัมน์ตามชีต "Tiktok Post Plan" เพื่อวางต่อได้ทันที (วันที่ M/D/YYYY)
+  const head = ['Shop Name', 'Product', 'Content type', 'Topic', 'Creator', 'Status', 'DATE', 'Note'];
+  const rows = list.map(p => { const [y, m, d] = p.date.split('-'); return [p.shop, p.product, p.type, p.topic, p.creator, 'Draft', `${+m}/${+d}/${y}`, `${t('cal.st.' + p.status)}${p.note ? ' — ' + p.note : ''}`]; });
+  const csv = [head, ...rows].map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+  const a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8,﻿' + encodeURIComponent(csv); a.download = `content-plan-${TODAY}.csv`; a.click(); toast(t('cal.exported', { n: fmtN(list.length) }));
+}
 function switchPlatform(p){
   S.platform = p;
   document.querySelectorAll('#platform-tabs [role=tab]').forEach(b => { b.classList.toggle('is-active', b.dataset.platform === p); b.setAttribute('aria-selected', b.dataset.platform === p); });
   document.getElementById('tiktok-tabs').hidden = p !== 'tiktok';
-  if (p === 'youtube') { ['manager', 'personal', 'reuse'].forEach(k => document.getElementById(`page-${k}`).classList.remove('is-active')); document.getElementById('page-youtube').classList.add('is-active'); renderYouTube(); }
+  if (p === 'youtube') { ['manager', 'personal', 'reuse', 'cal'].forEach(k => document.getElementById(`page-${k}`).classList.remove('is-active')); document.getElementById('page-youtube').classList.add('is-active'); renderYouTube(); }
   else { document.getElementById('page-youtube').classList.remove('is-active'); switchMode(S.mode); }
 }
 function updateBadge(){
@@ -1252,11 +1451,11 @@ function updateBadge(){
   const stale = (Date.now() - d.getTime()) > 3600e3, el = document.getElementById('updated-badge');
   el.classList.toggle('is-stale', stale); document.getElementById('updated-text').textContent = t(stale ? 'updatedStale' : 'updatedAt', { t: fmtT(d) });
 }
-function render(){ updateBadge(); if (S.platform === 'youtube') return renderYouTube(); if (!ALL.length) return; ({ manager: renderManager, personal: renderPersonal, reuse: renderReuse })[S.mode](); }
+function render(){ updateBadge(); if (S.platform === 'youtube') return renderYouTube(); if (!ALL.length) return; ({ manager: renderManager, personal: renderPersonal, reuse: renderReuse, cal: renderCal })[S.mode](); }
 function switchMode(m){
   S.mode = m;
   document.querySelectorAll('#mode-tabs [role=tab]').forEach(b => { b.classList.toggle('is-active', b.dataset.mode === m); b.setAttribute('aria-selected', b.dataset.mode === m); });
-  ['manager', 'personal', 'reuse'].forEach(k => document.getElementById(`page-${k}`).classList.toggle('is-active', k === m));
+  ['manager', 'personal', 'reuse', 'cal'].forEach(k => document.getElementById(`page-${k}`).classList.toggle('is-active', k === m));
   render();
 }
 const $ = id => document.getElementById(id), on = (id, ev, fn) => $(id).addEventListener(ev, fn);
@@ -1289,6 +1488,29 @@ on('re-start', 'change', reCustom); on('re-end', 'change', reCustom);
 on('re-pagesize', 'change', e => { S.re.size = +e.target.value; S.re.page = 1; renderReuse(); });
 on('re-prev', 'click', () => { S.re.page--; renderReuse(); }); on('re-next', 'click', () => { S.re.page++; renderReuse(); });
 
+/* ปฏิทินคอนเทนต์ */
+on('cal-prev', 'click', () => { S.cal.ym = shiftMonth(S.cal.ym, -1); S.cal.expanded.clear(); renderCal(); });
+on('cal-next', 'click', () => { S.cal.ym = shiftMonth(S.cal.ym, 1); S.cal.expanded.clear(); renderCal(); });
+on('cal-today', 'click', () => { S.cal.ym = TODAY.slice(0, 7); renderCal(); });
+on('cal-brand', 'change', e => { S.cal.brand = e.target.value; renderCal(); });
+on('cal-creator', 'change', e => { S.cal.creator = e.target.value; renderCal(); });
+on('cal-add', 'click', () => openPlan(null, S.cal.ym === TODAY.slice(0, 7) ? TODAY : S.cal.ym + '-01'));
+on('cal-export', 'click', exportPlans);
+$('cal-grid').addEventListener('click', e => {
+  const clip = e.target.closest('[data-clip]'); if (clip) { const c = ALL.find(x => String(x.id) === clip.dataset.clip); if (c) openPreview(c); return; }
+  const plan = e.target.closest('[data-plan]'); if (plan) return openPlan(+plan.dataset.plan);
+  const more = e.target.closest('[data-more]'); if (more) { const s = more.dataset.more; S.cal.expanded.has(s) ? S.cal.expanded.delete(s) : S.cal.expanded.add(s); return renderCal(); }
+  const day = e.target.closest('[data-day]'); if (day) openPlan(null, day.dataset.day);
+});
+$('cal-plan-rows').addEventListener('click', e => {
+  const ed = e.target.closest('[data-edit-plan]'); if (ed) return openPlan(+ed.dataset.editPlan);
+  const du = e.target.closest('[data-dup-plan]'); if (du) { const p = getPlans().find(x => x.id === +du.dataset.dupPlan); if (!p) return; savePlans([...getPlans(), { ...p, id: Date.now(), status: 'Plan' }]); toast(t('cal.saved')); renderCal(); }
+});
+on('plan-save', 'click', savePlan); on('plan-cancel', 'click', closePlan);
+on('plan-delete', 'click', () => S.cal.editing && deletePlan(S.cal.editing));
+$('plan-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closePlan(); });
+$('plan-topic').addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') savePlan(); });
+
 function openQuota(){
   $('quota-list').innerHTML = Object.entries(getQuotas()).map(([n, q]) => `<div class="kpi-quota-row"><strong>${esc(n)}</strong><label>Eloop <input type="number" min="0" max="20" class="ox-control" value="${q.eloop}" data-name="${esc(n)}" data-brand="eloop"></label><label>Moov <input type="number" min="0" max="20" class="ox-control" value="${q.moov}" data-name="${esc(n)}" data-brand="moov"></label></div>`).join('');
   $('quota-modal').hidden = false;
@@ -1301,7 +1523,7 @@ on('quota-reset', 'click', () => { if (confirm(t('quota.confirm'))) { storage.se
 
 on('preview-close', 'click', closePreview);
 $('preview-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closePreview(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closePreview(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closePreview(); closePlan(); } });
 on('btn-refresh', 'click', async () => { const b = $('btn-refresh'); b.disabled = true; try { await loadSheet(); toast(t('refreshed', { t: LOADED_AT ? (LOADED_AT instanceof Date ? fmtT(LOADED_AT) : LOADED_AT) : '—' })); } finally { b.disabled = false; } });
 on('btn-theme', 'click', () => { const r = document.documentElement, dark = r.getAttribute('data-theme') === 'dark' || (!r.getAttribute('data-theme') && matchMedia('(prefers-color-scheme: dark)').matches); r.setAttribute('data-theme', dark ? 'light' : 'dark'); r.classList.toggle('dark', !dark); render(); });
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', render);
