@@ -785,6 +785,13 @@ const SHEET = { id: '139OFW8jnXZ6PgelZ6zEVo9Fp0bRUbnbaVvvaM56jBuA', gid: '456905
    3) gviz (JSONP) — สดแต่เห็นเฉพาะแถวที่ "ไม่ได้ยุบ/ซ่อน" ในชีต ใช้เมื่อไม่มีสองอย่างแรก */
 const PUB_CSV_URL = '';        // TikTok Post Plan (แท็บ gid 456905298)
 const PUB_CSV_URL_YT = '';     // YouTube Plan (แท็บ gid 1450311646)
+/* Google Sheets API v4 (อ่านสดทันทีที่กดรีเฟรช) — วาง API key ตรงนี้
+   สร้างที่ Google Cloud Console → APIs & Services → Credentials → Create API key
+   แล้ว "Restrict key": Application restrictions = Websites (ใส่ https://annk9p.github.io/* และ http://localhost:8765/*)
+                        API restrictions = Google Sheets API เท่านั้น
+   คีย์แบบนี้อ่านได้เฉพาะชีตที่แชร์ "ทุกคนที่มีลิงก์ดูได้" และเขียนไม่ได้ จึงเปิดเผยในหน้าเว็บได้ */
+const GOOGLE_API_KEY = '';
+const YT_SHEET = { id: '1PLRGfQnKLG8mUy3wjjE5IrA_L925N_HL6d3stWRr9Cw', gid: '1450311646' };
 const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET.id}/gviz/tq?gid=${SHEET.gid}&tqx=out:json`;
 const COLS = { shop: 'Shop Name', product: 'Product', type: 'Content type', topic: 'Topic', title: 'title', url: 'URL', creator: 'Creator', status: 'Status', date: 'DATE', path: 'Path', recorder: 'Recorder', editor: 'Editor', actor: 'Actor', voice: 'Voice over' };
 const STATUSES = ['Done', 'In Progress', 'Draft', 'Reject', 'Stuck'];
@@ -809,7 +816,7 @@ const DICT = {
     'quota.btn': 'ตั้งค่าโควต้า', 'quota.title': 'ตั้งค่าโควต้าเป้าหมายรายสัปดาห์', 'quota.help': 'จำนวนคลิปต่อสัปดาห์ของแต่ละคน แยกแบรนด์ — บันทึกไว้ในเบราว์เซอร์นี้', 'quota.reset': 'คืนค่าเริ่มต้น', 'quota.save': 'บันทึกโควต้า', 'quota.saved': 'บันทึกโควต้าแล้ว', 'quota.resetDone': 'คืนค่าเริ่มต้นแล้ว', 'quota.confirm': 'คืนค่าโควต้าเริ่มต้นทั้งหมด?',
     'st.Done': 'โพสต์แล้ว', 'st.In Progress': 'รอตั้งโพสต์', 'st.Draft': 'ตั้งเวลาแล้ว', 'st.Reject': 'มีการแก้ไข', 'st.Stuck': 'ติดปัญหา',
     loading: 'กำลังโหลดข้อมูลจาก Google Sheet…', loadFail: 'โหลดไม่สำเร็จ', updated: 'อัปเดตล่าสุด {t} · แหล่งข้อมูล: {src} · {n} คลิป',
-    'err.net': 'โหลดข้อมูลไม่สำเร็จ — เข้าถึง Google Sheet ไม่ได้ (ตรวจอินเทอร์เน็ตหรือสิทธิ์แชร์ "ทุกคนที่มีลิงก์")', 'warn.partial': 'กำลังอ่านผ่าน gviz ซึ่งเห็นเฉพาะแถวที่ไม่ได้ยุบกลุ่ม/ซ่อนในชีต ({n} คลิป) — ให้ครบทุกแถว: เผยแพร่แท็บนี้เป็น CSV แล้วใส่ลิงก์ใน PUB_CSV_URL', 'src.pub': 'Google Sheet (เผยแพร่ CSV)', 'src.gviz': 'Google Sheet (gviz — เฉพาะแถวที่ไม่ยุบ)', 'src.snap': 'Google Sheet snapshot — รัน update_data.sh เพื่ออัปเดต', 'err.fmt': 'โหลดข้อมูลไม่สำเร็จ — ไม่พบคอลัมน์ {c} ในชีต',
+    'err.net': 'โหลดข้อมูลไม่สำเร็จ — เข้าถึง Google Sheet ไม่ได้ (ตรวจอินเทอร์เน็ตหรือสิทธิ์แชร์ "ทุกคนที่มีลิงก์")', 'warn.partial': 'กำลังอ่านผ่าน gviz ซึ่งเห็นเฉพาะแถวที่ไม่ได้ยุบกลุ่ม/ซ่อนในชีต ({n} คลิป) — ให้ครบทุกแถว: เผยแพร่แท็บนี้เป็น CSV แล้วใส่ลิงก์ใน PUB_CSV_URL', 'src.api': 'Google Sheets API (อ่านสด)', 'warn.api': 'อ่านผ่าน Google Sheets API ไม่สำเร็จ ({e}) — กำลังใช้ข้อมูลสำรอง ตรวจ API key, การจำกัดโดเมน และสิทธิ์แชร์ของชีต', 'src.pub': 'Google Sheet (เผยแพร่ CSV)', 'src.gviz': 'Google Sheet (gviz — เฉพาะแถวที่ไม่ยุบ)', 'src.snap': 'Google Sheet snapshot — รัน update_data.sh เพื่ออัปเดต', 'err.fmt': 'โหลดข้อมูลไม่สำเร็จ — ไม่พบคอลัมน์ {c} ในชีต',
     weeks: '{n} สัปดาห์', period: '{a} – {b} · คิดเป้า {w} สัปดาห์', quotaLine: 'โควต้า {n} คน × {w} สัปดาห์', vsPrev: '{d} เทียบช่วงก่อน ({p})', short: 'ยังขาดอีก {n} คลิป', onTarget: 'ตรงตามเป้า', over: 'เกินเป้า {n} คลิป', wip: 'รอโพสต์/ติดปัญหา {n} คลิป',
     daily: 'รายวัน', weekly: 'รายสัปดาห์ (เริ่มวันจันทร์)', noDataIn: 'ไม่มีข้อมูลในช่วง {r}', viewYear: 'ดูทั้งปี', clips: 'คลิป', unknownType: 'ไม่ระบุ', other: 'อื่น ๆ',
     extra: 'ช่วยทำพิเศษ', overN: 'เกินเป้า +{n}', met: 'ครบเป้า', shortN: 'ขาดอีก {n}', viewPerson: 'ดูงานรายคน', noCreators: 'ไม่มีครีเอเตอร์ที่เลือก', noCreatorsHint: 'กดปุ่ม "ทั้งหมด" ในแถวครีเอเตอร์',
@@ -837,7 +844,7 @@ const DICT = {
     'quota.btn': 'Set quotas', 'quota.title': 'Weekly target quotas', 'quota.help': 'Clips per week for each creator, per brand — saved in this browser', 'quota.reset': 'Reset to defaults', 'quota.save': 'Save quotas', 'quota.saved': 'Quotas saved', 'quota.resetDone': 'Defaults restored', 'quota.confirm': 'Reset all quotas to defaults?',
     'st.Done': 'Posted', 'st.In Progress': 'Awaiting post', 'st.Draft': 'Scheduled', 'st.Reject': 'Needs edits', 'st.Stuck': 'Blocked',
     loading: 'Loading data from Google Sheets…', loadFail: 'Load failed', updated: 'Updated {t} · Source: {src} · {n} clips',
-    'err.net': 'Could not load data — Google Sheet unreachable (check connection or "anyone with the link" sharing)', 'warn.partial': 'Reading via gviz, which only sees rows that are not collapsed/hidden in the sheet ({n} clips) — for all rows, publish this tab as CSV and set PUB_CSV_URL', 'src.pub': 'Google Sheet (published CSV)', 'src.gviz': 'Google Sheet (gviz — visible rows only)', 'src.snap': 'Google Sheet snapshot — run update_data.sh to refresh', 'err.fmt': 'Could not load data — column {c} not found in the sheet',
+    'err.net': 'Could not load data — Google Sheet unreachable (check connection or "anyone with the link" sharing)', 'warn.partial': 'Reading via gviz, which only sees rows that are not collapsed/hidden in the sheet ({n} clips) — for all rows, publish this tab as CSV and set PUB_CSV_URL', 'src.api': 'Google Sheets API (live)', 'warn.api': 'Google Sheets API read failed ({e}) — using fallback data. Check the API key, its website restrictions and the sheet sharing setting', 'src.pub': 'Google Sheet (published CSV)', 'src.gviz': 'Google Sheet (gviz — visible rows only)', 'src.snap': 'Google Sheet snapshot — run update_data.sh to refresh', 'err.fmt': 'Could not load data — column {c} not found in the sheet',
     weeks: '{n} weeks', period: '{a} – {b} · target counts {w} weeks', quotaLine: 'quota for {n} people × {w} weeks', vsPrev: '{d} vs previous period ({p})', short: '{n} clips short', onTarget: 'On target', over: '{n} clips over target', wip: '{n} clips pending/blocked',
     daily: 'Daily', weekly: 'Weekly (from Monday)', noDataIn: 'No data for {r}', viewYear: 'View whole year', clips: 'clips', unknownType: 'Unspecified', other: 'Other',
     extra: 'Extra help', overN: 'Over +{n}', met: 'On target', shortN: '{n} short', viewPerson: 'View workload', noCreators: 'No creators selected', noCreatorsHint: 'Press "All" in the creators row',
@@ -1058,6 +1065,32 @@ function fetchGvizRows(){
     document.head.appendChild(script);
   });
 }
+/* ---- Google Sheets API v4 ----
+   1) spreadsheets.get?fields=sheets.properties — หาชื่อแท็บจาก gid (A1 notation ใช้ชื่อแท็บ ไม่ใช่ gid)
+   2) spreadsheets.values.get?range='ชื่อแท็บ' — ได้ทุกแถวรวมแถวที่ยุบกลุ่ม/ซ่อน (ต่างจาก gviz)
+   คืนค่าเป็น array 2 มิติรูปเดียวกับ CSV เพื่อส่งเข้า parseRows/parseYouTube ได้ทันที */
+const SHEET_TITLES = {};
+async function apiJson(url){
+  const r = await fetch(url, { cache: 'no-store' });
+  const j = await r.json().catch(() => null);
+  if (!r.ok) throw new Error(j?.error?.message || `http ${r.status}`);
+  return j;
+}
+async function sheetTitle(id, gid){
+  const key = `${id}|${gid}`; if (SHEET_TITLES[key]) return SHEET_TITLES[key];
+  const j = await apiJson(`https://sheets.googleapis.com/v4/spreadsheets/${id}?fields=sheets.properties(sheetId,title)&key=${GOOGLE_API_KEY}`);
+  const hit = (j.sheets || []).find(s => String(s.properties.sheetId) === String(gid));
+  if (!hit) throw new Error(`sheet gid ${gid} not found`);
+  return SHEET_TITLES[key] = hit.properties.title;
+}
+async function fetchApiRows(id, gid){
+  const title = await sheetTitle(id, gid);
+  const range = encodeURIComponent(`'${title.replace(/'/g, "''")}'`);
+  const j = await apiJson(`https://sheets.googleapis.com/v4/spreadsheets/${id}/values/${range}?majorDimension=ROWS&valueRenderOption=FORMATTED_VALUE&key=${GOOGLE_API_KEY}`);
+  const rows = j.values || [];
+  const width = rows.reduce((a, r) => Math.max(a, r.length), 0);
+  return rows.map(r => { const out = r.slice(); while (out.length < width) out.push(''); return out; });   // API ตัดเซลล์ว่างท้ายแถวทิ้ง — เติมให้ครบความกว้าง
+}
 /* โหลด data_sheet.js ใหม่ทุกครั้ง (กัน cache) — ไฟล์นี้ถูก launchd/update_data.sh เขียนทับทุก 15 นาที */
 function loadSnapshot(){
   return new Promise(resolve => {
@@ -1073,8 +1106,10 @@ async function loadSheet(){
   document.getElementById('err').hidden = true; document.getElementById('warn').hidden = true;
   document.getElementById('meta').textContent = t('loading'); setLoading(true);
   try {
-    let data;
-    if (PUB_CSV_URL) { data = await fetchCsvRows(); SOURCE = 'pub'; LOADED_AT = new Date(); }
+    let data, apiErr = '';
+    if (GOOGLE_API_KEY) { try { data = await fetchApiRows(SHEET.id, SHEET.gid); SOURCE = 'api'; LOADED_AT = new Date(); } catch (e) { apiErr = e.message; } }
+    if (data) { /* ใช้ข้อมูลจาก Sheets API */ }
+    else if (PUB_CSV_URL) { data = await fetchCsvRows(); SOURCE = 'pub'; LOADED_AT = new Date(); }
     else if (await loadSnapshot()) { data = window.SHEET_SNAPSHOT.rows; SOURCE = 'snap'; LOADED_AT = window.SHEET_SNAPSHOT.fetched_at; }
     else { data = await fetchGvizRows(); SOURCE = 'gviz'; LOADED_AT = new Date(); }
     ALL = parseRows(data);
@@ -1083,6 +1118,7 @@ async function loadSheet(){
     if (!YEARS.includes(S.year)) S.year = YEARS[0];
     setYear(S.year);
     if (SOURCE === 'gviz') { document.getElementById('warn').hidden = false; document.getElementById('warn-msg').textContent = t('warn.partial', { n: fmtN(ALL.length) }); }
+    if (apiErr) { document.getElementById('warn').hidden = false; document.getElementById('warn-msg').textContent = t('warn.api', { e: apiErr }); }
     await loadYouTube();
     loading = false; setLoading(false); render();
   } catch (e) {
@@ -1312,6 +1348,7 @@ function parseYouTube(data){
   return out;
 }
 async function loadYouTube(){
+  if (GOOGLE_API_KEY) { try { YT = parseYouTube(await fetchApiRows(YT_SHEET.id, YT_SHEET.gid)); YT_AT = new Date(); if (YT.length) return true; } catch (e) { /* ตกไปใช้ CSV/snapshot */ } }
   if (PUB_CSV_URL_YT) { try { YT = parseYouTube(await fetchCsvRows(PUB_CSV_URL_YT)); YT_AT = new Date(); return YT.length > 0; } catch (e) { /* ตกไปใช้ snapshot */ } }
   return new Promise(resolve => {
     const sc = document.createElement('script');
