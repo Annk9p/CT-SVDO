@@ -418,6 +418,11 @@ mark.kpi-hl { background: var(--omnix-accent-soft); color: var(--omnix-accent); 
 .kpi-kpi-skel { display: inline-block; height: 28px; width: 60%; }
 .kpi-chart-skel { position: absolute; inset: 0; }
 .ox-modal-mask[hidden] { display: none; }
+/* แถบสถานะกดเลือกได้ */
+.kpi-st-btn { display: inline-flex; align-items: center; gap: var(--omnix-space-1); height: 28px; padding: 0 var(--omnix-space-2); font-size: var(--omnix-text-xs); }
+.kpi-st-btn.is-dim { opacity: .45; }
+.kpi-st-btn.is-active { border-color: var(--omnix-accent); background: var(--omnix-accent-soft); color: var(--omnix-accent); opacity: 1; }
+.kpi-st-btn .ox-badge { pointer-events: none; }
 /* ปฏิทินคอนเทนต์ */
 .kpi-cal-nav { display: inline-flex; align-items: center; gap: var(--omnix-space-2); }
 .kpi-cal-nav__title { min-width: 150px; text-align: center; font-size: var(--omnix-text-base); }
@@ -811,7 +816,7 @@ const DICT = {
     noClipsHint: 'ลองขยายช่วงเวลา หรือเลือกสถานะ "ทั้งหมด"', showing: 'แสดง {a}–{b} จาก {n} รายการ', none: 'ไม่มีรายการ', open: 'เปิด', noLink: 'ไม่มีลิงก์', copyPath: 'คัดลอก Path', copiedPath: 'คัดลอกที่อยู่ไฟล์แล้ว', copyLink: 'คัดลอกลิงก์', copiedLink: 'คัดลอกลิงก์ TikTok แล้ว', copyFail: 'คัดลอกไม่สำเร็จ',
     myQuota: 'โควต้า {n} คลิป/สัปดาห์ (Eloop {e} · Moov {m})', myTargetSub: 'Eloop {e} · Moov {m} · {w} สัปดาห์', myTargetSubBrand: '{b} · {w} สัปดาห์', myDoneSub: 'Eloop {e} · Moov {m}', fromTarget: 'จากเป้า {n} คลิป', todo: 'ต้องทำอีก {n} คลิป', metAll: 'ครบตามเป้าแล้ว',
     noMatch: 'ไม่พบคลิปตามเงื่อนไข', noMatchHint: 'ลองเปลี่ยนช่วงเวลา แบรนด์ หรือสถานะ', noSearch: 'ไม่พบคลิปที่ตรงกับคำค้น', noSearchHint: 'ลองเลือก "ทุกสถานะ" หรือพิมพ์คำอื่น',
-    'tab.cal': 'ปฏิทินคอนเทนต์', 'cal.today': 'วันนี้', 'cal.add': 'วางคอนเทนต์', 'cal.export': 'ส่งออกแผน (CSV)', 'cal.grid': 'ปฏิทินรายเดือน', 'cal.legendPlan': 'แผนที่วางไว้', 'cal.hint': 'คลิกวันเพื่อวางคอนเทนต์ · คลิกคลิปเพื่อดูตัวอย่าง · คลิกแผนเพื่อแก้ไข',
+    multiHint: 'เลือกได้หลายสถานะ', 'tab.cal': 'ปฏิทินคอนเทนต์', 'cal.today': 'วันนี้', 'cal.add': 'วางคอนเทนต์', 'cal.export': 'ส่งออกแผน (CSV)', 'cal.grid': 'ปฏิทินรายเดือน', 'cal.legendPlan': 'แผนที่วางไว้', 'cal.hint': 'คลิกวันเพื่อวางคอนเทนต์ · คลิกคลิปเพื่อดูตัวอย่าง · คลิกแผนเพื่อแก้ไข',
     'cal.k.month': 'คลิปในชีตเดือนนี้', 'cal.k.plans': 'แผนที่วางไว้', 'cal.k.free': 'วันที่ยังว่าง', 'cal.monthSub': 'Eloop {e} · Moov {m}', 'cal.doneSub': '{p}% ของคลิปเดือนนี้', 'cal.plansSub': 'ยังไม่ถึงวัน {n} รายการ', 'cal.freeSub': 'จากวันที่เหลือในเดือน {n} วัน', 'cal.freePast': 'เดือนนี้ผ่านไปแล้ว',
     'cal.meta': '{n} คลิปจากชีต · {p} แผน · {a} – {b}', 'cal.more': 'อีก {n} รายการ', 'cal.less': 'ย่อ', 'cal.upcoming': 'แผนคอนเทนต์ที่วางไว้', 'cal.local': 'บันทึกไว้ในเบราว์เซอร์นี้ — ส่งออก CSV เพื่อนำไปวางในชีต', 'cal.noPlans': 'ยังไม่มีแผนคอนเทนต์ในเดือนนี้', 'cal.noPlansHint': 'คลิกวันในปฏิทิน หรือกดปุ่ม "วางคอนเทนต์"',
     'cal.newTitle': 'วางคอนเทนต์ล่วงหน้า', 'cal.editTitle': 'แก้ไขแผนคอนเทนต์', 'cal.f.note': 'โน้ต / ไอเดีย', 'cal.save': 'บันทึกแผน', 'cal.delete': 'ลบแผนนี้', 'cal.saved': 'บันทึกแผนแล้ว', 'cal.deleted': 'ลบแผนแล้ว', 'cal.confirmDel': 'ลบแผนคอนเทนต์นี้?', 'cal.needTopic': 'กรอกวันที่และหัวข้อคลิปก่อนบันทึก', 'cal.edit': 'แก้ไข', 'cal.dup': 'ทำซ้ำ', 'cal.exported': 'ส่งออกแผน {n} รายการแล้ว', 'cal.noExport': 'ยังไม่มีแผนให้ส่งออก',
@@ -839,7 +844,7 @@ const DICT = {
     noClipsHint: 'Try a wider date range or "All" statuses', showing: 'Showing {a}–{b} of {n}', none: 'No items', open: 'Open', noLink: 'No link', copyPath: 'Copy path', copiedPath: 'File path copied', copyLink: 'Copy link', copiedLink: 'TikTok link copied', copyFail: 'Copy failed',
     myQuota: 'Quota {n} clips/week (Eloop {e} · Moov {m})', myTargetSub: 'Eloop {e} · Moov {m} · {w} weeks', myTargetSubBrand: '{b} · {w} weeks', myDoneSub: 'Eloop {e} · Moov {m}', fromTarget: 'of {n} target', todo: '{n} more clips to do', metAll: 'Target met',
     noMatch: 'No clips match the filters', noMatchHint: 'Try another period, brand or status', noSearch: 'No clips match your search', noSearchHint: 'Try "All statuses" or another keyword',
-    'tab.cal': 'Content calendar', 'cal.today': 'Today', 'cal.add': 'Plan content', 'cal.export': 'Export plans (CSV)', 'cal.grid': 'Monthly calendar', 'cal.legendPlan': 'Planned', 'cal.hint': 'Click a day to plan content · click a clip to preview · click a plan to edit',
+    multiHint: 'Select more than one', 'tab.cal': 'Content calendar', 'cal.today': 'Today', 'cal.add': 'Plan content', 'cal.export': 'Export plans (CSV)', 'cal.grid': 'Monthly calendar', 'cal.legendPlan': 'Planned', 'cal.hint': 'Click a day to plan content · click a clip to preview · click a plan to edit',
     'cal.k.month': 'Sheet clips this month', 'cal.k.plans': 'Planned items', 'cal.k.free': 'Empty days left', 'cal.monthSub': 'Eloop {e} · Moov {m}', 'cal.doneSub': '{p}% of this month\'s clips', 'cal.plansSub': '{n} still upcoming', 'cal.freeSub': 'of {n} days left this month', 'cal.freePast': 'Month has passed',
     'cal.meta': '{n} clips from sheet · {p} plans · {a} – {b}', 'cal.more': '{n} more', 'cal.less': 'Less', 'cal.upcoming': 'Planned content', 'cal.local': 'Saved in this browser — export CSV to paste into the sheet', 'cal.noPlans': 'No planned content this month', 'cal.noPlansHint': 'Click a day in the calendar or press "Plan content"',
     'cal.newTitle': 'Plan content ahead', 'cal.editTitle': 'Edit planned content', 'cal.f.note': 'Notes / ideas', 'cal.save': 'Save plan', 'cal.delete': 'Delete plan', 'cal.saved': 'Plan saved', 'cal.deleted': 'Plan deleted', 'cal.confirmDel': 'Delete this plan?', 'cal.needTopic': 'Enter a date and topic before saving', 'cal.edit': 'Edit', 'cal.dup': 'Duplicate', 'cal.exported': 'Exported {n} plans', 'cal.noExport': 'No plans to export yet',
@@ -857,7 +862,7 @@ function applyLang(){
   document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = t(el.dataset.i18n));
   document.querySelectorAll('[data-i18n-ph]').forEach(el => el.placeholder = t(el.dataset.i18nPh));
   document.querySelectorAll('#lang-seg button').forEach(b => b.classList.toggle('is-active', b.dataset.lang === LANG));
-  document.getElementById('status-legend').innerHTML = STATUSES.map(s => `<span class="ox-badge ox-badge--${STATUS_BADGE[s]}">${s}</span> ${t('st.' + s)}`).join(' ');
+  renderStatusLegend();
   document.title = t('brand');
   if (ALL.length && SOURCE === 'gviz') document.getElementById('warn-msg').textContent = t('warn.partial', { n: fmtN(ALL.length) });
 }
@@ -995,7 +1000,7 @@ const S = {
   mgr: { preset: 'this_week', start: '', end: '', brand: 'all', creators: [], statuses: [], q: '', page: 1, size: 30 },
   my: { creator: 'Moth', preset: 'this_week', start: '', end: '', brand: 'all', status: 'all', q: '' },
   re: { q: '', status: 'Done', type: 'all', brand: 'all', preset: 'all_year', start: '', end: '', sort: 'newest', page: 1, size: 50 },
-  cal: { ym: iso(new Date()).slice(0, 7), brand: 'all', creator: 'all', expanded: new Set() }
+  cal: { ym: iso(new Date()).slice(0, 7), brand: 'all', creator: 'all', statuses: [], expanded: new Set() }
 };
 function parseUSDate(s){ const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec((s || '').trim()); return m ? `${m[3]}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}` : ''; }
 function parseRows(data){
@@ -1116,6 +1121,7 @@ function renderDropdown(root, items, selected, labelOf, onChange){
 document.addEventListener('click', () => document.querySelectorAll('.kpi-dd__menu').forEach(m => { m.hidden = true; m.parentElement.querySelector('.kpi-dd__btn').setAttribute('aria-expanded', 'false'); }));
 function toggleIn(list, v, all){ if (v === '__all') return []; const next = list.length === 0 ? [v] : list.includes(v) ? list.filter(x => x !== v) : [...list, v]; return next.length === all.length ? [] : next; }
 function renderManager(){
+  renderStatusLegend();
   const st = S.mgr, quotas = getQuotas(), staffNames = allStaff();
   const $ = id => document.getElementById(id);
   $('sel-year').value = S.year; $('mgr-start').value = st.start; $('mgr-end').value = st.end; $('mgr-brand').value = st.brand;
@@ -1200,6 +1206,7 @@ function setMgrPreset(p){ S.mgr.preset = p; [S.mgr.start, S.mgr.end] = presetRan
 
 /* ===== 7. ภาระงานรายคน ===== */
 function renderSummary(){
+  renderStatusLegend();
   const st = S.my, quotas = getQuotas(), $ = id => document.getElementById(id), weeks = targetWeeks(st.start, st.end);
   $('my-creator').value = '__all'; $('my-preset').value = st.preset; $('my-start').value = st.start; $('my-end').value = st.end; $('my-brand').value = st.brand; $('my-status').value = st.status;
   $('my-name').textContent = t('allPeopleName'); $('my-avatar').textContent = '∑'; $('my-quota').textContent = t('allPeopleQuota');
@@ -1224,6 +1231,7 @@ function renderSummary(){
   S.exportRows = rows;
 }
 function renderPersonal(){
+  renderStatusLegend();
   if (S.my.creator === '__all') return renderSummary();
   const st = S.my, quotas = getQuotas(), name = st.creator, q = quotas[name] || { eloop: 0, moov: 0 }, $ = id => document.getElementById(id);
   $('my-summary-card').hidden = true; $('my-clips-card').hidden = false;
@@ -1251,6 +1259,7 @@ function renderPersonal(){
 
 /* ===== 8. คลังคลิป ===== */
 function renderReuse(){
+  renderStatusLegend();
   const st = S.re, q = st.q.toLowerCase(), $ = id => document.getElementById(id);
   $('re-status').value = st.status; $('re-type').value = st.type; $('re-brand').value = st.brand; $('re-preset').value = st.preset; $('re-start').value = st.start; $('re-end').value = st.end; $('re-sort').value = st.sort;
   const rows = CLIPS.filter(c => c.topic && (st.brand === 'all' || c.shop === st.brand) && (st.type === 'all' || c.type === st.type) && (st.status === 'all' || c.status === st.status) && (st.preset === 'all_year' || inRange(c, st.start, st.end)) && (!q || `${c.topic} ${c.title} ${c.product} ${c.creator} ${c.type}`.toLowerCase().includes(q)));
@@ -1348,6 +1357,46 @@ function renderYouTube(){
   $('yt-rows').innerHTML = rows.length === 0 ? emptyRow(11, YT.length ? t('noMatch') : t('yt.noData'), YT.length ? t('noMatchHint') : t('yt.noDataHint')) : rows.map((r, i) => `<tr class="is-clickable" data-pv="yt:${r.id}" title="${t('previewHint')}"><td class="is-num ox-muted">${i + 1}</td><td>${badgeBrand(r.shop === 'MoovTH' ? 'Moov' : r.shop)}</td><td>${r.playlist ? `<span class="ox-badge">${esc(r.playlist)}</span>` : '<span class="ox-muted">—</span>'}</td><td>${esc(r.product || '—')}</td><td class="is-topic">${topicCell(r, st.q)}</td><td class="is-nowrap">${ytBadge(r.status)}</td><td>${esc(r.owner || '—')}</td><td>${esc(r.mc || '—')}</td><td>${esc(r.editor || '—')}</td><td class="ox-num is-nowrap">${thDate(r.shoot)}</td><td class="is-nowrap"><span class="ox-row" style="flex-wrap:nowrap">${lk(r.script, t('yt.script'))}${lk(r.link, t('yt.video'))}</span></td></tr>`).join('');
   S.exportRows = rows;
 }
+/* ===== 9a. แถบสถานะ — กดเลือกเพื่อกรองหน้าที่เปิดอยู่ (ภาพรวมเลือกหลายสถานะได้) ===== */
+function activeStatuses(){
+  if (S.mode === 'manager') return S.mgr.statuses.filter(v => v !== '__none');
+  if (S.mode === 'personal') return S.my.status === 'all' ? [] : [S.my.status];
+  if (S.mode === 'reuse') return S.re.status === 'all' ? [] : [S.re.status];
+  return S.cal.statuses;
+}
+function toggleStatus(s){
+  if (S.mode === 'manager') {
+    const cur = S.mgr.statuses.filter(v => v !== '__none');
+    S.mgr.statuses = cur.includes(s) ? cur.filter(v => v !== s) : [...cur, s];
+    if (S.mgr.statuses.length === STATUSES.length) S.mgr.statuses = [];
+    S.mgr.page = 1;
+  } else if (S.mode === 'personal') S.my.status = S.my.status === s ? 'all' : s;
+  else if (S.mode === 'reuse') { S.re.status = S.re.status === s ? 'all' : s; S.re.page = 1; }
+  else S.cal.statuses = S.cal.statuses.includes(s) ? S.cal.statuses.filter(v => v !== s) : [...S.cal.statuses, s];
+  render();
+}
+function clearStatuses(){
+  if (S.mode === 'manager') { S.mgr.statuses = []; S.mgr.page = 1; }
+  else if (S.mode === 'personal') S.my.status = 'all';
+  else if (S.mode === 'reuse') { S.re.status = 'all'; S.re.page = 1; }
+  else S.cal.statuses = [];
+  render();
+}
+function renderStatusLegend(){
+  const sel = activeStatuses(), on = sel.length > 0, multi = S.mode === 'manager' || S.mode === 'cal';
+  document.getElementById('status-legend').innerHTML =
+    `<button type="button" class="ox-chip kpi-st-btn${on ? '' : ' is-active'}" data-status="__all" aria-pressed="${!on}">${t('all')}</button>` +
+    STATUSES.map(s => {
+      const act = sel.includes(s);
+      return `<button type="button" class="ox-chip kpi-st-btn${act ? ' is-active' : ''}${on && !act ? ' is-dim' : ''}" data-status="${esc(s)}" aria-pressed="${act}" title="${t('st.' + s)}"><span class="ox-badge ox-badge--${STATUS_BADGE[s]}">${s}</span> ${t('st.' + s)}</button>`;
+    }).join('') +
+    (multi ? `<span class="ox-xs ox-muted">${t('multiHint')}</span>` : '');
+}
+document.getElementById('status-legend').addEventListener('click', e => {
+  const b = e.target.closest('[data-status]'); if (!b) return;
+  b.dataset.status === '__all' ? clearStatuses() : toggleStatus(b.dataset.status);
+});
+
 /* ===== 9b. ปฏิทินคอนเทนต์ — คลิปจากชีต (TikTok) + แผนที่วางล่วงหน้า (เก็บใน localStorage ผ่าน storage) ===== */
 const PLAN_KEY = 'CK_PLANS';
 const getPlans = () => (storage.get(PLAN_KEY) || []).filter(p => p && p.date && p.topic);
@@ -1362,6 +1411,7 @@ function calFilter(list, creatorKey){
   return list.filter(x => (brand === 'all' || x.shop === brand) && (creator === 'all' || (x[creatorKey] || '').split(/[,/]/).map(v => v.trim()).includes(creator)));
 }
 function renderCal(){
+  renderStatusLegend();
   const ym = S.cal.ym, [y, m] = ym.split('-').map(Number), first = new Date(y, m - 1, 1), last = new Date(y, m, 0);
   const start = iso(first), end = iso(last), nDays = last.getDate();
   $('cal-title').textContent = fmtMonth(ym);
@@ -1371,7 +1421,7 @@ function renderCal(){
   sel.innerHTML = `<option value="all">${t('allPeopleName')}</option>` + [...people].sort().map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
   sel.value = [...people].includes(cur) ? cur : 'all'; S.cal.creator = sel.value;
   $('cal-brand').value = S.cal.brand;
-  const clips = calFilter(ALL.filter(c => c.date && c.date >= start && c.date <= end), 'creator');
+  const clips = calFilter(ALL.filter(c => c.date && c.date >= start && c.date <= end && (!S.cal.statuses.length || S.cal.statuses.includes(c.status))), 'creator');
   const plans = calFilter(getPlans().filter(p => p.date >= start && p.date <= end), 'creator').sort((a, b) => a.date.localeCompare(b.date) || a.id - b.id);
   // KPI
   const done = clips.filter(c => c.status === 'Done').length, el = clips.filter(c => c.shop === 'EloopTH').length, mv = clips.length - el;
